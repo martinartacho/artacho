@@ -1,0 +1,107 @@
+<?php
+
+return [
+
+    /*
+    |--------------------------------------------------------------------------
+    | Authentication Language Lines
+    |--------------------------------------------------------------------------
+    |
+    | The following language lines are used during authentication for various
+    | messages that we need to display to the user. You are free to modify
+    | these language lines according to your application's requirements.
+    |
+    */
+
+    'User' => 'User',
+    'Dashboard' => 'Dashboard',
+    'Notifications' => 'Notifications',
+
+    'registration_date' => 'Registration date',
+    'Name' => 'Name',
+    'Email' => 'Email',
+    'Actions' => 'Actions',
+    'Admin' => 'Admin',
+    'Manager' => 'Manager',
+    'Editor' => 'Editor',
+    'User Management' => 'User Management',
+    'management' => 'Management',
+    'Create User' => 'Create User',
+    'Are you sure to delete this user' => 'Are you sure to delete this user',
+    'rol' => 'Rol',
+    'No role' => 'No role',
+    'Password' => 'Password',
+    'password_confirmation' => 'Password confirmation',
+    'login' => 'Iniciar sesión',
+    'register' => 'Registrarse',
+    'Full access to the system' => 'Full access to the system',
+    'Roles.' => 'Roles.',
+    'Setting' => 'Setting',
+    'See details' => 'See details',
+    'Update User' => 'Update User',
+    'Edit User' => 'Edit User',
+    'welcome invited' => 'Welcome :name, you are invited.',
+    'restricted functions' => 'Some functions may be restricted. If you wish, you can ask those responsible if you want to be part of the team.',
+    'user_updated' => 'Successfully updated user',
+    'user_created' => 'Successfully created user',
+    'user_deleted' => 'Successfully deleted user',
+    'Title' => 'Title',
+    'Sender' => 'Sender',
+    'Recipient' => 'Recipient',
+    'Published' => 'Published',
+    'Update Notification' => 'Update Notification',
+    'Create Notification' => 'Create Notification',
+    'Notification' => 'Notification',
+    'Sent by' => 'Sent by',
+    'the' => 'the',
+    'All_users' => 'All users',
+    'Users_role' => 'Users with role',
+    'Specific_users' => 'Specific users',
+    'State' => 'State',
+    'Published_on' => 'Published on',
+    'Not_published' => 'Not published',
+    'go_back' => 'go back',
+    'New' => 'New',
+    'No_notifications' => 'No notifications',
+    'See_all' => 'See all',
+    'Notification_created' => 'Notification created successfully',
+    'Notification_updated' => 'Notification updated successfully',
+    'Notification_deleted' => 'Notification successfully deleted',
+    'Notification_published' => 'Notification published and sent to recipients',
+    'Save_Notification' => 'Save Notification',
+    'info_select_multiple_users' => 'Hold down the Ctrl (or Cmd) key to select multiple users.',
+    'Select_Users' => 'Select Users',
+    'Recipients' => 'Recipients',
+    'Select_Role' => 'Select Role',
+    'Content' => 'Content',
+    'Users' => 'Users',
+    'View_notification' => 'View notification',
+    'Edit_notification' => 'Edit notification',
+    'Delete_notification' => 'Delete notification',
+    'You_re_sure' => 'You\'re sure?',
+    'welcome' => 'Welcome to HArtacho!',
+    'title_1' => 'Let\'s get started!!',
+    'title_2' => 'Autentication and Notifications.',
+    'item_1' => 'Hartacho with H maybe not a mistake, it\'s about going back to the origins.',
+    'item_2' => 'This project is a web application based on Laravel that includes...',
+    'item_3' => 'User authentication and different roles from admin to guests, with specific permissions for each role',
+    'item_4' => 'Notifications to communicate to users, via web or email.',
+    'item_5' => 'To get started, you can take a look at the code at',
+    'item_6' => 'GitHub',
+    'item_7' => 'Suggestions, proposals, reviews, contributions and also collaborators are expected.',
+    
+    'to_personal_information' =>' AccesoAccess to your personal information.',
+    'assigned_notifications' => 'Read notifications.',
+    'full_access' => 'Full access to system settings.',
+    'User_role_management' => 'User and role management.',
+    'Notification_management' => 'Notification management.',
+    'Management_users' => 'Management_users.',
+    'Profile' => 'Profile.',
+    'Setting' => 'Setting.',
+    'Current_Language' => 'Current Language',
+    'Spanish' => 'Spanish',
+    'Catalan' => 'Catalonia',
+    'English' => 'English',
+
+];
+

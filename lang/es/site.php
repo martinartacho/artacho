@@ -1,0 +1,107 @@
+<?php
+
+return [
+
+    /*
+    |--------------------------------------------------------------------------
+    | Authentication Language Lines
+    |--------------------------------------------------------------------------
+    |
+    | The following language lines are used during authentication for various
+    | messages that we need to display to the user. You are free to modify
+    | these language lines according to your application's requirements.
+    |
+    */
+
+    'User' => 'Usuario',
+    'Dashboard' => 'Tablero',
+    'Notifications' => 'Notificaciones',
+
+    'registration_date' => 'Fecha de registro',
+    'Name' => 'Nombre',
+    'Email' => 'Correo electrónico',
+    'Actions' => 'Acciones',
+    'Admin' => 'Administrador',
+    'Manager' => 'Gerente',
+    'Editor' => 'Editor',
+    'User Management' => 'Gestión de usuarios',
+    'management' => 'Gestión',
+    'Create User' => 'Crear usuario',
+    'Are you sure to delete this user' => '¿Estás seguro de eliminar este usuario?',
+    'rol' => 'Rol',
+    'No role' => 'Sin rol',
+    'Password' => 'Contraseña',
+    'password_confirmation' => 'Confirmación de contraseña',
+    'login' => 'Iniciar sesión',
+    'register' => 'Registrarse',
+    'Full access to the system' => 'Acceso completo al sistema',
+    'Roles.' => 'Roles.',
+    'Setting' => 'Configuración',
+    'See details' => 'Ver detalles',
+    'Update User' => 'Actualizar usuario',
+    'Edit User' => 'Editar usuario',
+    'welcome invited' => 'Bienvenido :name, estás invitado.',
+    'restricted functions' => 'Algunas funciones pueden estar restringidas. Si lo deseas, puedes preguntar a los responsables si quieres formar parte del equipo.',
+    'user_updated' => 'Usuario actualizado correctamente',
+    'user_created' => 'Usuario creado correctamente',
+    'user_deleted' => 'Usuario eliminado correctamente',
+    'Title' => 'Título',
+    'Sender' => 'Remitente',
+    'Recipient' => 'Destinatario',
+    'Published' => 'Publicado',
+    'Update Notification' => 'Actualizar notificación',
+    'Create Notification' => 'Crear notificación',
+    'Notification' => 'Notificación',
+    'Sent by' => 'Enviado por',
+    'the' => 'el',
+    'All_users' => 'Todos los usuarios',
+    'Users_role' => 'Usuarios con rol',
+    'Specific_users' => 'Usuarios específicos',
+    'State' => 'Estado',
+    'Published_on' => 'Publicado el',
+    'Not_published' => 'No publicado',
+    'go_back' => 'volver',
+    'New' => 'Nuevo',
+    'No_notifications' => 'No hay notificaciones',
+    'See_all' => 'Ver todas',
+    'Notification_created' => 'Notificación creada correctamente',
+    'Notification_updated' => 'Notificación actualizada correctamente',
+    'Notification_deleted' => 'Notificación eliminada correctamente',
+    'Notification_published' => 'Notificación publicada y enviada a los destinatarios',
+    'Save_Notification' => 'Guardar notificación',
+    'info_select_multiple_users' => 'Mantén presionada la tecla Ctrl (o Cmd) para seleccionar múltiples usuarios.',
+    'Select_Users' => 'Seleccionar usuarios',
+    'Recipients' => 'Destinatarios',
+    'Select_Role' => 'Seleccionar rol',
+    'Content' => 'Contenido',
+    'Users' => 'Usuarios',
+    'View_notification' => 'Ver notificación',
+    'Edit_notification' => 'Editar notificación',
+    'Delete_notification' => 'Eliminar notificación',
+    'You_re_sure' => '¿Estás seguro?',
+    'welcome' => '¡Bienvenido a HArtacho!',
+    'title_1' => '¡¡Empecemos!!',
+    'title_2' => 'Autenticación y Notificaciones.',
+
+    'item_1' => 'Hartacho con H quizás no sea un error, se trata de volver a los orígenes.',
+    'item_2' => 'Este proyecto es una aplicación web basada en Laravel que incluye...',
+    'item_3' => 'Autenticación de usuarios y diferentes roles desde administrador hasta invitados, con permisos específicos para cada rol',
+    'item_4' => 'Notificaciones para comunicarse con los usuarios, vía web o correo electrónico.',
+    'item_5' => 'Para comenzar, puedes echar un vistazo al código en',
+    'item_6' => 'GitHub',
+    'item_7' => 'Se esperan sugerencias, propuestas, revisiones, contribuciones y también colaboradores.',
+    'to_personal_information' =>' Acceso a tu informació personal.',
+    'assigned_notifications' => 'Acceso a notificaciones.',
+    'full_access' => 'Acceso total a la configuración del sistema.',
+    'User_role_management' => 'Gestió de usuarios y roles.',
+    'Notification_management' => 'Gestión de notificacions.',
+    'Management_users' => 'Gestió de usuarios.',
+    'Profile' => 'Perfil.',
+    'Setting' => 'Configuración.',
+    'Current_Language' => 'Idioma actual',
+    'Spanish' => 'Español',
+    'Catalonia' => 'Catalán',
+    'English' => 'Inglés',
+
+];
+
