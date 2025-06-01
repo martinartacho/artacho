@@ -29,29 +29,55 @@ class FcmTokenController extends Controller
     }
 
     public function sendNotification(User $user)
-    {
-        $fcmToken = $user->fcm_token;
+{
+    $token = $user->fcm_token;
 
-        $data = [
-            "to" => $fcmToken,
-            "notification" => [
-                "title" => "Bienvenido",
-                "body" => "Has iniciado sesión correctamente.",
-            ],
-            "data" => [
-                "customKey" => "customValue",
-            ]
-        ];
-
-        $client = new \GuzzleHttp\Client();
-        $response = $client->post("https://fcm.googleapis.com/fcm/send", [
-            'headers' => [
-               'Authorization' => 'key=' . env('FCM_SERVER_KEY'),
-               'Content-Type' => 'application/json',
-            ],
-            'json' => $data,
-        ]);
-
-        return $response->getBody()->getContents();
+    if (!$token) {
+        return response()->json(['error' => 'Este usuario no tiene un token FCM registrado.'], 400);
     }
+
+    $credentialsPath = storage_path('app/firebase/firebase_credentials.json');
+    $credentials = json_decode(file_get_contents($credentialsPath), true);
+
+    $auth = new \Google\Auth\OAuth2([
+        'audience' => 'https://oauth2.googleapis.com/token',
+        'issuer' => $credentials['client_email'],
+        'signingAlgorithm' => 'RS256',
+        'signingKey' => $credentials['private_key'],
+        'tokenCredentialUri' => 'https://oauth2.googleapis.com/token',
+        'scope' => 'https://www.googleapis.com/auth/firebase.messaging',
+    ]);
+
+    $auth->fetchAuthToken();
+    $accessToken = $auth->getLastReceivedToken()['access_token'];
+
+    $projectId = $credentials['project_id'];
+
+    $data = [
+        "message" => [
+            "token" => $token,
+            "notification" => [
+                "title" => "Notificación desde Laravel",
+                "body" => "Hola {$user->name}, este es un mensaje de prueba.",
+            ],
+            // Puedes agregar "data" opcional si deseas incluir payload personalizado
+        ]
+    ];
+
+    $client = new \GuzzleHttp\Client();
+    $response = $client->post("https://fcm.googleapis.com/v1/projects/{$projectId}/messages:send", [
+        'headers' => [
+            'Authorization' => 'Bearer ' . $accessToken,
+            'Content-Type' => 'application/json',
+        ],
+        'json' => $data,
+    ]);
+
+    return response()->json([
+        'status' => 'Notificación enviada',
+        'firebase_response' => json_decode($response->getBody(), true)
+    ]);
+}
+
+
 }
