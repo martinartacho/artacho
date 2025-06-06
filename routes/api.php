@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\FcmTokenController;
 use App\Http\Controllers\NotificationController;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Log;
 use App\Models\FcmToken;
 
@@ -18,6 +19,15 @@ Route::get('/test-log', function () {
 // Rutas públicas
 Route::post('/login', [AuthController::class, 'login'])->name('api.login');
 Route::post('/register', [AuthController::class, 'register']);
+Route::post('/forgot-password', function (Request $request) {
+    $request->validate(['email' => 'required|email']);
+
+    $status = Password::sendResetLink($request->only('email'));
+
+    return $status === Password::RESET_LINK_SENT
+        ? response()->json(['message' => __($status)])
+        : response()->json(['message' => __($status)], 422);
+});
 
 // Rutas protegidas con token JWT
 Route::middleware('auth:api')->group(function () {
@@ -28,9 +38,9 @@ Route::middleware('auth:api')->group(function () {
     Route::delete('/delete-account', [AuthController::class, 'deleteAccount']);
 });
 
-Route::middleware('auth:api')->post('/notifications/send-fcm', [NotificationController::class, 'sendFCM']);
 
-// Rutas notifications fire
+// Rutas notifications Firebase
+Route::middleware('auth:api')->post('/notifications/send-fcm', [NotificationController::class, 'sendFCM']);
 Route::middleware('auth:api')->post('/save-fcm-token', function (Request $request) {
 
     Log::info("✅ Estamos dentro en routes save-fcm-token ");
