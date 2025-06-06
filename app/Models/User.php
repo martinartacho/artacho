@@ -25,6 +25,7 @@ class User extends Authenticatable implements JWTSubject
         'email',
         'password',
         'locale',
+	'fcm_token',
     ];
 
     /**
@@ -87,11 +88,13 @@ class User extends Authenticatable implements JWTSubject
                     ->withPivot('read', 'read_at')
                     ->orderBy('created_at', 'desc');
     }
-    
-    
+
     public function unreadNotifications()
     {
         return $this->notifications()->wherePivot('read', false);
     }
-    
+
+    public function fcmTokens() {  
+    return $this->hasMany(FcmToken::class); // Relación 1:N  
+    }
 }

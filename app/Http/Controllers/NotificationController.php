@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Spatie\Permission\Models\Role;
+use App\Services\FCMService;
 
 
 class NotificationController extends Controller
@@ -236,5 +237,52 @@ class NotificationController extends Controller
 
         $notification->recipients()->sync($users);
     }
+
+
+    public function sendFCM(Request $request, FCMService $fcmService)
+    {
+        $request->validate([
+            'token' => 'required|string',
+            'title' => 'required|string',
+            'body' => 'required|string',
+        ]);
+
+	Log::info('✅ Token FCM recibido y guardado', [
+	    'user_id' => auth()->id(),
+	    'token' => $request->fcm_token,
+	    'hora' => now()->toDateTimeString(),
+	]);
+
+        $fcmService->sendToToken(
+            $request->token,
+            $request->title,
+            $request->body,
+            $request->get('data', []) // opcional
+        );
+
+        return response()->json(['success' => true]);
+    	}
+
+	public function saveFcmToken(Request $request)
+	{
+	    $request->validate([
+	        'token' => 'required|string',
+	        'device_type' => 'nullable|string',
+	    ]);
+
+	    $user = auth()->user();
+
+	    if (!$user) {
+        	return response()->json(['error' => 'Usuario no autenticado'], 401);
+	    }
+
+	    // Puedes usar una relación como tokens() o directamente el campo fcm_token
+	    $user->fcm_token = $request->token;
+	    $user->device_type = $request->device_type;
+	    $user->save();
+
+	    return response()->json(['message' => 'Token FCM guardado correctamente']);
+	}
+
 
 }

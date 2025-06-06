@@ -6,13 +6,13 @@ use App\Http\Controllers\Controller;
 use App\Models\FcmToken;
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Services\FCMService;
 
 class FcmTokenController extends Controller
 {
-    public function store(Request $request)
+    /*    public function store(Request $request)
     {
-     
-         
+
         $request->validate([
             'token' => 'required|string|max:255',
         ]);
@@ -27,57 +27,71 @@ class FcmTokenController extends Controller
 
         return response()->json(['message' => 'Token FCM guardado correctamente.']);
     }
+    */
 
-    public function sendNotification(User $user)
-{
-    $token = $user->fcm_token;
+public function store(Request $request)
+    {
+        // Validación
+        $validator = Validator::make($request->all(), [
+            'fcm_token' => 'required|string',
+            'device_type' => 'required|string|in:web,mobile'
+        ]);
 
-    if (!$token) {
-        return response()->json(['error' => 'Este usuario no tiene un token FCM registrado.'], 400);
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 'error',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        try {
+            // Obtener usuario autenticado
+            $user = auth()->user();
+            
+            if (!$user) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Usuario no autenticado'
+                ], 401);
+            }
+
+            // Guardar token (ajusta según tu modelo)
+            $user->fcm_tokens()->updateOrCreate(
+                ['device_type' => $request->device_type],
+                ['token' => $request->fcm_token]
+            );
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Token guardado correctamente'
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Error del servidor: ' . $e->getMessage()
+            ], 500);
+        }
     }
 
-    $credentialsPath = storage_path('app/firebase/firebase_credentials.json');
-    $credentials = json_decode(file_get_contents($credentialsPath), true);
+    public function sendNotification(User $user, FCMService $fcmService)
+    {
 
-    $auth = new \Google\Auth\OAuth2([
-        'audience' => 'https://oauth2.googleapis.com/token',
-        'issuer' => $credentials['client_email'],
-        'signingAlgorithm' => 'RS256',
-        'signingKey' => $credentials['private_key'],
-        'tokenCredentialUri' => 'https://oauth2.googleapis.com/token',
-        'scope' => 'https://www.googleapis.com/auth/firebase.messaging',
-    ]);
+	return response()->json([
+	    'message' => 'Este endpoint ha sido reemplazado por /api/notifications/send-fcm.'
+	], 410); // 410 Gone
 
-    $auth->fetchAuthToken();
-    $accessToken = $auth->getLastReceivedToken()['access_token'];
+    	$result = $fcmService->sendToUser($user, 'Bienvenido', 'Has iniciado sesión correctamente.');
 
-    $projectId = $credentials['project_id'];
+	    if (!$result) {
+	        return response()->json(['error' => 'Error al enviar la notificación.'], 500);
+	    }
 
-    $data = [
-        "message" => [
-            "token" => $token,
-            "notification" => [
-                "title" => "Notificación desde Laravel",
-                "body" => "Hola {$user->name}, este es un mensaje de prueba.",
-            ],
-            // Puedes agregar "data" opcional si deseas incluir payload personalizado
-        ]
-    ];
+	    return response()->json(['success' => true, 'response' => json_decode($result, true)]);
+    }
 
-    $client = new \GuzzleHttp\Client();
-    $response = $client->post("https://fcm.googleapis.com/v1/projects/{$projectId}/messages:send", [
-        'headers' => [
-            'Authorization' => 'Bearer ' . $accessToken,
-            'Content-Type' => 'application/json',
-        ],
-        'json' => $data,
-    ]);
 
-    return response()->json([
-        'status' => 'Notificación enviada',
-        'firebase_response' => json_decode($response->getBody(), true)
-    ]);
-}
+
 
 
 }
