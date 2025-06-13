@@ -41,34 +41,31 @@ Route::middleware('auth:api')->group(function () {
 
 // Rutas notifications Firebase
 Route::middleware('auth:api')->post('/notifications/send-fcm', [NotificationController::class, 'sendFCM']);
-Route::middleware('auth:api')->post('/save-fcm-token', function (Request $request) {
+Route::middleware('auth:api')->post('/save-fcm-token', [FcmTokenController::class, 'saveFcmToken']);
 
-    Log::info("✅ Estamos dentro en routes save-fcm-token ");
-    $user = $request->user();
-    $token = $request->input('token');
+/*Route::middleware('auth:api')->post('/save-fcm-token', function (Request $request) {
 
-    if (!$token) {
-        return response()->json(['error' => 'Token FCM requerido'], 400);
-    }
+   $request->validate([
+        'token' => 'required|string',
+        'device_type' => 'nullable|string',
+        'device_name' => 'nullable|string',
+    ]);
 
-    // Guardar en base de datos o log (solo para prueba inicial)
-    \Log::info("📲 FCM token recibido de {$user->email}: $token");
- // Evitar duplicados (opcional pero recomendado)
-    $existing = FcmToken::where('user_id', $user->id)->where('token', $token)->first();
-    if (!$existing) {
-        FcmToken::create([
-            'user_id' => $user->id,
-            'token' => $token,
-        ]);
-        Log::info("📲 Token FCM guardado en la tabla fcm_tokens para {$user->email}");
-    } else {
-        Log::info("🔁 Token FCM ya existe para {$user->email}");
-    }
+    $user = auth()->user();
 
-    return response()->json(['message' => 'Token FCM procesado']);
+    FcmToken::updateOrCreate(
+        ['user_id' => $user->id, 'token' => $request->token],
+        [
+            'device_type' => $request->device_type,
+            'device_name' => $request->device_name,
+            'last_used_at' => now(),
+            'is_valid' => true,
+        ]
+    );
 
+    return response()->json(['status' => 'success']);
 });
-
+*/
 
 
 Route::get('/test-notify/{user}', function (User $user) {

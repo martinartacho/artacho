@@ -10,26 +10,32 @@ use App\Services\FCMService;
 
 class FcmTokenController extends Controller
 {
-    /*    public function store(Request $request)
+
+    public function saveFcmToken(Request $request)
     {
+    	$request->validate([
+        	'token' => 'required|string',
+	        'device_type' => 'nullable|string',
+        	'device_name' => 'nullable|string',
+	    ]);
 
-        $request->validate([
-            'token' => 'required|string|max:255',
-        ]);
+	    $user = auth()->user();
 
-        $user = $request->user();
+	    FcmToken::updateOrCreate(
+        	['user_id' => $user->id, 'token' => $request->token],
+        	[
+            	'device_type' => $request->device_type,
+            	'device_name' => $request->device_name,
+            	'last_used_at' => now(),
+            	'is_valid' => true,
+        	]
+    	);
 
-        // Guarda o actualiza el token
-        FcmToken::updateOrCreate(
-            ['user_id' => $user->id],
-            ['token' => $request->token]
-        );
-
-        return response()->json(['message' => 'Token FCM guardado correctamente.']);
+    	return response()->json(['status' => 'success']);
     }
-    */
 
-public function store(Request $request)
+
+    public function store(Request $request)
     {
         // Validación
         $validator = Validator::make($request->all(), [
@@ -47,7 +53,7 @@ public function store(Request $request)
         try {
             // Obtener usuario autenticado
             $user = auth()->user();
-            
+
             if (!$user) {
                 return response()->json([
                     'status' => 'error',

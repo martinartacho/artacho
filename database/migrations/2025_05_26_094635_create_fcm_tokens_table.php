@@ -9,8 +9,14 @@ return new class extends Migration {
         Schema::create('fcm_tokens', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->string('token')->unique();
+            $table->string('token');
+            $table->string('device_type')->nullable();
+            $table->string('device_name')->nullable();
+            $table->timestamp('last_used_at')->nullable();
+            $table->boolean('is_valid')->default(true);
             $table->timestamps();
+
+            $table->unique(['user_id', 'token']);
         });
     }
 
