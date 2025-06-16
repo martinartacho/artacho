@@ -37,7 +37,7 @@ class User extends Authenticatable implements JWTSubject
         'password',
         'remember_token',
     ];
-    
+
 
     /**
      * Get the attributes that should be cast.
@@ -86,7 +86,8 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->belongsToMany(Notification::class, 'notification_user')
                     ->withPivot('read', 'read_at')
-                    ->orderBy('created_at', 'desc');
+                    ->orderBy('created_at', 'desc')
+		    ->withTimestamps();
     }
 
     public function unreadNotifications()

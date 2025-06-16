@@ -41,7 +41,6 @@
                             </select>
                         </div>
 
-                           
                         <div class="flex items-center justify-between mb-4">
                             <div class="flex items-center justify-end mt-6">
                                 <x-primary-button class="ml-4">

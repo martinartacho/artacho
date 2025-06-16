@@ -28,28 +28,43 @@
                 </form>
 
 
-                <form method="POST" action="{{ route('updateLanguage') }}">
-                    @csrf
-                    @method('PUT')
+{{-- Sección de Logs Push --}}
+<div class="mt-10">
+    <h2 class="text-xl font-semibold mb-4">
+        {{ __('site.Push Logs') }}
+    </h2>
+    <p class="text-gray-600 mb-4">
+        {{ __('site.Archivos de logs de notificaciones push') }}
+    </p>
 
-                    <div class="mt-4">
-                        <label for="language" class="block font-medium text-sm text-gray-700">
-                            {{ __('Idioma predeterminado del sistema') }}
-                        </label>
+    @if($settings['pushLogs']->isEmpty())
+       <p>No hay logs disponibles.</p>
+   @else
+       <ul>
+           @foreach($settings['pushLogs'] as $log)
+               <li>
+                   {{ $log->getFilename() }}
+                   <a href="{{ route('push.logs.download', $log->getFilename()) }}" class="btn btn-sm btn-secondary">
+                       <i class="bi bi-download"></i> Descargar
+                   </a>
 
-                        <select name="language" id="language" class="mt-1 block w-full" required>
-                            <option value="en" {{ $settings['language'] === 'en' ? 'selected' : '' }}>EN</option>
-                            <option value="es" {{ $settings['language'] === 'es' ? 'selected' : '' }}>ES</option>
-                            <option value="ca" {{ $settings['language'] === 'ca' ? 'selected' : '' }}>CA</option>
-                        </select>
-                    </div>
+                   <form method="POST" action="{{ route('push.logs.delete', $log->getFilename()) }}" class="d-inline" onsubmit="return confirm('¿Eliminar este log?')">
+                       @csrf
+                       @method('DELETE')
+                       <button class="btn btn-sm btn-danger">
+                           <i class="bi bi-trash"></i> Eliminar
+                       </button>
+                   </form>
+               </li>
+           @endforeach
+       </ul>
+   @endif
 
-                    <div class="mt-4">
-                        <button type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700">
-                            {{ __('Guardar') }}
-                        </button>
-                    </div>
-                </form>                
+   </div>
+
+
+
+
             </div>
         </div>
     </div>

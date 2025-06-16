@@ -5,8 +5,7 @@
                 <i class="bi bi-people-fill mr-2"></i>
                 {{ __('site.User Management') }}
             </h2>
-           
-           
+
             @can('create-notification')
             <a href="{{ route('notifications.create') }}">
                 <x-primary-button>
@@ -14,7 +13,7 @@
                 </x-primary-button>
             </a>
             @endcan
-           
+
         </div>
     </h2>
     </x-slot>
@@ -65,7 +64,7 @@
                                             <a href="{{ route('notifications.show', $notification) }}" 
                                                 class="btn btn-sm btn-info"
                                                 title="{{ __('site.View_notification') }}">
-                                              
+
                                                 @if(!$notification->isRead())
                                                     <i class="bi bi-eye-slash"></i>
                                                 @else
@@ -94,6 +93,8 @@
                                             </form>
                                         @endcan
 
+
+
                                         @can('publish-notification')
                                             @unless($notification->is_published)
                                                 <form action="{{ route('notifications.publish', $notification) }}" method="POST" class="d-inline">
@@ -103,7 +104,27 @@
                                                     </button>
                                                 </form>
                                             @endunless
+
+					    {{-- Si ya está publicada, evaluar push --}}
+                                            {{-- @if($notification->is_published) --}}
+@unless($notification->is_published)
+                                                @if(!$notification->push_sent)
+                                                    <form method="POST" action="{{ route('notifications.send-push', $notification) }}" class="d-inline mt-1">
+                                                        @csrf
+                                                        <button type="submit"
+                                                        class="btn btn-sm btn-primary"
+                                                        title="Enviar Push Ahora">
+                                                            📲
+                                                        </button>
+                                                    </form>
+                                                @else
+                                                    <span class="badge bg-success mt-1"><i class="bi bi-app-indicator"></i> </span>
+                                                @endif
+@endunless
+	                                         {{-- @endif --}}
+
                                         @endcan
+
                                     </div>
                                 </td>
                                 @endcan

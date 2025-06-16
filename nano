@@ -1,0 +1,54 @@
+<?php
+
+namespace App\Console\Commands;
+
+use Illuminate\Console\Command;
+use App\Models\Notification;
+use App\Models\User;
+use App\Services\FCMService;
+use Illuminate\Support\Facades\DB;
+
+class SendPendingPushNotifications extends Command
+{
+    protected $signature = 'notifications:send-push';
+    protected $description = 'Envía notificaciones pendientes por FCM a los destinatarios.';
+
+    public function handle(FCMService $fcmService): int
+    {
+        $notifications = Notification::where('is_published', true)
+            ->where('push_sent', false)
+            ->get();
+
+        if ($notifications->isEmpty()) {
+            $this->info("✅ No hay notificaciones pendientes para enviar por push.");
+            return self::SUCCESS;
+        }
+
+        foreach ($notifications as $notification) {
+            $this->info("📨 Procesando notificación #{$notification->id}: {$notification->title}");
+
+            $recipients = match ($notification->recipient_type) {
+                'all' => User::all(),
+                'role' => User::role($notification->recipient_role)->get(),
+                'specific' => User::whereIn('id', $notification->recipient_ids ?? [])->get(),
+            };
+
+            $totalSent = 0;
+
+            foreach ($recipients as $user) {
+                $result = $fcmService->sendToUser($user, $notification->title, $notification->content);
+                if ($result && isset($result['sent']) && $result['sent'] > 0) {
+                    $totalSent += $result['sent'];
+                }
+            }
+
+            $notification->update([
+                'push_sent' => true,
+            ]);
+
+            $this->info("✅ Notificación enviada a {$totalSent} dispositivos.");
+        }
+
+        return self::SUCCESS;
+    }
+}

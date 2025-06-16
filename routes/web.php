@@ -10,6 +10,7 @@ use App\Http\Controllers\LanguageController;
 // use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SettingsController;
+use App\Http\Controllers\Admin\PushLogController;
 
 // Rutas públicas
 Route::get('/', function () {
@@ -24,12 +25,12 @@ require __DIR__.'/auth.php';
 Route::middleware(['auth', 'verified'])->group(function () {
     // Dashboard principal
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-    
+
     // Perfil de usuario
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-    
+
     // Rutas de administrador
     Route::middleware(['role:admin'])->prefix('admin')->name('admin.')->group(function () {
         Route::resource('users', AdminUserController::class);
@@ -38,7 +39,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::middleware(['auth', 'role:admin|gestor'])->group(function () {
         Route::get('/settings', [SettingsController::class, 'edit'])->name('settings.edit');
         Route::post('/settings/logo', [SettingsController::class, 'updateLogo'])->name('settings.updateLogo');
- 
+ 	// Logs Push
+	Route::get('/settings/push-logs', [PushLogController::class, 'index'])->name('push.logs');
+	Route::get('/settings/push-logs/download/{filename}', [PushLogController::class, 'download'])->name('push.logs.download');
+	Route::delete('/settings/push-logs/delete/{filename}', [PushLogController::class, 'delete'])->name('push.logs.delete');
+
         Route::put('/language', [SettingsController::class, 'updateLanguage'])->name('updateLanguage');
     });
 
@@ -47,12 +52,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
      Route::middleware(['role:gestor'])->prefix('gestor')->name('gestor.')->group(function () {
         // Panel del gestor
         Route::get('/dashboard', [GestorController::class, 'dashboard'])->name('dashboard');
-        
         // Gestión de usuarios
         Route::resource('users', GestorUserController::class)->only([
             'index', 'edit', 'update'
         ]);
-        
     }); 
 
 
@@ -100,6 +103,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
             ->name('notifications.publish')
             ->middleware('permission:notifications.publish');
 
+	Route::post('/notifications/{notification}/send-push', [NotificationController::class, 'sendPush'])
+	    ->name('notifications.send-push')
+	    ->middleware('permission:notifications.publish');
+
+
     });
 
 
@@ -108,7 +116,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::prefix('api')->middleware('auth')->group(function () {
         Route::get('/notifications/unread-count', [NotificationController::class, 'getUnreadCount'])
             ->name('notifications.unread-count');
-        
+
         Route::post('/notifications/{notification}/mark-read', [NotificationController::class, 'markAsRead'])
             ->name('notifications.mark-read');
     });

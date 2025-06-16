@@ -5,14 +5,24 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Setting;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Log;
 
 class SettingsController extends Controller
 {
     public function edit()
     {
-        $settings = [
+	  $logFiles = File::files(storage_path('logs'));
+	 // Últimos 5 logs push
+	$logFiles = collect(File::files(storage_path('logs')))
+	      ->filter(fn($file) => str_contains($file->getFilename(), 'push-'))
+              ->sortByDesc(fn($file) => $file->getCTime())
+              ->take(5);
+
+	$settings = [
             'logo' => \App\Models\Setting::get('logo', 'logos/default.png'),
             'language' => \App\Models\Setting::get('language', 'en'),
+	    'pushLogs' => $logFiles,
         ];
         return view('settings.edit', compact('settings'));
     }

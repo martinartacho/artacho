@@ -27,14 +27,13 @@ class Notification extends Model
         'recipient_ids' => 'array',
         'published_at' => 'datetime',
         'recipient_ids' => 'array',
-    
     ];
 
     public function sender()
     {
         return $this->belongsTo(User::class, 'sender_id');
     }
-    
+
     public function recipients()
     {
         return $this->belongsToMany(User::class, 'notification_user')
@@ -64,15 +63,22 @@ class Notification extends Model
     public function isRead($user = null)
     {
         $user = $user ?: auth()->user();
-        
+
         if ($this->relationLoaded('pivot')) {
             // Para relación muchos-a-muchos
             return $this->pivot->read_at !== null;
         }
-        
+
         // Para sistema estándar
         return $this->read_at !== null;
     }
+
+	public function users()
+	{
+	    return $this->belongsToMany(User::class)
+	        ->withPivot(['read', 'read_at', 'push_sent'])
+	        ->withTimestamps();
+	}
 
 
 }

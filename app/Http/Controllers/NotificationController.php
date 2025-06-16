@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Spatie\Permission\Models\Role;
 use App\Services\FCMService;
-
+use Illuminate\Support\Facades\DB;
 
 class NotificationController extends Controller
 {
@@ -47,10 +47,10 @@ class NotificationController extends Controller
             'role' =>  __('site.Users_role'),
             'specific' =>  __('site.Specific_users')
         ];
-    
+
         // Obtener roles como array [id => nombre]
         $roles = \Spatie\Permission\Models\Role::all()->pluck('name', 'id');
-        
+
         // Obtener todos los usuarios activos
         // $users = User::whereHas('roles')->get();
         // Obtener usuarios que NO tienen el rol 'invited'
@@ -58,7 +58,7 @@ class NotificationController extends Controller
             $query->where('name', 'invited');
         })->get();
 
-    
+
         return view('notifications.create', [
             'recipientTypes' => $recipientTypes,
             'roles' => $roles,
@@ -114,7 +114,7 @@ class NotificationController extends Controller
         })->get();
 
         return view('notifications.edit', compact('notification', 'recipientTypes', 'roles', 'users'));
-        
+
     }
 
     public function update(Request $request, Notification $notification)
@@ -150,13 +150,13 @@ class NotificationController extends Controller
     public function show(Notification $notification)
     {
         abort_if(Auth::user()->hasRole('invited'), 403);
-        
+
         // Marcar como leída al visualizar
         if ($notification->read_at === null) {
             // Pasar el usuario autenticado como argumento
             $notification->markAsRead(Auth::user());
         }
-        
+
         return view('notifications.show', compact('notification'));
     }
 
@@ -183,6 +183,7 @@ class NotificationController extends Controller
         }
 
         $notification->update([
+	    'push_sent' => true,
             'is_published' => true,
             'published_at' => now()
         ]);
@@ -197,7 +198,7 @@ class NotificationController extends Controller
         $user = $user ?: auth()->user();
         $this->read_at = now();
         $this->save();
-        
+
         // O si usas relación muchos a muchos:
         $user->notifications()->updateExistingPivot($this->id, [
             'read_at' => now()
@@ -210,16 +211,10 @@ class NotificationController extends Controller
     {
         // Solución 1: Usar el método del trait Notifiable
         Auth::user()->unreadNotifications()->update(['read_at' => now()]);
-        
-        // Solución 2: Alternativa si la anterior no funciona
-        // foreach (Auth::user()->unreadNotifications as $notification) {
-        //     $notification->markAsRead();
-        // }
-        
+
         return response()->json(['success' => true]);
     }
 
-    
 
     protected function assignRecipients(Notification $notification)
     {
@@ -282,6 +277,94 @@ class NotificationController extends Controller
 	    $user->save();
 
 	    return response()->json(['message' => 'Token FCM guardado correctamente']);
+	}
+
+	public function sendFCMNotification(Request $request, FCMService $fcmService)
+	{
+	    $request->validate([
+        	'notification_id' => 'required|exists:notifications,id',
+	    ]);
+
+	    $notification = Notification::findOrFail($request->notification_id);
+
+	    if ($notification->push_sent) {
+        	return response()->json(['message' => 'La notificación ya fue enviada por push.'], 409);
+	    }
+
+	    // Determinar destinatarios
+	    $users = match ($notification->recipient_type) {
+	        'all' => User::all(),
+        	'role' => User::role($notification->recipient_role)->get(),
+	        'specific' => User::whereIn('id', json_decode($notification->recipient_ids))->get(),
+	        default => collect(),
+	    };
+
+	    $successTotal = 0;
+
+	    foreach ($users as $user) {
+        	$result = $fcmService->sendToUser($user, $notification->title, $notification->content);
+	        if (is_array($result) && $result['sent'] > 0) {
+	            $successTotal++;
+	        }
+	    }
+
+	    // Actualiza el estado de envío
+	    $notification->update([
+	        'push_sent' => true,
+        	'published_at' => now(),
+	    ]);
+
+	    return response()->json([
+        	'message' => '🔔 Notificación push enviada correctamente.',
+	        'users_notified' => $successTotal,
+        	'total_users' => $users->count(),
+	    ]);
+	}
+
+
+	public function sendPush($id, FCMService $fcmService)
+	{
+	    $notification = Notification::findOrFail($id);
+
+	    // Evitar duplicados
+	    if ($notification->push_sent) {
+        	return redirect()->back()->with('warning', '📤 Esta notificación ya fue enviada por push.');
+	    }
+
+	    // Buscar destinatarios
+	    $users = match ($notification->recipient_type) {
+        	'all' => User::all(),
+	        'role' => User::role($notification->recipient_role)->get(),
+        	'specific' => User::whereIn('id', json_decode($notification->recipient_ids ?? '[]'))->get(),
+	    };
+
+	    $enviados = 0;
+
+	    DB::beginTransaction();
+
+	    foreach ($users as $user) {
+	        $pivot = $notification->users()->where('user_id', $user->id)->first();
+
+        	// Evitar si ya fue enviado
+	        if ($pivot && $pivot->pivot->push_sent) {
+	            continue;
+	        }
+
+        	$resultado = $fcmService->sendToUser($user, $notification->title, $notification->content);
+
+	        if ($resultado !== false && $resultado['sent'] > 0) {
+	            $enviados++;
+	            // Marcar como enviado
+	            $notification->users()->updateExistingPivot($user->id, ['push_sent' => true]);
+	        }
+	    }
+
+	    $notification->push_sent = true;
+	    $notification->save();
+
+	    DB::commit();
+
+	    return redirect()->back()->with('success', "✅ Notificación push enviada a {$enviados} usuarios.");
 	}
 
 
