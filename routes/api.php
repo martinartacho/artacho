@@ -10,11 +10,18 @@ use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Log;
 use App\Models\FcmToken;
 
-// para limpiar
-Route::get('/test-log', function () {
-    Log::warning('🚨 Ruta de prueba ejecutada');
-    return response()->json(['message' => 'Log generado']);
+
+
+// Mantén estas rutas solo para compatibilidad temporal
+Route::middleware('auth:api')->group(function () {
+    Route::get('/unread-count-api', [FcmTokenController::class, 'getUnreadCountApi']);
+    Route::get('/notifications-api', [FcmTokenController::class, 'getNotificationsApi']);
+    Route::post('/{id}/mark-read-api', [FcmTokenController::class, 'markAsReadApi']);
 });
+
+
+
+
 
 // Rutas públicas
 Route::post('/login', [AuthController::class, 'login'])->name('api.login');
@@ -40,32 +47,21 @@ Route::middleware('auth:api')->group(function () {
 
 
 // Rutas notifications Firebase
-Route::middleware('auth:api')->post('/notifications/send-fcm', [NotificationController::class, 'sendFCM']);
-Route::middleware('auth:api')->post('/save-fcm-token', [FcmTokenController::class, 'saveFcmToken']);
+Route::middleware('auth:api')->prefix('notifications')->group(function () {
+    // Route::get('/', [NotificationController::class, 'index']);
+    // Route::get('/unread-count', [NotificationController::class, 'unreadCount']);
+    //  Route::post('/{id}/mark-read', [NotificationController::class, 'markAsRead']);
+    Route::post('/send-fcm', [NotificationController::class, 'sendFCM']);
+    Route::post('/save-fcm-token', [FcmTokenController::class, 'saveFcmToken']);
 
-/*Route::middleware('auth:api')->post('/save-fcm-token', function (Request $request) {
+    Route::get('/unread-count', [FcmTokenController::class, 'unreadCount']);
 
-   $request->validate([
-        'token' => 'required|string',
-        'device_type' => 'nullable|string',
-        'device_name' => 'nullable|string',
-    ]);
 
-    $user = auth()->user();
-
-    FcmToken::updateOrCreate(
-        ['user_id' => $user->id, 'token' => $request->token],
-        [
-            'device_type' => $request->device_type,
-            'device_name' => $request->device_name,
-            'last_used_at' => now(),
-            'is_valid' => true,
-        ]
-    );
-
-    return response()->json(['status' => 'success']);
 });
-*/
+Route::middleware('auth:api')->get('/unread-count-api', [FcmTokenController::class, 'getUnreadCountApi']);
+Route::middleware('auth:api')->get('/notifications-api', [FcmTokenController::class, 'getNotificationsApi']);
+Route::middleware('auth:api')->post('/{id}/mark-read-api', [FcmTokenController::class, 'markAsReadApi']);
+
 
 
 Route::get('/test-notify/{user}', function (User $user) {

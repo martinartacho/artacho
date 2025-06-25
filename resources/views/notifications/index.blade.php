@@ -106,23 +106,20 @@
                                             @endunless
 
 					    {{-- Si ya está publicada, evaluar push --}}
-                                            {{-- @if($notification->is_published) --}}
-@unless($notification->is_published)
+					    @unless($notification->is_published)
                                                 @if(!$notification->push_sent)
                                                     <form method="POST" action="{{ route('notifications.send-push', $notification) }}" class="d-inline mt-1">
                                                         @csrf
                                                         <button type="submit"
                                                         class="btn btn-sm btn-primary"
                                                         title="Enviar Push Ahora">
-                                                            📲
+								<i class="bi bi-phone"></i>
                                                         </button>
                                                     </form>
                                                 @else
                                                     <span class="badge bg-success mt-1"><i class="bi bi-app-indicator"></i> </span>
                                                 @endif
-@endunless
-	                                         {{-- @endif --}}
-
+					     @endunless
                                         @endcan
 
                                     </div>

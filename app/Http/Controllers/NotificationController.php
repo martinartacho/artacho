@@ -18,6 +18,7 @@ class NotificationController extends Controller
     {
         // Aplicar middleware de autenticación
         $this->middleware('auth');
+	// $this->middleware('auth:api');
 
         // Verificar permisos específicos para cada acción
         $this->middleware('permission:notifications.create')->only(['create', 'store']);

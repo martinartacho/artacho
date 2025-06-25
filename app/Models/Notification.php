@@ -41,7 +41,7 @@ class Notification extends Model
                     ->orderBy('notification_user.created_at', 'desc')
                     ->withTimestamps();
     }
-    
+
 
     public function scopeUnread($query, $userId)
     {
@@ -80,5 +80,10 @@ class Notification extends Model
 	        ->withTimestamps();
 	}
 
+	public function notifications()
+	{
+	    return $this->belongsToMany(Notification::class)
+        	->withPivot(['read', 'read_at']);
+	}
 
 }

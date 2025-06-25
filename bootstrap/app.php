@@ -15,18 +15,20 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware) {
         // Agregar SetLocale como middleware global
         $middleware->append(\App\Http\Middleware\SetLocale::class);
-        
 
         // Alias para middlewares de roles/permiso
         $middleware->alias([
             'role' => \Spatie\Permission\Middleware\RoleMiddleware::class,
             'permission' => \Spatie\Permission\Middleware\PermissionMiddleware::class,
         ]);
+	$middleware->api(append: [
+              \Illuminate\Http\Middleware\HandleCors::class,
+	]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //
     })
     ->withCommands([
-        \App\Console\Commands\ModuleCreateCommand::class 
+        \App\Console\Commands\ModuleCreateCommand::class
     ])
     ->create();
