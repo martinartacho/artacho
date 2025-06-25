@@ -109,7 +109,6 @@ return [
 
     'api' => [
 	// Sanctum descartado
-       // \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class, // opcional si trabajas con SPA o cookies
         'throttle:api',
         \Illuminate\Routing\Middleware\SubstituteBindings::class,
     ],

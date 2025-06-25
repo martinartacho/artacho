@@ -1,53 +1,164 @@
-# 🛠️ Checklist de Despliegue - Proyecto Laravel Hartacho (reservas.artacho.org)
+````markdown
+# 🚀 Puesta en marcha de `dev.artacho.org` (Laravel 11)
 
-## ✅ Antes del despliegue
-- [ ] Asegurarse de que todos los cambios estén **commiteados** y **pusheados** al repositorio remoto.
-- [ ] Verificar que el proyecto funcione correctamente en local (login, rutas protegidas, JWT, etc.).
-- [ ] Revisar si hay nuevas migraciones, seeds o variables `.env` necesarias.
-- [ ] Actualizar el archivo `.env.production` en el servidor si se han agregado nuevas claves.
+Este documento describe paso a paso cómo desplegar el entorno de desarrollo `dev.artacho.org` en un VPS con Ubuntu 24.04 y Apache, usando el repositorio [martinartacho/artacho](https://github.com/martinartacho/artacho). Incluye las incidencias encontradas y sus soluciones.
 
-## 🚀 Despliegue en el servidor VPS
-1. Conectarse por SSH al servidor:
-   ```bash
-   ssh usuario@IP_SERVIDOR
-   ```
+---
 
-2. Navegar al proyecto:
-   ```bash
-   cd /var/www/reservas.artacho.org
-   ```
+## ✅ 1. Clonar el repositorio
 
-3. Ejecutar los comandos de despliegue:
-   ```bash
-   git pull origin main
-   composer install --no-dev --optimize-autoloader
-   php artisan migrate --force
-   php artisan config:clear
-   php artisan route:clear
-   php artisan view:clear
-   php artisan optimize
-   ```
+```bash
+cd /var/www/dev.artacho.org
+sudo rm -rf *
+sudo git clone https://github.com/martinartacho/artacho.git .
+````
 
-## 🔍 Verificaciones post-deploy
-- [ ] Probar `/api/login` con credenciales válidas.
-- [ ] Usar el token JWT recibido para consultar `/api/me`.
-- [ ] Confirmar que no hay errores en los logs:
-   ```bash
-   tail -f storage/logs/laravel.log
-   ```
+---
 
-## ⚠️ Buenas prácticas
-- No editar archivos directamente en producción.
-- Si se hace un hotfix directo, documentarlo y sincronizarlo con el repositorio (`git pull` puede fallar si no).
+## ✅ 2. Instalar dependencias de Laravel
 
-## 📦 Revisión del sistema
-- [ ] Certificados SSL configurados (revisar con `curl -k` solo si necesario).
-- [ ] Verificar permisos de carpetas: `storage/`, `bootstrap/cache/`
-- [ ] Verificar los cron jobs si existen (`php artisan schedule:run`).
+```bash
+composer install --no-dev
+cp .env.example .env
+php artisan key:generate
+```
 
-## 🧪 Mantenimiento opcional
-- [ ] Ejecutar tests si están disponibles: `php artisan test`
-- [ ] Hacer respaldo de la base de datos si hay cambios mayores.
+---
+
+## ✅ 3. Crear la base de datos en MySQL
+
+```bash
+sudo mysql -u root -p
+```
+
+```sql
+CREATE DATABASE dev_artacho CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+CREATE USER 'artacho'@'localhost' IDENTIFIED BY 'contraseña_segura';
+GRANT ALL PRIVILEGES ON dev_artacho.* TO 'artacho'@'localhost';
+FLUSH PRIVILEGES;
+EXIT;
+```
+
+---
+
+## ✅ 4. Configurar el archivo `.env`
+
+```env
+APP_NAME=ArtachoDev
+APP_ENV=local
+APP_URL=http://dev.artacho.org
+
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=dev_artacho
+DB_USERNAME=artacho
+DB_PASSWORD=contraseña_segura
+```
+
+---
+
+## ✅ 5. Establecer permisos correctos
+
+```bash
+cd /var/www/dev.artacho.org
+sudo chown -R $USER:www-data .
+sudo chmod -R 775 storage bootstrap/cache
+```
+
+---
+
+## ✅ 6. Ejecutar migraciones y seeders
+
+```bash
+php artisan migrate --seed
+```
+
+Esto creará usuarios de ejemplo con contraseñas públicas.
+
+---
+
+## ⚠️ 7. Incidencias encontradas y soluciones
+
+### ❗ `Permission denied` en `storage/logs/laravel.log`
+
+```bash
+sudo chown -R $USER:www-data .
+sudo chmod -R 775 storage bootstrap/cache
+```
+
+---
+
+### ❗ `Vite manifest not found`
+
+Falta compilar los assets frontend:
+
+```bash
+npm install
+npm run build
+```
+
+---
+
+### ❗ Comando personalizado `users:change-passwords` no detectado
+
+**Situación:** se intentó registrar un comando para cambiar las contraseñas por defecto (`users:change-passwords`), pero Laravel 11 no lo detectó automáticamente.
+
+**Solución temporal:** usar Tinker para cambiar todas las contraseñas:
+
+```bash
+php artisan tinker
+```
+
+```php
+use App\Models\User;
+use Illuminate\Support\Facades\Hash;
+
+User::all()->each(function ($user) {
+    $user->password = Hash::make('Password.Seguro!');
+    $user->save();
+});
+exit
+```
+
+---
+
+## 🔒 Seguridad recomendada
+
+* Cambiar cualquier contraseña que esté en el seeder (`Site.123`, etc).
+* Nunca subir archivos `.env` al repositorio.
+* Regenerar claves y tokens si fueron publicados por error.
+
+---
+
+## ✅ 8. Recargar Apache y probar
+
+```bash
+sudo systemctl reload apache2
+```
+
+Abrir en el navegador:
+
+```
+http://dev.artacho.org
+```
+
+---
+
+## 📌 Pendiente
+
+* Revisar registro de comandos personalizados en Laravel 11.
+* Implementar variante del comando para generar contraseñas aleatorias por usuario (opcional).
+* Automatizar este proceso en un script o ansible si se quiere escalar a staging/producción.
+
+---
+
+```
+
+---
+
+¿Quieres que genere este archivo directamente y lo copie en el servidor usando un script Bash o que te lo prepare también en `.txt` para descargar desde la web?
+```
 
 ---
 
