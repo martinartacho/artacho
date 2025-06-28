@@ -6,16 +6,16 @@ use Illuminate\Console\Command;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 
-class ChangeAllUserPasswords extends Command
+class ChangeDefaultPasswords extends Command
 {
 
-    protected $signature = 'app:change-all-passwords';
+    protected $signature = 'users:change-all-passwords';
     protected $description = 'Cambia la contraseña de todos los usuarios existentes con una nueva contraseña segura';
 
     public function handle()
     {
         $this->info("🔐 Cambio masivo de contraseñas de usuarios");
-exit;
+
 
         // Solicitar nueva contraseña
         $password = $this->secret('Introduce la nueva contraseña:');

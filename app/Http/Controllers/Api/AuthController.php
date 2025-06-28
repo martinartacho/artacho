@@ -20,7 +20,8 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
-        $validator = Validator::make($request->all(), [
+        Log::info('Dentro de login');
+	$validator = Validator::make($request->all(), [
             'email' => 'required|email',
             'password' => 'required|min:6',
         ], [
@@ -59,11 +60,15 @@ class AuthController extends Controller
 
     public function me()
     {
+	Log::info('Dentro de me');
+
         return response()->json(Auth::guard('api')->user());
     }
 
     public function logout()
     {
+	Log::info('Dentro de logout');
+
         JWTAuth::invalidate(JWTAuth::getToken());
         return response()->json(['message' => 'Sesión cerrada correctamente']);
     }
@@ -113,6 +118,8 @@ class AuthController extends Controller
 
     public function updateProfile(Request $request)
     {
+	Log::info('Dentro de upadatProfile');
+
         $user = $request->user();
         $request->validate([
             'name' => 'required|string|max:255',
@@ -129,6 +136,8 @@ class AuthController extends Controller
 
     public function changePassword(Request $request)
     {
+	Log::info('Dentro de changePassword');
+
         $user = $request->user();
         $request->validate([
             'current_password' => 'required',
@@ -148,6 +157,8 @@ class AuthController extends Controller
 
     public function deleteAccount(Request $request)
     {
+	Log::info('Dentro de deleteAccount');
+
         $user = $request->user();
         $user->delete();
         return response()->json(['message' => 'Cuenta eliminada'], 200);

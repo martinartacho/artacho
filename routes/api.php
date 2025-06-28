@@ -13,12 +13,13 @@ use App\Models\FcmToken;
 
 
 // Mantén estas rutas solo para compatibilidad temporal
+/*
 Route::middleware('auth:api')->group(function () {
     Route::get('/unread-count-api', [FcmTokenController::class, 'getUnreadCountApi']);
     Route::get('/notifications-api', [FcmTokenController::class, 'getNotificationsApi']);
     Route::post('/{id}/mark-read-api', [FcmTokenController::class, 'markAsReadApi']);
 });
-
+*/
 
 
 
