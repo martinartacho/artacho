@@ -23,6 +23,18 @@
                         </div>
                     @endif
 
+                    @if (session('warning'))
+                        <div class="p-4 mb-4 text-sm text-yellow-700 bg-yellow-100 border border-yellow-300 rounded">
+                            {{ session('warning') }}
+                        </div>
+                    @endif
+
+                    @if (session('error'))
+                        <div class="p-4 mb-4 text-sm text-red-700 bg-red-100 border border-red-300 rounded">
+                            {{ session('error') }}
+                        </div>
+                    @endif
+
                     <div class="overflow-x-auto">
                         <table class="min-w-full divide-y divide-gray-200">
                             <thead class="bg-white divide-y divide-gray-200">

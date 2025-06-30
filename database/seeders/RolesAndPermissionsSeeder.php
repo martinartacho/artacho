@@ -13,43 +13,88 @@ class RolesAndPermissionsSeeder extends Seeder
         // Limpiar caché
         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
 
-        // Crear permisos
+        // Permisos para módulos básicos
         $permissions = [
-            'notifications.view',
+
+            'admin.access',
+            'settings.edit',
+
+            'users.index',
+            'users.view',
+            'users.create',
+            'users.edit',
+            'users.delete',
+
+
+            'roles.index',
+            'roles.create',
+            'roles.edit',
+            'roles.delete',
+
+            'permissions.index',
+            'permissions.create',
+            'permissions.edit',
+            'permissions.delete',
+
+            
+            'notifications.publish',
+            'notifications.index',
             'notifications.create',
             'notifications.edit',
             'notifications.delete',
-            'notifications.publish',
+            'notifications.view',
+
         ];
 
-        foreach ($permissions as $permission) {
-            Permission::firstOrCreate(['name' => $permission]);
+        foreach ($permissions as $perm) {
+            Permission::firstOrCreate(['name' => $perm]);
         }
 
-        // Crear roles y asignar permisos
+
+        // Roles
         $admin = Role::firstOrCreate(['name' => 'admin']);
         $admin->givePermissionTo(Permission::all());
 
+
         $gestor = Role::firstOrCreate(['name' => 'gestor']);
-        $gestor->givePermissionTo([
-            'notifications.view',
-            'notifications.create',
-            'notifications.publish',
-        ]);
+
+        $gestor->givePermissionTo(['users.index']);
+        $gestor->givePermissionTo(['users.create']);
+        $gestor->givePermissionTo(['users.edit']);
+        $gestor->givePermissionTo(['users.delete']);
+
+        
+
+        $gestor->givePermissionTo(['notifications.index']);
+        $gestor->givePermissionTo(['notifications.create']);
+        $gestor->givePermissionTo(['notifications.edit']);
+        $gestor->givePermissionTo(['notifications.delete']);
+        $gestor->givePermissionTo(['notifications.view']);
 
         $editor = Role::firstOrCreate(['name' => 'editor']);
-        $editor->givePermissionTo([
-            'notifications.view',
-            'notifications.edit',
-        ]);
+        $editor->givePermissionTo(['notifications.index']);
+        $editor->givePermissionTo(['notifications.create']);
+        $editor->givePermissionTo(['notifications.edit']);
+        $editor->givePermissionTo(['notifications.delete']);
+        $editor->givePermissionTo(['notifications.view']);
+
 
         $user = Role::firstOrCreate(['name' => 'user']);
-        $user->givePermissionTo([
-            'notifications.view',
-        ]);
+        $user->givePermissionTo(['notifications.view']);
+        $user->givePermissionTo(['notifications.create']);
+
 
         $invited = Role::firstOrCreate(['name' => 'invited']);
+        $user->givePermissionTo(['notifications.index']);
+        $user->givePermissionTo(['notifications.view']);
+
         // sin permisos
+
+        // Asignar admin al usuario con ID = 1
+        $user1 = \App\Models\User::find(1);
+        if ($user1 && !$user1->hasRole('admin')) {
+            $user1->assignRole($admin);
+        }
     }
 }
 

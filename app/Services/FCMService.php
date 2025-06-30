@@ -12,9 +12,9 @@ class FCMService
 {
         protected string $credentialsPath;
 
-        public function __construct()
+    public function __construct()
 	{
-        	$this->credentialsPath = storage_path('app/firebase/firebase_credentials.json');
+       	$this->credentialsPath = storage_path('app/firebase/firebase_credentials.json');
 	}
 
 

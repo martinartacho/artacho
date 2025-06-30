@@ -25,22 +25,22 @@ class UserSeeder extends Seeder
         ]);
         $gestor->assignRole('gestor');
 
-        $editor1 = User::create([
+        $editor = User::create([
             'name' => 'Editor Uno',
             'email' => 'editor1@example.com',
             'password' => Hash::make('Site.123'),
         ]);
-        $editor1->assignRole('editor');
+        $editor->assignRole('editor');
 
-        $editor2 = User::create([
-            'name' => 'Editor Dos',
+         $editor2 = User::create([
+            'name' => 'Editor Uno',
             'email' => 'editor2@example.com',
             'password' => Hash::make('Site.123'),
         ]);
         $editor2->assignRole('editor');
 
         $user1 = User::create([
-            'name' => 'User Uno',
+            'name' => 'User Dos',
             'email' => 'user1@example.com',
             'password' => Hash::make('Site.123'),
         ]);

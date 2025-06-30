@@ -1,126 +1,96 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\Admin\UserController as AdminUserController;
-use App\Http\Controllers\Gestor\GestorController;
-use App\Http\Controllers\Gestor\UserController as GestorUserController;
 use App\Http\Controllers\NotificationController;
-use App\Http\Controllers\LanguageController;
-// use Illuminate\Support\Facades\Session;
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Admin\UserController as AdminUserController;
+use App\Http\Controllers\Admin\RoleController;
+use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\Admin\PushLogController;
+use App\Http\Controllers\Gestor\GestorController;
+use App\Http\Controllers\Gestor\UserController as GestorUserController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\DashboardController;
+use Illuminate\Support\Facades\Route;
 
-// Rutas públicas
-Route::get('/', function () {
-    return view('welcome');
+
+// comando temporal 
+Route::get('/test-firebase', function() {
+    try {
+        $firebase = (new Factory)
+            ->withServiceAccount(storage_path(env('FIREBASE_CREDENTIALS')))
+            ->create();
+
+        return response()->json(['success' => true]);
+    } catch (\Exception $e) {
+        return response()->json(['error' => $e->getMessage()], 500);
+    }
 });
 
-// Rutas de autenticación
+// Rutas públicas
+Route::get('/', fn () => view('welcome'));
+
+// Auth
 require __DIR__.'/auth.php';
 
-
-// Rutas protegidas
+// 🔐 Rutas protegidas por login y verificación
 Route::middleware(['auth', 'verified'])->group(function () {
-    // Dashboard principal
+
+    // 🏠 Dashboard principal
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-    // Perfil de usuario
+    // 👤 Perfil
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    // Rutas de administrador
-    Route::middleware(['role:admin'])->prefix('admin')->name('admin.')->group(function () {
-        Route::resource('users', AdminUserController::class);
+    // 👮‍♂️ Rutas Admin (roles, permisos, usuarios)
+    Route::prefix('admin')->name('admin.')->group(function () {
+        Route::middleware('can:users.index')->resource('users', AdminUserController::class);
+        Route::middleware('can:roles.index')->resource('roles', RoleController::class);
+        Route::middleware('can:permissions.index')->resource('permissions', PermissionController::class);
     });
 
-    Route::middleware(['auth', 'role:admin|gestor'])->group(function () {
+    // ⚙️ Configuración del sistema (logo, idioma)
+    Route::middleware('can:admin.access')->group(function () {
         Route::get('/settings', [SettingsController::class, 'edit'])->name('settings.edit');
         Route::post('/settings/logo', [SettingsController::class, 'updateLogo'])->name('settings.updateLogo');
- 	// Logs Push
-	Route::get('/settings/push-logs', [PushLogController::class, 'index'])->name('push.logs');
-	Route::get('/settings/push-logs/download/{filename}', [PushLogController::class, 'download'])->name('push.logs.download');
-	Route::delete('/settings/push-logs/delete/{filename}', [PushLogController::class, 'delete'])->name('push.logs.delete');
-
         Route::put('/language', [SettingsController::class, 'updateLanguage'])->name('updateLanguage');
     });
 
+    // 🗂 Logs Push relacionados con notificaciones
+    Route::prefix('settings/push-logs')->name('push.logs.')->middleware('can:notifications.logs')->group(function () {
+        Route::get('/', [PushLogController::class, 'index'])->name('');
+        Route::get('/download/{filename}', [PushLogController::class, 'download'])->name('download');
+        Route::delete('/delete/{filename}', [PushLogController::class, 'delete'])->name('delete');
+    });
 
-    // Rutas para gestores (versión limpia)
-     Route::middleware(['role:gestor'])->prefix('gestor')->name('gestor.')->group(function () {
-        // Panel del gestor
+    // 📬 Notificaciones (CRUD completo + acciones)
+    Route::prefix('notifications')->name('notifications.')->group(function () {
+        Route::get('/', [NotificationController::class, 'index'])->name('index')->middleware('permission:notifications.view');
+        Route::get('/create', [NotificationController::class, 'create'])->name('create')->middleware('permission:notifications.create');
+        Route::post('/', [NotificationController::class, 'store'])->name('store')->middleware('permission:notifications.create');
+
+        Route::get('/{notification}', [NotificationController::class, 'show'])->name('show')->middleware('permission:notifications.view');
+        Route::get('/{notification}/edit', [NotificationController::class, 'edit'])->name('edit')->middleware('permission:notifications.edit');
+        Route::put('/{notification}', [NotificationController::class, 'update'])->name('update')->middleware('permission:notifications.edit');
+        Route::delete('/{notification}', [NotificationController::class, 'destroy'])->name('destroy')->middleware('permission:notifications.delete');
+
+        Route::post('/{notification}/publish', [NotificationController::class, 'publish'])->name('publish')->middleware('permission:notifications.publish');
+        Route::post('/{notification}/send-push', [NotificationController::class, 'sendPush'])->name('send-push')->middleware('permission:notifications.publish');
+
+        Route::post('/mark-as-read/{notification}', [NotificationController::class, 'markAsRead'])->name('mark-as-read');
+        Route::post('/mark-all-read', [NotificationController::class, 'markAllAsRead'])->name('mark-all-read');
+    });
+
+    // ⚙️ API interna para frontend (no REST)
+    Route::prefix('api')->group(function () {
+        Route::get('/notifications/unread-count', [NotificationController::class, 'getUnreadCount'])->name('notifications.unread-count');
+        Route::post('/notifications/{notification}/mark-read', [NotificationController::class, 'markAsRead'])->name('notifications.mark-read');
+    });
+
+    // 👥 Rutas específicas para gestores
+    Route::middleware('role:gestor')->prefix('gestor')->name('gestor.')->group(function () {
         Route::get('/dashboard', [GestorController::class, 'dashboard'])->name('dashboard');
-        // Gestión de usuarios
-        Route::resource('users', GestorUserController::class)->only([
-            'index', 'edit', 'update'
-        ]);
-    }); 
-
-
-    // CRUD principal de notificaciones
-    Route::middleware(['auth'])->group(function () {
-
-        
-        Route::get('/notifications', [NotificationController::class, 'index'])
-            ->name('notifications.index')
-            ->middleware('permission:notifications.view');
-
-        Route::get('/notifications/create', [NotificationController::class, 'create'])
-            ->name('notifications.create')
-            ->middleware('permission:notifications.create');
-
-        Route::post('/notifications', [NotificationController::class, 'store'])
-            ->name('notifications.store')
-            ->middleware('permission:notifications.create');
-
-        Route::get('/notifications/{notification}', [NotificationController::class, 'show'])
-            ->name('notifications.show')
-            ->middleware('permission:notifications.view');
-
-        Route::get('/notifications/{notification}/edit', [NotificationController::class, 'edit'])
-            ->name('notifications.edit')
-            ->middleware('permission:notifications.edit');
-
-        Route::put('/notifications/{notification}', [NotificationController::class, 'update'])
-            ->name('notifications.update')
-            ->middleware('permission:notifications.edit');
-
-        Route::delete('/notifications/{notification}', [NotificationController::class, 'destroy'])
-            ->name('notifications.destroy')
-            ->middleware('permission:notifications.delete');
-
-         Route::post('/notifications/mark-as-read/{notification}', [NotificationController::class, 'markAsRead'])
-        ->name('notifications.mark-as-read')
-        ->middleware('auth');
-
-        Route::post('/notifications/mark-all-read', [NotificationController::class, 'markAllAsRead'])
-            ->name('notifications.mark-all-read')
-            ->middleware('auth');
-
-        Route::post('/notifications/{notification}/publish', [NotificationController::class, 'publish'])
-            ->name('notifications.publish')
-            ->middleware('permission:notifications.publish');
-
-	Route::post('/notifications/{notification}/send-push', [NotificationController::class, 'sendPush'])
-	    ->name('notifications.send-push')
-	    ->middleware('permission:notifications.publish');
-
-
+        Route::resource('users', GestorUserController::class)->only(['index', 'edit', 'update']);
     });
-
-
-    // API para notificaciones
-
-    Route::prefix('api')->middleware('auth')->group(function () {
-        Route::get('/notifications/unread-count', [NotificationController::class, 'getUnreadCount'])
-            ->name('notifications.unread-count');
-
-        Route::post('/notifications/{notification}/mark-read', [NotificationController::class, 'markAsRead'])
-            ->name('notifications.mark-read');
-    });
-
-
-
 });

@@ -34,14 +34,55 @@
                                 <x-input-label :value="__('site.Roles.')" />
                                 <div class="mt-2 space-y-2">
                                     @foreach($roles as $role)
-                                    <label class="flex items-center">
-                                        <input type="checkbox" name="roles[]" value="{{ $role->name }}"
-                                            {{ $user->hasRole($role->name) ? 'checked' : '' }}
-                                            class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500">
-                                        <span class="ml-2 text-sm text-gray-600">{{ $role->name }}</span>
-                                    </label>
+                                        <label class="flex items-center">
+                                            <input type="checkbox" name="roles[]" value="{{ $role->name }}"
+                                                {{ $user->hasRole($role->name) ? 'checked' : '' }}
+                                                class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500">
+                                            <span class="ml-2 text-sm text-gray-600">{{ $role->name }}</span>
+                                        </label>
                                     @endforeach
                                 </div>
+                            </div>
+
+                            <!-- Permisos Heredados por Roles Agrupados -->
+                            <div class="col-span-1 mt-8">
+                                <x-input-label :value="__('Permisos Heredados por Roles')" />
+                                @php
+                                    $inherited = $user->getPermissionsViaRoles()->groupBy(fn ($p) => explode('.', $p->name)[0]);
+                                @endphp
+
+                                @forelse ($inherited as $group => $groupPermissions)
+                                    <div class="mt-4">
+                                        <h4 class="font-semibold text-sm text-gray-700 uppercase">{{ ucfirst($group) }}</h4>
+                                        <ul class="list-disc list-inside text-sm text-gray-600">
+                                            @foreach ($groupPermissions as $permission)
+                                                <li>{{ $permission->name }}</li>
+                                            @endforeach
+                                        </ul>
+                                    </div>
+                                @empty
+                                    <p class="text-gray-500 italic mt-2">No tiene permisos heredados.</p>
+                                @endforelse
+                            </div>
+
+                            <!-- Permisos Directos Agrupados -->
+                            <div class="col-span-1 mt-6">
+                                <x-input-label :value="__('Permisos Directos')" />
+                                @foreach ($permissions as $group => $groupPermissions)
+                                    <div class="mt-4">
+                                        <h4 class="font-semibold text-sm text-gray-700 uppercase">{{ ucfirst($group) }}</h4>
+                                        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 mt-2">
+                                            @foreach ($groupPermissions as $permission)
+                                                <label class="flex items-center">
+                                                    <input type="checkbox" name="permissions[]" value="{{ $permission->name }}"
+                                                    {{ $user->hasPermissionTo($permission->name) ? 'checked' : '' }}
+                                                    class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500">
+                                                    <span class="ml-2 text-sm text-gray-600">{{ $permission->name }}</span>
+                                                </label>
+                                            @endforeach
+                                        </div>
+                                    </div>
+                                @endforeach
                             </div>
                         </div>
 

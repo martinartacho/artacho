@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Configuración del sistema') }}
+            {{ __('Configuración del sitio') }}
         </h2>
     </x-slot>
 
@@ -16,7 +16,7 @@
                     {{-- Logo --}}
                     <div class="mb-4">
                         <label for="logo" class="block text-sm font-medium text-gray-700">
-                            {{ __('Logo del sistema') }}
+                            {{ __('Logo del sitio') }}
                         </label>
                         <input type="file" name="logo" id="logo" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" accept="image/*">
                     </div>

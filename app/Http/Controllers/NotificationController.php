@@ -35,7 +35,11 @@ class NotificationController extends Controller
             $notifications = Notification::latest()->paginate(10);
         } else {
             // Otros ven solo las suyas (relación muchos a muchos)
-            $notifications = Auth::user()->notifications()->latest()->paginate(10);  
+           // $notifications = Auth::user()->notifications()->latest()->paginate(10);  
+            $notifications = Auth::user()->notifications()
+            ->where('is_published', true)
+            ->orderBy('created_at', 'desc')
+            ->latest()->paginate(10);  
         }
 
         return view('notifications.index', compact('notifications'));
@@ -150,7 +154,7 @@ class NotificationController extends Controller
 
     public function show(Notification $notification)
     {
-        abort_if(Auth::user()->hasRole('invited'), 403);
+       //  abort_if(Auth::user()->hasRole('invited'), 403);
 
         // Marcar como leída al visualizar
         if ($notification->read_at === null) {

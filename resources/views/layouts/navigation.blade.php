@@ -17,7 +17,7 @@
                     </x-nav-link>
                     
                     @auth
-                        @if(auth()->user()->hasRole('admin'))
+                        @canany(['users.view', 'roles.index', 'permissions.index', 'settings.edit'])
                             <!-- Admin Dropdown -->
                             <div class="hidden sm:flex sm:items-center sm:ms-6">
                                 <div class="relative ms-3">
@@ -34,50 +34,38 @@
                                         </x-slot>
 
                                         <x-slot name="content">
-                                            <x-dropdown-link :href="route('admin.users.index')" :active="request()->routeIs('admin.users.*')">
-                                                {{ __('site.Users') }}
-                                            </x-dropdown-link>
+                                            @can('users.view')
+                                                <x-dropdown-link :href="route('admin.users.index')" :active="request()->routeIs('admin.users.*')">
+                                                    {{ __('site.Users') }}
+                                                </x-dropdown-link>
+                                            @endcan
 
-                                            <x-dropdown-link :href="route('settings.edit')" :active="request()->routeIs('settings.*')">
-                                                {{ __('Settings') }}
-                                            </x-dropdown-link>
+                                            @can('roles.index')
+                                                <x-dropdown-link :href="route('admin.roles.index')" :active="request()->routeIs('admin.roles.*')">
+                                                    {{ __('site.Roles') }}
+                                                </x-dropdown-link>
+                                            @endcan
 
+                                            @can('permissions.index')
+                                                <x-dropdown-link :href="route('admin.permissions.index')" :active="request()->routeIs('admin.permissions.*')">
+                                                    {{ __('site.Permissions') }}
+                                                </x-dropdown-link>
+                                            @endcan
+
+                                            @can('settings.edit')
+                                                <x-dropdown-link :href="route('settings.edit')" :active="request()->routeIs('settings.*')">
+                                                    {{ __('Settings') }}
+                                                </x-dropdown-link>
+                                            @endcan
                                         </x-slot>
                                     </x-dropdown>
                                 </div>
                             </div>
-                        @endif
+                        @endcanany
                     @endauth
 
-                    @auth
-                        @if(auth()->user()->hasRole('gestor'))
-                            <!-- Gestor Dropdown -->
-                            <div class="hidden sm:flex sm:items-center sm:ms-6">
-                                <div class="relative ms-3">
-                                    <x-dropdown align="left" width="56">
-                                        <x-slot name="trigger">
-                                            <span class="inline-flex rounded-md">
-                                                <button type="button" class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:text-gray-900 focus:outline-none focus:bg-gray-50 active:bg-gray-50 transition ease-in-out duration-150">
-                                                    {{ __('site.Manager') }}
-                                                    <svg class="ms-2 -me-0.5 size-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20" stroke-width="1.5" stroke="currentColor">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 15L12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9" />
-                                                    </svg>
-                                                </button>
-                                            </span>
-                                        </x-slot>
 
-                                        <x-slot name="content">
-                                            <x-dropdown-link :href="route('gestor.users.index')" :active="request()->routeIs('gestor.users.*')">
-                                                {{ __('site.Users') }}
-                                            </x-dropdown-link>
-                                        </x-slot>
-                                    </x-dropdown>
-                                </div>
-                            </div>
-                            <!-- Gestor -->
-                        @endif
-                    @endauth
-                    
+   
                     <div class="hidden sm:flex sm:items-center sm:ms-6">
                         <ul class="navbar-nav ms-auto">
                             @include('components.notification-bell') 
