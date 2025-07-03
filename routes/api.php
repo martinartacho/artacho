@@ -49,9 +49,9 @@ Route::middleware('auth:api')->group(function () {
 
 // Rutas notifications Firebase
 Route::middleware('auth:api')->prefix('notifications')->group(function () {
-    // Route::get('/', [NotificationController::class, 'index']);
-    // Route::get('/unread-count', [NotificationController::class, 'unreadCount']);
-    //  Route::post('/{id}/mark-read', [NotificationController::class, 'markAsRead']);
+    Route::get('/', [NotificationController::class, 'index']);
+    Route::get('/unread-count', [NotificationController::class, 'unreadCount']);
+     Route::post('/{id}/mark-read', [NotificationController::class, 'markAsRead']);
     Route::post('/send-fcm', [NotificationController::class, 'sendFCM']);
     Route::post('/save-fcm-token', [FcmTokenController::class, 'saveFcmToken']);
 
@@ -59,9 +59,9 @@ Route::middleware('auth:api')->prefix('notifications')->group(function () {
 
 
 });
-Route::middleware('auth:api')->get('/unread-count-api', [FcmTokenController::class, 'getUnreadCountApi']);
-Route::middleware('auth:api')->get('/notifications-api', [FcmTokenController::class, 'getNotificationsApi']);
-Route::middleware('auth:api')->post('/{id}/mark-read-api', [FcmTokenController::class, 'markAsReadApi']);
+// Route::middleware('auth:api')->get('/unread-count-api', [FcmTokenController::class, 'getUnreadCountApi']);
+// Route::middleware('auth:api')->get('/notifications-api', [FcmTokenController::class, 'getNotificationsApi']);
+// Route::middleware('auth:api')->post('/{id}/mark-read-api', [FcmTokenController::class, 'markAsReadApi']);
 
 
 
