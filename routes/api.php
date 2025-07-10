@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Log;
 use App\Models\FcmToken;
-
+use App\Http\Controllers\Api\FeedbackController;
 
 
 // Mantén estas rutas solo para compatibilidad temporal
@@ -35,6 +35,11 @@ Route::post('/forgot-password', function (Request $request) {
     return $status === Password::RESET_LINK_SENT
         ? response()->json(['message' => __($status)])
         : response()->json(['message' => __($status)], 422);
+});
+
+
+Route::prefix('feedback')->group(function () {
+    Route::post('/', [FeedbackController::class, 'store']); // permitir sin login 
 });
 
 // Rutas protegidas con token JWT
