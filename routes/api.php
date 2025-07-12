@@ -37,9 +37,15 @@ Route::post('/forgot-password', function (Request $request) {
         : response()->json(['message' => __($status)], 422);
 });
 
-
+/*
 Route::prefix('feedback')->group(function () {
     Route::post('/', [FeedbackController::class, 'store']); // permitir sin login 
+});
+
+*/
+
+Route::middleware('auth:api')->prefix('feedback')->group(function () {
+    Route::post('/', [FeedbackController::class, 'store']);
 });
 
 // Rutas protegidas con token JWT

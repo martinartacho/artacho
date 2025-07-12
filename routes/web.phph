@@ -58,10 +58,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::put('/language', [SettingsController::class, 'updateLanguage'])->name('updateLanguage');
     });
 
-
     Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
-       Route::get('/feedback', [AdminFeedbackController::class, 'index'])->name('admin.feedback.index');
-       Route::delete('/feedback/{id}', [AdminFeedbackController::class, 'destroy'])->name('admin.feedback.destroy');
+        Route::get('/feedback', [AdminFeedbackController::class, 'index'])->name('admin.feedback.index');
+        Route::delete('/feedback/{id}', [AdminFeedbackController::class, 'destroy'])->name('admin.feedback.destroy');
     });
 
     // 🗂 Logs Push relacionados con notificaciones
