@@ -82,12 +82,23 @@ class User extends Authenticatable implements JWTSubject
         return []; // Puedes añadir datos personalizados aquí si necesitas
     }
 
+    /* 
     public function notifications()
     {
         return $this->belongsToMany(Notification::class, 'notification_user')
                     ->withPivot('read', 'read_at')
                     ->orderBy('created_at', 'desc')
 		    ->withTimestamps();
+    }
+    */
+
+    // Relación personalizada con notifications_user
+    public function notifications()
+    {
+        return $this->belongsToMany(Notification::class, 'notification_user')
+            ->withPivot('read', 'read_at')
+            ->withTimestamps()
+            ->orderBy('notifications.created_at', 'desc');
     }
 
     public function unreadNotifications()

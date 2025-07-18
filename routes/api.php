@@ -12,17 +12,6 @@ use App\Models\FcmToken;
 use App\Http\Controllers\Api\FeedbackController;
 
 
-// Mantén estas rutas solo para compatibilidad temporal
-/*
-Route::middleware('auth:api')->group(function () {
-    Route::get('/unread-count-api', [FcmTokenController::class, 'getUnreadCountApi']);
-    Route::get('/notifications-api', [FcmTokenController::class, 'getNotificationsApi']);
-    Route::post('/{id}/mark-read-api', [FcmTokenController::class, 'markAsReadApi']);
-});
-*/
-
-
-
 
 // Rutas públicas
 Route::post('/login', [AuthController::class, 'login'])->name('api.login');
@@ -37,13 +26,8 @@ Route::post('/forgot-password', function (Request $request) {
         : response()->json(['message' => __($status)], 422);
 });
 
-/*
-Route::prefix('feedback')->group(function () {
-    Route::post('/', [FeedbackController::class, 'store']); // permitir sin login 
-});
 
-*/
-
+// Ruras feedback
 Route::middleware('auth:api')->prefix('feedback')->group(function () {
     Route::post('/', [FeedbackController::class, 'store']);
 });
@@ -59,24 +43,11 @@ Route::middleware('auth:api')->group(function () {
 
 
 // Rutas notifications Firebase
-Route::middleware('auth:api')->prefix('notifications')->group(function () {
-    Route::get('/', [NotificationController::class, 'index']);
-    Route::get('/unread-count', [NotificationController::class, 'unreadCount']);
-     Route::post('/{id}/mark-read', [NotificationController::class, 'markAsRead']);
-    Route::post('/send-fcm', [NotificationController::class, 'sendFCM']);
+// ✅ Notificaciones
+Route::middleware('auth:api')->group(function () {
     Route::post('/save-fcm-token', [FcmTokenController::class, 'saveFcmToken']);
-
     Route::get('/unread-count', [FcmTokenController::class, 'unreadCount']);
-
-
-});
-// Route::middleware('auth:api')->get('/unread-count-api', [FcmTokenController::class, 'getUnreadCountApi']);
-// Route::middleware('auth:api')->get('/notifications-api', [FcmTokenController::class, 'getNotificationsApi']);
-// Route::middleware('auth:api')->post('/{id}/mark-read-api', [FcmTokenController::class, 'markAsReadApi']);
-
-
-
-Route::get('/test-notify/{user}', function (User $user) {
-    return app(FcmTokenController::class)->sendNotification($user);
+    Route::get('/notifications-api', [FcmTokenController::class, 'getNotificationsApi']);
+    Route::post('/{id}/mark-read-api', [FcmTokenController::class, 'markAsReadApi']);
 });
 

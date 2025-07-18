@@ -26,7 +26,6 @@ class Notification extends Model
     protected $casts = [
         'recipient_ids' => 'array',
         'published_at' => 'datetime',
-        'recipient_ids' => 'array',
     ];
 
     public function sender()
@@ -73,12 +72,21 @@ class Notification extends Model
         return $this->read_at !== null;
     }
 
-	public function users()
+/*	public function users()
 	{
 	    return $this->belongsToMany(User::class)
 	        ->withPivot(['read', 'read_at', 'push_sent'])
 	        ->withTimestamps();
 	}
+*/
+
+public function users()
+    {
+        return $this->belongsToMany(User::class, 'notification_user')
+            ->withPivot('read', 'read_at')
+            ->withTimestamps();
+    }
+
 
 	public function notifications()
 	{
