@@ -12,16 +12,15 @@ class NotificationSeeder extends Seeder
     public function run()
     {
         // 🔒 Desactivar restricciones de claves foráneas
-/*
-        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+//        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
 
         // Vaciar tablas relacionadas
-        DB::table('notification_user')->truncate();
-        DB::table('notifications')->truncate();
+//        DB::table('notification_user')->truncate();
+//        DB::table('notifications')->truncate();
 
         // 🔒 Reactivar restricciones
-        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
-*/
+//        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+
         // Obtener usuarios con roles específicos
         $admin = User::role('admin')->firstOrFail();
         $gestor = User::role('gestor')->firstOrFail();
@@ -39,18 +38,18 @@ class NotificationSeeder extends Seeder
         }
 
         // 1. Notificación welcome (id = 1)
-/*        Notification::create([
+        Notification::create([
             'title' => '¡Bienvenido a la app!',
             'content' => 'Gracias por unirte. Esperamos que disfrutes de todas las funcionalidades.',
             'sender_id' => $admin->id,
             'recipient_type' => 'specific',
-            'recipient_ids' => 'all', // json_encode([$regularUsers[0]->id]),
+            'recipient_ids' => json_encode([$regularUsers[0]->id]),
             'type' => 'welcome',
             'is_published' => true,
             'published_at' => now(),
             'web_sent' => false
         ]);
-*/
+
         // 2. Notificación pública
         Notification::create([
             'title' => 'Mantenimiento programado',

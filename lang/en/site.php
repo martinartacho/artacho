@@ -1,7 +1,6 @@
 <?php
 
 return [
-
     /*
     |--------------------------------------------------------------------------
     | Authentication Language Lines
@@ -102,6 +101,5 @@ return [
     'Spanish' => 'Spanish',
     'Catalan' => 'Catalonia',
     'English' => 'English',
-
 ];
 

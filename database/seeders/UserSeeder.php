@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
+use Carbon\Carbon;
 
 class UserSeeder extends Seeder
 {
@@ -15,6 +16,7 @@ class UserSeeder extends Seeder
             'name' => 'Admin User',
             'email' => 'admin@example.com',
             'password' => Hash::make('Site.123'),
+	    'email_verified_at' => Carbon::now(),
         ]);
         $admin->assignRole('admin');
 
@@ -22,6 +24,7 @@ class UserSeeder extends Seeder
             'name' => 'Gestor User',
             'email' => 'gestor@example.com',
             'password' => Hash::make('Site.123'),
+            'email_verified_at' => Carbon::now(),
         ]);
         $gestor->assignRole('gestor');
 
@@ -29,6 +32,7 @@ class UserSeeder extends Seeder
             'name' => 'Editor Uno',
             'email' => 'editor1@example.com',
             'password' => Hash::make('Site.123'),
+            'email_verified_at' => Carbon::now(),
         ]);
         $editor->assignRole('editor');
 
@@ -36,6 +40,7 @@ class UserSeeder extends Seeder
             'name' => 'Editor Uno',
             'email' => 'editor2@example.com',
             'password' => Hash::make('Site.123'),
+            'email_verified_at' => Carbon::now(),
         ]);
         $editor2->assignRole('editor');
 
