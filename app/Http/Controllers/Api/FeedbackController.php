@@ -18,15 +18,6 @@ class FeedbackController extends Controller
             'message' => 'required|string|min:5',
         ]);
 
-    // $user = Auth::user();
-//    $user = auth()->user();
-//    Log::info('[AuthController] user:'. $user) ;
-
-/*    Log::info('[FeedbackController]', [
-        'user_id' => $user->id,
-        'email' => $user->email,
-  	]);
-*/
 
         // 🧪 Log de depuración
         Log::info('📥 Feedback recibido:', [

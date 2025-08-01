@@ -21,8 +21,20 @@
     </head>
     <body class="font-sans antialiased">
         <div class="min-h-screen bg-gray-100">
-            @php
+            <!-- @php
                 $language = cache('global_language') ?? config('app.locale');
+            @endphp -->
+            @php
+                $language = cache('global_language');
+                if (!$language) {
+                    try {
+                        $setting = \App\Models\Setting::where('key', 'language')->first();
+                        $language = $setting ? $setting->value : config('app.locale');
+                        cache(['global_language' => $language], now()->addDay());
+                    } catch (\Exception $e) {
+                        $language = config('app.locale');
+                    }
+                }
             @endphp
 
             @include('layouts.navigation')

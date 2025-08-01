@@ -45,7 +45,7 @@
 
                             <!-- Roles -->
                             <div class="sm:col-span-2">
-                                <x-input-label :value="__('site.Roles.')" />
+                                <x-input-label :value="__('site.Roles')" />
                                 <div class="grid grid-cols-2 md:grid-cols-4 gap-2 mt-2">
                                     @foreach($roles as $role)
                                     <label class="inline-flex items-center">

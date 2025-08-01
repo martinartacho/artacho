@@ -35,7 +35,7 @@ return [
     'login' => 'Iniciar sesión',
     'register' => 'Registrarse',
     'Full access to the system' => 'Acceso completo al sistema',
-    'Roles.' => 'Roles.',
+    'Roles' => 'Roles',
     'Setting' => 'Configuración',
     'See details' => 'Ver detalles',
     'Update User' => 'Actualizar usuario',
@@ -99,9 +99,21 @@ return [
     'Profile' => 'Perfil.',
     'Setting' => 'Configuración.',
     'Current_Language' => 'Idioma actual',
+    'Default Language' => 'Idioma por defecto',
     'Spanish' => 'Español',
     'Catalonia' => 'Catalán',
     'English' => 'Inglés',
+    'Users_role_persions' => 'Permisos y roles',
+    'Permissions' => 'Permissions',
+    'Feedback' => 'Feedback',
+    'Push' => 'Push',
+    'Push log files' => 'Archivos de logs de push',
+    'No logs available' => "No hay logs disponibles",
+    'Download' => 'Descargar',
+    'Delete' => 'Delete',
+
+
+
 
 ];
 

@@ -6,10 +6,10 @@
         
         <div class="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
             <x-dashboard.card title="{{ __('site.Setting') }}" color="purple">
-                <i class="bi bi-sliders"></i> {{ __('site.full_acces') }}
+                <i class="bi bi-sliders"></i> {{ __('site.full_access') }}
             </x-dashboard.card>
 
-            <x-dashboard.card title="{!! __('site.Notification_users') !!}" color="indigo">
+            <x-dashboard.card title="{!! __('site.Users_role_persions') !!}" color="indigo">
                 <i class="bi bi-people"></i> {{ __('site.User_role_management') }}
             </x-dashboard.card>
 

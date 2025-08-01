@@ -34,7 +34,7 @@ return [
     'login' => 'Iniciar sesión',
     'register' => 'Registrarse',
     'Full access to the system' => 'Full access to the system',
-    'Roles.' => 'Roles.',
+    'Roles' => 'Roles',
     'Setting' => 'Setting',
     'See details' => 'See details',
     'Update User' => 'Update User',
@@ -98,8 +98,22 @@ return [
     'Profile' => 'Profile.',
     'Setting' => 'Setting.',
     'Current_Language' => 'Current Language',
+    'Default Language' => 'Default language',
     'Spanish' => 'Spanish',
-    'Catalan' => 'Catalonia',
+    'Catalonia' => 'Catalonia',
     'English' => 'English',
+    'Users_role_persions' => 'Permissions and roles',
+    'Permissions' => 'Permissions',
+    'Feedback' => 'Feedback',
+    'Push' => 'Push',
+    'Push log files' => 'Push log files',
+    'No logs available' => "No logs available",
+    'Download' => 'Download',
+    'Delete' => 'Delete',
+    
+
+
+
+
 ];
 

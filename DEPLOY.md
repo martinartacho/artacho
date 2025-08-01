@@ -74,7 +74,7 @@ sudo chmod -R 775 storage bootstrap/cache
 php artisan migrate --seed
 ```
 
-Esto creará usuarios de ejemplo con contraseñas públicas.
+Esto creará usuarios de ejemplo con contraseñas públicas, por seguridad cambia las contraseñas (indicaciones mas abajo) 
 
 ---
 
@@ -100,11 +100,17 @@ npm run build
 
 ---
 
-### ❗ Comando personalizado `users:change-passwords` no detectado
+### ❗ Cambiar las contraseñas de todos los usuarios
 
-**Situación:** se intentó registrar un comando para cambiar las contraseñas por defecto (`users:change-passwords`), pero Laravel 11 no lo detectó automáticamente.
+**Command:**
 
-**Solución temporal:** usar Tinker para cambiar todas las contraseñas:
+```bash
+php artisan users:change-all-passwords
+```
+
+users:change-all-passwords
+
+**Tinker:** usar Tinker para cambiar todas las contraseñas:
 
 ```bash
 php artisan tinker

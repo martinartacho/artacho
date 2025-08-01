@@ -27,40 +27,70 @@
                     </div>
                 </form>
 
+                {{-- Language --}}
+                <form method="POST" action="{{ route('settings.updateLanguage') }}" enctype="multipart/form-data">
+                    @csrf
+                     @method('PUT')
+                    <div class="col-span-1">
+                        <x-input-label :value="__('site.Default Language')" />
+                        <div class="mt-2 space-y-2">
+                            @foreach([
+                                'es' => __('site.Spanish'),
+                                'ca' => __('site.Catalonia'),
+                                'en' => __('site.English'),
+                            ] as $code => $label)
+                                <label class="flex items-center">
+                                    <input type="radio" 
+                                        name="language" 
+                                        value="{{ $code }}"
+                                        {{ $code == $settings['language'] ? 'checked' : '' }}
+                                        class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500">
+                                    <span class="ml-2 text-sm text-gray-600">{{ $label }}</span>
+                                </label>
+                            @endforeach
+                        </div>
+                    </div>
 
-{{-- Sección de Logs Push --}}
-<div class="mt-10">
-    <h2 class="text-xl font-semibold mb-4">
-        {{ __('site.Push Logs') }}
-    </h2>
-    <p class="text-gray-600 mb-4">
-        {{ __('site.Archivos de logs de notificaciones push') }}
-    </p>
+                    <div class="mt-6">
+                        <x-primary-button>{{ __('Guardar') }}</x-primary-button>
+                    </div>
+                </form>
 
-    @if($settings['pushLogs']->isEmpty())
-       <p>No hay logs disponibles.</p>
-   @else
-       <ul>
-           @foreach($settings['pushLogs'] as $log)
-               <li>
-                   {{ $log->getFilename() }}
-                   <a href="{{ route('push.logs.download', $log->getFilename()) }}" class="btn btn-sm btn-secondary">
-                       <i class="bi bi-download"></i> Descargar
-                   </a>
 
-                   <form method="POST" action="{{ route('push.logs.delete', $log->getFilename()) }}" class="d-inline" onsubmit="return confirm('¿Eliminar este log?')">
-                       @csrf
-                       @method('DELETE')
-                       <button class="btn btn-sm btn-danger">
-                           <i class="bi bi-trash"></i> Eliminar
-                       </button>
-                   </form>
-               </li>
-           @endforeach
-       </ul>
-   @endif
 
-   </div>
+                {{-- Sección de Logs Push --}}
+                <div class="mt-10">
+                    <h2 class="text-xl font-semibold mb-4">
+                        {{ __('site.Push') }}
+                    </h2>
+                    <p class="text-gray-600 mb-4">
+                        {{ __('site.Push log files') }}
+                    </p>
+
+                    @if($settings['pushLogs']->isEmpty())
+                    <p>{{ __('site.No logs available') }}.</p>
+                @else
+                    <ul>
+                        @foreach($settings['pushLogs'] as $log)
+                            <li>
+                                {{ $log->getFilename() }}
+                                <a href="{{ route('push.logs.download', $log->getFilename()) }}" class="btn btn-sm btn-secondary">
+                                    <i class="bi bi-download"></i>   {{ __('site.Download') }}
+                                </a>
+
+                                <form method="POST" action="{{ route('push.logs.delete', $log->getFilename()) }}" class="d-inline" onsubmit="return confirm('¿Eliminar este log?')">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button class="btn btn-sm btn-danger">
+                                        <i class="bi bi-trash"></i>  {{ __('site.Delete') }}
+                                    </button>
+                                </form>
+                            </li>
+                        @endforeach
+                    </ul>
+                @endif
+
+                </div>
 
 
 

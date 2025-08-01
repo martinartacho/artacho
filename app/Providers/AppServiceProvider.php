@@ -33,8 +33,8 @@ class AppServiceProvider extends ServiceProvider
         });
 
         // Establecer idioma según sesión o configuración
-        App::setLocale(Session::get('locale', config('app.locale')));
-	Notification::extend('fcm', function ($app) {
+      //   App::setLocale(Session::get('locale', config('app.locale')));
+	    Notification::extend('fcm', function ($app) {
         return new FcmChannel($app->make(\App\Services\FCMService::class));
     });
 

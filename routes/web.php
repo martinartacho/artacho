@@ -55,7 +55,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::middleware('can:admin.access')->group(function () {
         Route::get('/settings', [SettingsController::class, 'edit'])->name('settings.edit');
         Route::post('/settings/logo', [SettingsController::class, 'updateLogo'])->name('settings.updateLogo');
-        Route::put('/language', [SettingsController::class, 'updateLanguage'])->name('updateLanguage');
+        Route::put('/settings/language', [SettingsController::class, 'updateLanguage'])->name('settings.updateLanguage');
     });
 
 

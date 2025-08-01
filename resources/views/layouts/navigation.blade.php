@@ -34,11 +34,13 @@
                                         </x-slot>
 
                                         <x-slot name="content">
-<li class="nav-item">
-    <a class="nav-link" href="{{ route('admin.feedback.index') }}">
-        <i class="bi bi-chat-dots"></i> Feedback
-    </a>
-</li>
+
+                                            @can('users.view')
+                                                <x-dropdown-link :href="route('admin.feedback.index')" :active="request()->routeIs('admin.feedback.index.*')">
+                                                    {{ __('site.Feedback') }}
+                                                </x-dropdown-link>
+                                            @endcan
+
                                             @can('users.view')
                                                 <x-dropdown-link :href="route('admin.users.index')" :active="request()->routeIs('admin.users.*')">
                                                     {{ __('site.Users') }}
