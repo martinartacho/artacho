@@ -13,16 +13,15 @@
                 <i class="bi bi-bell-fill"></i> {{ __('site.assigned_notifications') }}
             </x-dashboard.card>
 
-            <x-dashboard.card title="{{ __('site.Current_Language') }}" color="green"> 
+            <x-dashboard.card title="{{ __('site.Current_Language') }}" color="blue">
                 <i class="bi bi-translate"></i>
-                @switch($language)
-                    @case('es') {{ __('site.Spanish') }} @break 
-                    @case('ca') {{ __('site.Catalonia') }}  @break 
-                    @default {{ __('site.English') }} 
+                @switch($currentLanguage)
+                    @case('es') {{ __('site.Spanish') }} @break
+                    @case('ca') {{ __('site.Catalonia') }} @break
+                    @default  {{ __('site.English') }}
                 @endswitch
             </x-dashboard.card>
 
-            
         </div>
     </div>
 </div>

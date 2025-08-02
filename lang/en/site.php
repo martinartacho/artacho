@@ -97,8 +97,12 @@ return [
     'Management_users' => 'Management_users.',
     'Profile' => 'Profile.',
     'Setting' => 'Setting.',
+    'Session_Language' => 'Session Language',
     'Current_Language' => 'Current Language',
-    'Default Language' => 'Default language',
+    'Global_Site_Language' => 'Global Site Language',
+    'User_Language' => 'User Language',
+    'Default_App_Language' => 'Default App Language',
+    'ENV_Locale' => '.ENV Locale',
     'Spanish' => 'Spanish',
     'Catalonia' => 'Catalonia',
     'English' => 'English',
@@ -110,7 +114,7 @@ return [
     'No logs available' => "No logs available",
     'Download' => 'Download',
     'Delete' => 'Delete',
-    
+
 
 
 

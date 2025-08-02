@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
+use App\Models\UserSetting;
 
 class ProfileController extends Controller
 {
@@ -57,4 +58,24 @@ class ProfileController extends Controller
 
         return Redirect::to('/');
     }
+
+    public function updateLanguage(Request $request)
+    {
+        $request->validate([
+            'language' => ['required', 'in:en,es,ca'],
+        ]);
+        
+        // Guardar preferencia de usuario
+        auth()->user()->settings()->updateOrCreate(
+            ['key' => 'language'],
+            ['value' => $request->language]
+        );
+        
+        // Actualizar el locale para la sesión actual
+        app()->setLocale($request->language);
+        session()->put('locale', $request->language);
+        
+        return redirect()->route('profile.edit')->with('status', 'language-updated');
+    }
+    
 }

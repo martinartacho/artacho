@@ -8,6 +8,7 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 
 class User extends Authenticatable implements JWTSubject, MustVerifyEmail
@@ -100,4 +101,24 @@ class User extends Authenticatable implements JWTSubject, MustVerifyEmail
     public function fcmTokens() {  
         return $this->hasMany(FcmToken::class); // Relación 1:N  
     }
+
+       public function settings(): HasMany
+    {
+        return $this->hasMany(UserSetting::class);
+    }
+    
+    public function getSetting($key, $default = null)
+    {
+        $setting = $this->settings()->where('key', $key)->first();
+        return $setting ? $setting->value : $default;
+    }
+    
+    public function setSetting($key, $value)
+    {
+        $this->settings()->updateOrCreate(
+            ['key' => $key],
+            ['value' => $value]
+        );
+    }
 }
+

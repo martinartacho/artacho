@@ -4,12 +4,12 @@ use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\PermissionController;
-use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\Admin\PushLogController;
 use App\Http\Controllers\Gestor\GestorController;
 use App\Http\Controllers\Gestor\UserController as GestorUserController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\Admin\FeedbackController as AdminFeedbackController;
 use Illuminate\Support\Facades\Route;
 
@@ -58,7 +58,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::put('/settings/language', [SettingsController::class, 'updateLanguage'])->name('settings.updateLanguage');
     });
 
-
+    Route::middleware('auth')->group(function () {
+    // Nueva ruta para actualizar idioma de usuario
+        Route::put('/profile/language', [ProfileController::class, 'updateLanguage'])
+            ->name('profile.language.update');
+});
     Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
        Route::get('/feedback', [AdminFeedbackController::class, 'index'])->name('admin.feedback.index');
        Route::delete('/feedback/{id}', [AdminFeedbackController::class, 'destroy'])->name('admin.feedback.destroy');
