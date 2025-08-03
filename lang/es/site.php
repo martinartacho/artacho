@@ -107,6 +107,7 @@ return [
     'English' => 'Inglés',
     'Spanish' => 'Español',
     'Catalonia' => 'Catalán',  
+    'Catalan' => 'Catalán',  
     'Users_role_persions' => 'Permisos y roles',
     'Permissions' => 'Permissions',
     'Feedback' => 'Feedback',
