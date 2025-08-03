@@ -28,6 +28,26 @@
         <header class="w-full lg:max-w-4xl max-w-[335px] text-sm mb-6 not-has-[nav]:hidden">
             @if (Route::has('login'))
                 <nav class="flex items-center justify-end gap-4">
+                                        <!-- Selector de idioma -->
+                    <div class="relative">
+                        <form method="POST" action="{{ route('set-locale') }}" class="flex items-center">
+                            @csrf
+                            <select name="locale" onchange="this.form.submit()" 
+                                class="bg-transparent border border-[#19140035] dark:border-[#3E3E3A] rounded-sm text-sm py-1.5 pl-3 pr-8 dark:text-[#EDEDEC] text-[#1b1b18] dark:bg-[#0a0a0a] bg-[#FDFDFC] appearance-none focus:outline-none focus:ring-1 focus:ring-indigo-500">
+                                @foreach(['en' => __('site.English'), 'es' => __('site.Spanish'), 'ca' => __('site.Catalonia')] as $lang => $label)
+                                    <option value="{{ $lang }}" {{ session('locale') == $lang || app()->getLocale() == $lang ? 'selected' : '' }}>
+                                        {{ $label }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700 dark:text-gray-300">
+                                <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                                    <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/>
+                                </svg>
+                            </div>
+                        </form>
+                    </div>
+
                     @auth
                         <a
                             href="{{ url('/dashboard') }}"
@@ -40,14 +60,14 @@
                             href="{{ route('login') }}"
                             class="inline-block px-5 py-1.5 dark:text-[#EDEDEC] text-[#1b1b18] border border-transparent hover:border-[#19140035] dark:hover:border-[#3E3E3A] rounded-sm text-sm leading-normal"
                         >
-                            {{ __('login') }}
+                            {{ __('site.login') }}
                         </a>
 
                         @if (Route::has('register'))
                             <a
                                 href="{{ route('register') }}"
                                 class="inline-block px-5 py-1.5 dark:text-[#EDEDEC] border-[#19140035] hover:border-[#1915014a] border text-[#1b1b18] dark:border-[#3E3E3A] dark:hover:border-[#62605b] rounded-sm text-sm leading-normal">
-                                    {{ __('register') }}
+                                    {{ __('site.register') }}
                             </a>
                         @endif
                     @endauth
@@ -57,7 +77,7 @@
         <div class="flex items-center justify-center w-full transition-opacity opacity-100 duration-750 lg:grow starting:opacity-0">
             <main class="flex max-w-[335px] w-full flex-col-reverse lg:max-w-4xl lg:flex-row">
                 <div class="text-[13px] leading-[20px] flex-1 p-6 pb-12 lg:p-20 bg-white dark:bg-[#161615] dark:text-[#EDEDEC] shadow-[inset_0px_0px_0px_1px_rgba(26,26,0,0.16)] dark:shadow-[inset_0px_0px_0px_1px_#fffaed2d] rounded-bl-lg rounded-br-lg lg:rounded-tl-lg lg:rounded-br-none">
-                    <h1 class="mb-1 font-medium">{{ __('welcome') }}</h1>
+                    <h1 class="mb-1 font-medium">{{ __('site.welcome') }}</h1>
                     <h1 class="mb-1 font-medium">{{ __('site.title_1') }}</h1>
                     <p class="mb-2 text-[#706f6c] dark:text-[#A1A09A]">
                          {{ __('site.item_1') }} <br>{{ __('site.item_2') }}

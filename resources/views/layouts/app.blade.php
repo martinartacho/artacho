@@ -21,9 +21,7 @@
     </head>
     <body class="font-sans antialiased">
         <div class="min-h-screen bg-gray-100">
-            <!-- @php
-                $language = cache('global_language') ?? config('app.locale');
-            @endphp -->
+
             @php
                 $language = cache('global_language');
                 if (!$language) {
@@ -36,6 +34,21 @@
                     }
                 }
             @endphp
+
+            @if(session('status') === 'language-conflict-resolved')
+                <div class="fixed bottom-4 right-4 bg-green-500 text-white p-4 rounded-lg shadow-lg flex items-center animate-fade-in-out">
+                    <i class="bi bi-check-circle-fill mr-2"></i>
+                    {{ __('site.ConflictResolved') }}
+                </div>
+                <script>
+                    setTimeout(() => {
+                        document.querySelector('.animate-fade-in-out').style.opacity = '0';
+                        setTimeout(() => {
+                            document.querySelector('.animate-fade-in-out').remove();
+                        }, 1000);
+                    }, 3000);
+                </script>
+            @endif
 
             @include('layouts.navigation')
 

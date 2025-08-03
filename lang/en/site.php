@@ -103,9 +103,9 @@ return [
     'User_Language' => 'User Language',
     'Default_App_Language' => 'Default App Language',
     'ENV_Locale' => '.ENV Locale',
-    'Spanish' => 'Spanish',
-    'Catalonia' => 'Catalonia',
     'English' => 'English',
+    'Spanish' => 'Spanish',
+    'Catalonia' => 'Catalan',
     'Users_role_persions' => 'Permissions and roles',
     'Permissions' => 'Permissions',
     'Feedback' => 'Feedback',
@@ -115,9 +115,19 @@ return [
     'Download' => 'Download',
     'Delete' => 'Delete',
 
-
-
-
-
+    'welcome_title' => 'Welcome to Artacho!',
+    'welcome_body' => 'Thank you for registering. We hope you enjoy the application.',
+    
+    'ConflictResolved' => 'Language preference updated successfully!',
+    'LanguageConflictWarning' => 'Your account language preference differs from your current session language.',
+    'UseMyPreferred' => 'Switch to my account language (:language)',
+    'KeepCurrent' => 'Keep session language (:language)',
+    'UpdateMyPreference' => 'Update account preference to session language',
+    'Conflict_detected' => 'Conflict detected!',
+    'Your_preference' => 'Your preference',
+    'Current_session' => 'Current session',
+    'New_preference' => 'New preference',
+    
 ];
+
 

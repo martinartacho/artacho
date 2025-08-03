@@ -11,6 +11,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\Admin\FeedbackController as AdminFeedbackController;
+use App\Http\Controllers\LocaleController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -27,6 +28,12 @@ Route::get('/test-firebase', function() {
     }
 });
 
+// Language
+Route::post('/set-locale', [LocaleController::class, 'set'])->name('set-locale');
+Route::post('/language/resolve-conflict', [LocaleController::class, 'resolveConflict'])
+    ->name('language.resolve-conflict');
+
+    
 // Rutas públicas
 Route::get('/', fn () => view('welcome'));
 

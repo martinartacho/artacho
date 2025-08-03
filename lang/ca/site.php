@@ -104,9 +104,9 @@ return [
     'User_Language' => 'Idioma de l\'Usuari',
     'Default_App_Language' => 'Idioma per Defecte de l\'App',
     'ENV_Locale' => 'Locale de .ENV',
+    'English' => 'Anglès',
     'Spanish' => 'Espanyol',
-    'Catalonia' => 'Català',
-    'English' => 'Anglés',
+    'Catalonia' => 'Català',  
     'Users_role_persions' => 'Permisos i rols',
     'Permissions' => 'Permissions',
     'Feedback' => 'Feedback',
@@ -115,7 +115,17 @@ return [
     'No logs available' => "No hi ha logs disponibles",
     'Download' => 'Descarregar',
 
+    'welcome_title' => 'Benvingut a Artacho!',
+    'welcome_body' => 'Gràcies per registrar-te. Esperem que gaudeixis de l\'aplicació.',
 
+    'ConflictResolved' => 'Preferència d\'idioma actualitzada correctament!',
+    'LanguageConflictWarning' => 'La preferència d\'idioma del vostre compte difereix de l\'idioma de la sessió actual.',
+    'UseMyPreferred' => 'Canvia a l\'idioma del meu compte (:language)',
+    'KeepCurrent' => 'Mantenir l\'idioma de la sessió (:language)',
+    'UpdateMyPreference' => 'Actualitza la preferència del compte a l\'idioma de la sessió',
+    'Conflict_detected' => 'Conflicte detectat!',
+    'Your_preference' => 'La teva preferència',
+    'Current_session' => 'Sessió actual',
+    'New_preference' => 'Nova preferència',
 
-    
 ];

@@ -104,9 +104,9 @@ return [
     'User_Language' => 'Idioma del Usuario',
     'Default_App_Language' => 'Idioma por Defecto de la App',
     'ENV_Locale' => 'Locale de .ENV',
-    'Spanish' => 'Español',
-    'Catalonia' => 'Catalán',
     'English' => 'Inglés',
+    'Spanish' => 'Español',
+    'Catalonia' => 'Catalán',  
     'Users_role_persions' => 'Permisos y roles',
     'Permissions' => 'Permissions',
     'Feedback' => 'Feedback',
@@ -116,8 +116,18 @@ return [
     'Download' => 'Descargar',
     'Delete' => 'Delete',
 
+    'welcome_title' => '¡Bienvenido a Artacho!',
+    'welcome_body' => 'Gracias por registrarte. Esperamos que disfrutes de la aplicación.',
 
-
+    'ConflictResolved' => '¡Preferencia de idioma actualizada correctamente!',
+    'LanguageConflictWarning' => 'La preferencia de idioma de tu cuenta difiere del idioma de tu sesión actual.',
+    'UseMyPreferred' => 'Cambiar al idioma de mi cuenta (:language)',
+    'KeepCurrent' => 'Mantener idioma de sesión (:language)',
+    'UpdateMyPreference' => 'Actualizar preferencia de cuenta al idioma de sesión',
+    'Conflict_detected' => '¡Conflicto detectado!',
+    'Your_preference' => 'Tu preferencia',
+    'Current_session' => 'Sesión actual',
+    'New_preference' => 'Nueva preferencia',
 
 ];
 
