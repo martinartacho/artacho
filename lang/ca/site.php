@@ -109,16 +109,31 @@ return [
     'Catalonia' => 'Català',  
     'Catalan' => 'Català',  
     'Users_role_persions' => 'Permisos i rols',
-    'Permissions' => 'Permissions',
+    'Permissions' => 'Permisos',
     'Feedback' => 'Feedback',
     'Push' => 'Logs de Push',
     'Push log files' => 'Fitxers de registre de push',
     'No logs available' => "No hi ha logs disponibles",
     'Download' => 'Descarregar',
-
+    // WELCOME
     'welcome_title' => 'Benvingut a Artacho!',
     'welcome_body' => 'Gràcies per registrar-te. Esperem que gaudeixis de l\'aplicació.',
 
+    // EVENT
+    'event_title' => 'Nou esdeveniment!',
+    'event_body' => 'No et perdis el proper esdeveniment programat.',
+
+    // FEEDBACK
+    'feedback_title' => 'Gràcies pel teu comentari!',
+    'feedback_body' => 'Hem rebut la teva aportació i la tindrem en compte.',
+
+    'Notification_Type' => 'Tipus de notificació',
+    'Type_New' => 'Notícia',
+    'Type_Feedback' => 'Comentari',
+    'Type_System' => 'Sistema',
+
+
+    // 
     'ConflictResolved' => 'Preferència d\'idioma actualitzada correctament!',
     'LanguageConflictWarning' => 'La preferència d\'idioma del vostre compte difereix de l\'idioma de la sessió actual.',
     'UseMyPreferred' => 'Canvia a l\'idioma del meu compte (:language)',

@@ -9,7 +9,7 @@ return new class extends Migration
     public function up()
     {
         Schema::table('notifications', function (Blueprint $table) {
-            $table->string('type')->nullable()->after('content');
+            $table->string('type')->default('new')->after('content');
         });
     }
 

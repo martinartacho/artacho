@@ -117,8 +117,15 @@ return [
     'Download' => 'Descargar',
     'Delete' => 'Delete',
 
+    // WELCOME
     'welcome_title' => '¡Bienvenido a Artacho!',
     'welcome_body' => 'Gracias por registrarte. Esperamos que disfrutes de la aplicación.',
+
+    'event_title' => '¡Nuevo evento!',
+    'event_body' => 'No te pierdas el próximo evento programado.',
+
+    'feedback_title' => '¡Gracias por tu comentario!',
+    'feedback_body' => 'Hemos recibido tu aporte y lo tendremos en cuenta.',
 
     'ConflictResolved' => '¡Preferencia de idioma actualizada correctamente!',
     'LanguageConflictWarning' => 'La preferencia de idioma de tu cuenta difiere del idioma de tu sesión actual.',

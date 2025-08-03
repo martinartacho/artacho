@@ -18,7 +18,7 @@ class NotificationController extends Controller
     {
         // Aplicar middleware de autenticación
         $this->middleware('auth');
-	// $this->middleware('auth:api');
+	    // $this->middleware('auth:api');
 
         // Verificar permisos específicos para cada acción
         $this->middleware('permission:notifications.create')->only(['create', 'store']);
@@ -76,6 +76,7 @@ class NotificationController extends Controller
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'content' => 'required|string',
+            'type' => 'required|string',
             'recipient_type' => 'required|in:all,role,specific',
             'recipient_role' => 'nullable|required_if:recipient_type,role|exists:roles,name',
             'recipient_ids' => 'nullable|required_if:recipient_type,specific|array',
@@ -88,6 +89,7 @@ class NotificationController extends Controller
         $notification = Notification::create([
             'title' => $validated['title'],
             'content' => $validated['content'],
+            'type' => $validated['type'],
             'sender_id' => $user->id,
             'recipient_type' => $validated['recipient_type'],
             'recipient_role' => $validated['recipient_type'] === 'role' ? $validated['recipient_role'] : null,
@@ -129,6 +131,7 @@ class NotificationController extends Controller
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'content' => 'required|string',
+            'type' => 'required|string',
             'recipient_type' => 'required|in:all,role,specific',
             'recipient_role' => 'nullable|required_if:recipient_type,role|exists:roles,name',
             'recipient_ids' => 'nullable|required_if:recipient_type,specific|array',
@@ -138,6 +141,7 @@ class NotificationController extends Controller
         $notification->update([
             'title' => $validated['title'],
             'content' => $validated['content'],
+            'type' => $validated['type'],
             'recipient_type' => $validated['recipient_type'],
             'recipient_role' => $validated['recipient_type'] === 'role' ? $validated['recipient_role'] : null,
             'recipient_ids' => $validated['recipient_type'] === 'specific' ? $validated['recipient_ids'] : null,
@@ -247,11 +251,11 @@ class NotificationController extends Controller
             'body' => 'required|string',
         ]);
 
-	Log::info('✅ Token FCM recibido y guardado', [
-	    'user_id' => auth()->id(),
-	    'token' => $request->fcm_token,
-	    'hora' => now()->toDateTimeString(),
-	]);
+        Log::info('✅ Token FCM recibido y guardado', [
+            'user_id' => auth()->id(),
+            'token' => $request->fcm_token,
+            'hora' => now()->toDateTimeString(),
+        ]);
 
         $fcmService->sendToToken(
             $request->token,
@@ -261,7 +265,7 @@ class NotificationController extends Controller
         );
 
         return response()->json(['success' => true]);
-    	}
+    }
 
 	public function saveFcmToken(Request $request)
 	{
@@ -371,6 +375,36 @@ class NotificationController extends Controller
 
 	    return redirect()->back()->with('success', "✅ Notificación push enviada a {$enviados} usuarios.");
 	}
+
+    public function sendTypedNotification(Request $request)
+    {
+        $request->validate([
+            'user_id' => 'required|exists:users,id',
+            'type' => 'required|in:welcome,event,feedback',
+        ]);
+
+        $user = User::findOrFail($request->user_id);
+        $locale = $user->locale ?? 'es'; // o 'en', por defecto español
+        app()->setLocale($locale);
+
+        // Obtener título y cuerpo desde archivos de traducción
+        $title = __('site.' . $request->type . '_title');
+        $body = __('site.' . $request->type . '_body');
+
+        // Guardar notificación en base de datos
+        $notification = Notification::create([
+            'type' => $request->type,
+            'title' => $title,
+            'body' => $body,
+        ]);
+
+        $notification->users()->attach($user->id);
+
+        // Enviar FCM
+        FCMService::sendNotification($user, $title, $body);
+
+        return response()->json(['message' => 'Notification sent.']);
+    }
 
 
 }

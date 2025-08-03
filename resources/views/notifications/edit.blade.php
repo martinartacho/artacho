@@ -41,6 +41,17 @@
                             </select>
                         </div>
 
+                          <!-- Tipo de notificación -->
+                        <div>
+                            <x-input-label for="type" value="{{ __('site.Notification_Type')}}" />
+                            <select id="type" name="type"
+                                    class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500" required>
+                                <option value="new" {{ old('type') == 'new' ? 'selected' : '' }}>{{ __('site.Type_New') }}</option>
+                                <option value="feedback" {{ old('type') == 'feedback' ? 'selected' : '' }}>{{ __('site.Type_Feedback') }}</option>
+                                <option value="system" {{ old('type') == 'system' ? 'selected' : '' }}>{{ __('site.Type_System') }}</option>
+                            </select>
+                        </div>    
+
                         <div class="flex items-center justify-between mb-4">
                             <div class="flex items-center justify-end mt-6">
                                 <x-primary-button class="ml-4">

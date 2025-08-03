@@ -116,9 +116,22 @@ return [
     'Download' => 'Download',
     'Delete' => 'Delete',
 
+    // WELCOME
     'welcome_title' => 'Welcome to Artacho!',
-    'welcome_body' => 'Thank you for registering. We hope you enjoy the application.',
-    
+    'welcome_body' => 'Thanks for registering. We hope you enjoy the app.',
+
+    'event_title' => 'New event!',
+    'event_body' => 'Don’t miss the upcoming scheduled event.',
+
+    'feedback_title' => 'Thanks for your feedback!',
+    'feedback_body' => 'We’ve received your input and will take it into account.',
+
+    'Notification_Type' => 'Notification Type',
+    'Type_New' => 'News',
+    'Type_Feedback' => 'Feedback',
+    'Type_System' => 'System',
+
+
     'ConflictResolved' => 'Language preference updated successfully!',
     'LanguageConflictWarning' => 'Your account language preference differs from your current session language.',
     'UseMyPreferred' => 'Switch to my account language (:language)',
