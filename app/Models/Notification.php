@@ -37,11 +37,48 @@ class Notification extends Model
     public function recipients()
     {
         return $this->belongsToMany(User::class, 'notification_user')
-                    ->withPivot(['read', 'read_at'])
+                    ->withPivot(['read', 'read_at','email_sent', 'web_sent', 'push_sent'])
                     ->orderBy('notification_user.created_at', 'desc')
                     ->withTimestamps();
     }
 
+    // Accessors for counts
+    public function getEmailSentCountAttribute()
+    {
+        return $this->recipients()->wherePivot('email_sent', true)->count();
+    }
+
+    public function getWebSentCountAttribute()
+    {
+        return $this->recipients()->wherePivot('web_sent', true)->count();
+    }
+
+    public function getPushSentCountAttribute()
+    {
+        return $this->recipients()->wherePivot('push_sent', true)->count();
+    }
+
+    public function getEmailPendingCountAttribute()
+    {
+        return $this->recipients()->wherePivot('email_sent', false)->count();
+    }
+
+    public function getWebPendingCountAttribute()
+    {
+        return $this->recipients()->wherePivot('web_sent', false)->count();
+    }
+
+    public function getPushPendingCountAttribute()
+    {
+        return $this->recipients()->wherePivot('push_sent', false)->count();
+    }
+
+    public function getIsFullySentAttribute()
+    {
+        return !$this->email_pending_count && 
+            !$this->web_pending_count && 
+            !$this->push_pending_count;
+    }
 
     public function scopeUnread($query, $userId)
     {

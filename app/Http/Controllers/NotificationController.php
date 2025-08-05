@@ -11,6 +11,12 @@ use Illuminate\Support\Facades\Gate;
 use Spatie\Permission\Models\Role;
 use App\Services\FCMService;
 use Illuminate\Support\Facades\DB;
+use App\Mail\NotificationEmail;
+use Illuminate\Support\Facades\Mail;
+use App\Jobs\SendNotificationEmail;
+use App\Jobs\SendWebNotification;
+use App\Jobs\SendPushNotification;
+use App\Jobs\ProcessNotification;
 
 class NotificationController extends Controller
 {
@@ -192,10 +198,11 @@ class NotificationController extends Controller
         }
 
         $notification->update([
-	    'push_sent' => true,
+	        // 'push_sent' => true,
             'is_published' => true,
             'published_at' => now()
         ]);
+        $this->assignRecipients($notification);
 
         return redirect()->route('notifications.index')
             ->with('success', __('site.Notification_published'));
@@ -224,7 +231,7 @@ class NotificationController extends Controller
         return response()->json(['success' => true]);
     }
 
-
+    /* para limpiar 
     protected function assignRecipients(Notification $notification)
     {
         if ($notification->recipient_type === 'all') {
@@ -240,8 +247,30 @@ class NotificationController extends Controller
         }
 
         $notification->recipients()->sync($users);
-    }
+    }*/
 
+    protected function assignRecipients(Notification $notification)
+    {
+        if ($notification->recipient_type === 'all') {
+            $users = User::whereDoesntHave('roles', function($q) {
+                $q->where('name', 'invited');
+            })->pluck('id');
+        } elseif ($notification->recipient_type === 'role') {
+            $users = User::role($notification->recipient_role)->pluck('id');
+        } elseif ($notification->recipient_type === 'specific') {
+            $users = collect($notification->recipient_ids);
+        } else {
+            $users = collect();
+        }
+
+        // Sincronizar con valores iniciales
+        $notification->recipients()->syncWithPivotValues($users, [
+            'email_sent' => false,
+            'web_sent' => false,
+            'push_sent' => false,
+            'read' => false,
+        ]);
+    }
 
     public function sendFCM(Request $request, FCMService $fcmService)
     {
@@ -331,7 +360,53 @@ class NotificationController extends Controller
 	}
 
 
-	public function sendPush($id, FCMService $fcmService)
+/*     public function sendEmail(Notification $notification)
+    {
+        $users = $notification->recipients()->wherePivot('email_sent', false)->get();
+        
+        foreach ($users as $user) {
+            SendNotificationEmail::dispatch($notification, $user);
+        }
+
+        return back()->with('success', __('site.Email_sent_success', ['count' => $users->count()]));
+    }
+ */
+    public function sendEmail(Notification $notification)
+    {
+        $users = $notification->recipients()->wherePivot('email_sent', false)->get();
+        
+        foreach ($users as $user) {
+            ProcessNotification::dispatch($notification, $user, 'email');
+        }
+
+        return back()->with('success', __('site.Email_sent_success', ['count' => $users->count()]));
+    }
+
+    public function sendWeb(Notification $notification)
+    {
+        $users = $notification->recipients()->wherePivot('web_sent', false)->get();
+        
+        foreach ($users as $user) {
+            //SendWebNotification::dispatch($notification, $user);
+            ProcessNotification::dispatch($notification, $user, 'web');
+        }
+
+        return back()->with('success', __('site.Web_sent_success', ['count' => $users->count()]));
+    }
+
+    public function sendPush(Notification $notification)
+    {
+        $users = $notification->recipients()->wherePivot('push_sent', false)->get();
+        
+        foreach ($users as $user) {
+           //  SendPushNotification::dispatch($notification, $user);
+           ProcessNotification::dispatch($notification, $user, 'push');
+        }
+
+        return back()->with('success', __('site.Push_sent_success', ['count' => $users->count()]));
+    }
+
+	public function sendPushOld($id, FCMService $fcmService)
 	{
 	    $notification = Notification::findOrFail($id);
 

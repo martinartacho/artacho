@@ -13,29 +13,25 @@
                 </x-primary-button>
             </a>
             @endcan
-
         </div>
-    </h2>
     </x-slot>
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 bg-white border-b border-gray-200">
-                    <!-- Contenido de la vista index -->
                     <table class="table">
                         <thead>
                             <tr>
-
-                                <th class="text-left px-2 py-2 w-1/3">{{ __('site.Title') }} </th>
-                                <th class="text-left  px-2 py-2 w-1/5">{{ __('site.registration_date') }}</th>
-                                 @can('publish-notification')
-                                    <th class="text-left  px-2 py-2 w-2/20">{{ __('site.Sender') }}</th>
-                                    <th class="text-left  px-2 py-2 w-2/20">{{ __('site.destinatarios') }}</th>
-                                    <th class="text-left  px-2 py-2 w-2/20">{{ __('site.Published') }}</th> 
-                                @endcan                              
-                                <th class="text-left  px-2 py-2 w-2/20">{{ __('site.Actions') }}</th>
-
+                                <th class="text-left px-2 py-2 w-1/3">{{ __('site.Title') }}</th>
+                                <th class="text-left px-2 py-2 w-1/5">{{ __('site.registration_date') }}</th>
+                                @can('publish-notification')
+                                    <th class="text-left px-2 py-2 w-2/20">{{ __('site.Sender') }}</th>
+                                    <th class="text-left px-2 py-2 w-2/20">{{ __('site.Recipients') }}</th>
+                                    <th class="text-left px-2 py-2 w-2/20">{{ __('site.Published') }}</th>
+                                    <th class="text-left px-2 py-2 w-2/20">{{ __('site.Delivery') }}</th> <!-- Nueva columna para contadores -->
+                                @endcan
+                                <th class="text-left px-2 py-2 w-2/20">{{ __('site.Actions') }}</th>
                             </tr>
                         </thead>
 
@@ -59,6 +55,23 @@
                                         <td>
                                             @if($notification->is_published)
                                                 <span class="badge bg-success"><i class="bi bi-journal-check"></i> {{ __('site.Published') }}</span>
+                                            @else
+                                                <span class="badge bg-warning"><i class="bi bi-journal"></i> {{ __('site.Not_published') }}</span>
+                                            @endif
+                                        </td>
+                                        <td>
+                                            @if($notification->is_published)
+                                                <div class="flex flex-col space-y-1">
+                                                    <span class="badge {{ $notification->email_sent_count ? 'bg-green-500' : 'bg-gray-300' }}">
+                                                        <i class="bi bi-envelope"></i> {{ $notification->email_sent_count }}
+                                                    </span>
+                                                    <span class="badge {{ $notification->web_sent_count ? 'bg-green-500' : 'bg-gray-300' }}">
+                                                        <i class="bi bi-bell"></i> {{ $notification->web_sent_count }}
+                                                    </span>
+                                                    <span class="badge {{ $notification->push_sent_count ? 'bg-green-500' : 'bg-gray-300' }}">
+                                                        <i class="bi bi-phone"></i> {{ $notification->push_sent_count }}
+                                                    </span>
+                                                </div>
                                             @else
                                                 <span class="badge bg-warning"><i class="bi bi-journal"></i> {{ __('site.Not_published') }}</span>
                                             @endif
@@ -103,32 +116,53 @@
                                                         </button>
                                                     </form>
                                                 @endunless
-
-                                                @if($notification->is_published)
-                                                    @if(!$notification->push_sent)
-                                                        <form method="POST" action="{{ route('notifications.send-push', $notification) }}" class="d-inline mt-1">
-                                                            @csrf
-                                                            <button type="submit"
-                                                                class="btn btn-sm btn-primary"
-                                                                title="Enviar Push Ahora">
-                                                                <i class="bi bi-phone"></i>
-                                                            </button>
-                                                        </form>
-                                                    @else
-                                                        <span class="badge bg-success mt-1"><i class="bi bi-app-indicator"></i></span>
-                                                    @endif
-                                                @endif
                                             @endcan
                                         </div>
+
+                                        <!-- Botones de envío (email, web, push) -->
+@if($notification->email_pending_count > 0)
+<form method="POST" action="{{ route('notifications.send-email', $notification) }}" 
+      class="d-inline" 
+      onsubmit="showLoader(this); return false;">
+    @csrf
+    <button type="submit" class="btn btn-sm btn-success" title="{{ __('site.Send_email') }}">
+        <i class="bi bi-envelope"></i>
+    </button>
+</form>
+@endif
+
+                                        @if($notification->web_pending_count > 0)
+                                            <form method="POST" action="{{ route('notifications.send-web', $notification) }}" 
+                                                class="d-inline" 
+                                                onsubmit="showLoader(this); return false;">
+                                                @csrf
+                                                <button type="submit" class="btn btn-sm btn-info" title="{{ __('site.Send_web') }}" >
+                                                    <i class="bi bi-bell"></i>
+                                                    <span class="d-none spinner-border spinner-border-sm" role="status"></span>
+                                                </button>
+                                            </form>
+                                        @endif
+
+                                        @if($notification->push_pending_count > 0)
+                                            <form method="POST" action="{{ route('notifications.send-push', $notification) }}" 
+                                                class="d-inline" 
+                                                onsubmit="showLoader(this); return false;">
+                                                @csrf
+                                                <button type="submit" class="btn btn-sm btn-primary" title="{{ __('site.Send_push') }}"  id="push-btn-{{ $notification->id }}">
+                                                    <i class="bi bi-phone"></i>
+                                                    <span class="d-none spinner-border spinner-border-sm" role="status"></span>
+                                                </button>
+                                            </form>
+                                        @endif
                                     </td>
                                 </tr>
                             @endforeach
-                        <tbody>
-
+                        </tbody>
                     </table>
                     {{ $notifications->links() }}
                 </div>
             </div>
         </div>
     </div>
+    
 </x-app-layout>

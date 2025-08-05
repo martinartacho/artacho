@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Session;
 use App\Notifications\Channels\FcmChannel;
+use Illuminate\Support\Facades\Mail;
+
 
 
 class AppServiceProvider extends ServiceProvider
@@ -25,7 +27,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-         // Middleware para manejar el idioma
+        if ($this->app->environment('local')) {
+            // Desactivar realmente el envío de emails en local
+            Mail::alwaysTo('preview@mailpit');
+        }
+        // Middleware para manejar el idioma
         $this->app->router->group([
             'namespace' => 'App\Http\Controllers',
         ], function ($router) {

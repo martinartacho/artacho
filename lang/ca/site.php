@@ -60,6 +60,7 @@ return [
     'State' => 'Estat',
     'Published_on' => 'Publicat el',
     'Not_published' => 'No publicat',
+    'delivery' => 'Enviaments',
     'go_back' => 'tornar',
     'New' => 'Nou',
     'No_notifications' => 'No hi ha notificacions',

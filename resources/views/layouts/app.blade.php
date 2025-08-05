@@ -15,7 +15,8 @@
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
-        
+        <!-- SweetAlert2 CSS -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
@@ -66,5 +67,26 @@
                 {{ $slot }}
             </main>
         </div>
+
+        <!-- SweetAlert2 JS -->
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script>
+            // Función global para mostrar loader
+            window.showLoader = function(form) {
+                Swal.fire({
+                    title: 'Enviando notificaciones',
+                    html: 'Por favor espera...',
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                        
+                        // Envía el formulario después de mostrar el loader
+                        setTimeout(() => {
+                            form.submit();
+                        }, 100);
+                    }
+                });
+            };
+        </script>        
     </body>
 </html>

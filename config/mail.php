@@ -59,7 +59,9 @@ return [
             // 'client' => [
             //     'timeout' => 5,
             // ],
+
         ],
+        
 
         'resend' => [
             'transport' => 'resend',

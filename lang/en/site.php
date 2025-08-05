@@ -59,6 +59,7 @@ return [
     'State' => 'State',
     'Published_on' => 'Published on',
     'Not_published' => 'Not published',
+    'Delivery' => 'Delivery',
     'go_back' => 'go back',
     'New' => 'New',
     'No_notifications' => 'No notifications',

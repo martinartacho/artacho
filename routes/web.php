@@ -98,6 +98,21 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
         Route::post('/mark-as-read/{notification}', [NotificationController::class, 'markAsRead'])->name('mark-as-read');
         Route::post('/mark-all-read', [NotificationController::class, 'markAllAsRead'])->name('mark-all-read');
+    
+        // Estructura para las rutas de envío:
+        Route::post('/{notification}/send-email', [NotificationController::class, 'sendEmail'])
+            ->name('send-email')
+            ->middleware('permission:notifications.publish');
+        
+        Route::post('/{notification}/send-web', [NotificationController::class, 'sendWeb'])
+            ->name('send-web')
+            ->middleware('permission:notifications.publish');
+        
+        Route::post('/{notification}/send-push', [NotificationController::class, 'sendPush'])
+            ->name('send-push')
+            ->middleware('permission:notifications.publish');
+
+
     });
 
     // ⚙️ API interna para frontend (no REST)
@@ -105,6 +120,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/notifications/unread-count', [NotificationController::class, 'getUnreadCount'])->name('notifications.unread-count');
         Route::post('/notifications/{notification}/mark-read', [NotificationController::class, 'markAsRead'])->name('notifications.mark-read');
     });
+
+    
 
     // 👥 Rutas específicas para gestores
     Route::middleware('role:gestor')->prefix('gestor')->name('gestor.')->group(function () {

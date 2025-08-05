@@ -60,6 +60,7 @@ return [
     'State' => 'Estado',
     'Published_on' => 'Publicado el',
     'Not_published' => 'No publicado',
+    'delivery' => 'Envíos',
     'go_back' => 'volver',
     'New' => 'Nuevo',
     'No_notifications' => 'No hay notificaciones',
