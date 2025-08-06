@@ -221,7 +221,6 @@ class NotificationController extends Controller
         ]);
     }
 
-
     // marcar todas como leidas
     public function markAllAsRead()
     {
@@ -231,23 +230,7 @@ class NotificationController extends Controller
         return response()->json(['success' => true]);
     }
 
-    /* para limpiar 
-    protected function assignRecipients(Notification $notification)
-    {
-        if ($notification->recipient_type === 'all') {
-            $users = User::whereDoesntHave('roles', function($q) {
-                $q->where('name', 'invited');
-            })->pluck('id');
-        } elseif ($notification->recipient_type === 'role') {
-            $users = User::role($notification->recipient_role)->pluck('id');
-        } elseif ($notification->recipient_type === 'specific') {
-            $users = collect($notification->recipient_ids);
-        } else {
-            $users = collect(); // fallback
-        }
 
-        $notification->recipients()->sync($users);
-    }*/
 
     protected function assignRecipients(Notification $notification)
     {
@@ -360,17 +343,6 @@ class NotificationController extends Controller
 	}
 
 
-/*     public function sendEmail(Notification $notification)
-    {
-        $users = $notification->recipients()->wherePivot('email_sent', false)->get();
-        
-        foreach ($users as $user) {
-            SendNotificationEmail::dispatch($notification, $user);
-        }
-
-        return back()->with('success', __('site.Email_sent_success', ['count' => $users->count()]));
-    }
- */
     public function sendEmail(Notification $notification)
     {
         $users = $notification->recipients()->wherePivot('email_sent', false)->get();
@@ -379,7 +351,8 @@ class NotificationController extends Controller
             ProcessNotification::dispatch($notification, $user, 'email');
         }
 
-        return back()->with('success', __('site.Email_sent_success', ['count' => $users->count()]));
+        return redirect()->route('notifications.index')
+            ->with('success', __('site.Email_sent_success', ['count' => $users->count()]));
     }
 
     public function sendWeb(Notification $notification)
@@ -387,11 +360,11 @@ class NotificationController extends Controller
         $users = $notification->recipients()->wherePivot('web_sent', false)->get();
         
         foreach ($users as $user) {
-            //SendWebNotification::dispatch($notification, $user);
             ProcessNotification::dispatch($notification, $user, 'web');
         }
 
-        return back()->with('success', __('site.Web_sent_success', ['count' => $users->count()]));
+        return redirect()->route('notifications.index')
+            ->with('success', __('site.Web_sent_success', ['count' => $users->count()]));
     }
 
     public function sendPush(Notification $notification)
@@ -403,7 +376,8 @@ class NotificationController extends Controller
            ProcessNotification::dispatch($notification, $user, 'push');
         }
 
-        return back()->with('success', __('site.Push_sent_success', ['count' => $users->count()]));
+         return redirect()->route('notifications.index')
+            ->with('success', __('site.Push_sent_success', ['count' => $users->count()]));
     }
 
 	public function sendPushOld($id, FCMService $fcmService)

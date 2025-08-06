@@ -80,6 +80,13 @@ return [
     'Edit_notification' => 'Editar notificació',
     'Delete_notification' => 'Eliminar notificació',
     'You_re_sure' => 'N\'estàs segur/da?',
+    
+    'Email_queued_success' => 'S\'han posat en cua :count notificacions per email',
+    'Web_queued_success' => 'S\'han posat en cua :count notificacions web',
+    'Push_queued_success' => 'S\'han posat en cua :count notificacions push',
+    'Processing' => 'Processant',
+    'Please_wait' => 'Si us plau espereu...',
+
     'welcome' => 'Benvingut/da a HArtacho!',
     'title_1' => 'Comencem!!',
     'title_2' => 'Autenticació i Notificacions.',

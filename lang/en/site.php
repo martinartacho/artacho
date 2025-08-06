@@ -78,6 +78,13 @@ return [
     'View_notification' => 'View notification',
     'Edit_notification' => 'Edit notification',
     'Delete_notification' => 'Delete notification',
+    
+    'Email_queued_success' => ':count email notifications have been queued',
+    'Web_queued_success' => ':count web notifications have been queued',
+    'Push_queued_success' => ':count push notifications have been queued',
+    'Please_wait' => 'PoPlease_wait...',
+
+
     'You_re_sure' => 'You\'re sure?',
     'welcome' => 'Welcome to HArtacho!',
     'title_1' => 'Let\'s get started!!',
