@@ -156,38 +156,40 @@
                                                     </form>
                                                 @endunless
                                             @endcan
+                                            
+                                            @can('publish-notification')
+                                                @if($notification->is_published)
+                                                    @if($notification->email_pending_count > 0)
+                                                        <form method="POST" action="{{ route('notifications.send-email', $notification) }}" 
+                                                            class="inline send-form">
+                                                            @csrf
+                                                            <button type="submit" class="text-green-600 hover:text-green-900" title="{{ __('site.Send_email') }}">
+                                                                <i class="bi bi-envelope"></i>
+                                                            </button>
+                                                        </form>
+                                                    @endif
 
-                                            @if($notification->is_published)
-                                                @if($notification->email_pending_count > 0)
-                                                    <form method="POST" action="{{ route('notifications.send-email', $notification) }}" 
-                                                        class="inline send-form">
-                                                        @csrf
-                                                        <button type="submit" class="text-green-600 hover:text-green-900" title="{{ __('site.Send_email') }}">
-                                                            <i class="bi bi-envelope"></i>
-                                                        </button>
-                                                    </form>
-                                                @endif
+                                                    @if($notification->web_pending_count > 0)
+                                                        <form method="POST" action="{{ route('notifications.send-web', $notification) }}" 
+                                                            class="inline send-form">
+                                                            @csrf
+                                                            <button type="submit" class="text-blue-600 hover:text-blue-900" title="{{ __('site.Send_web') }}">
+                                                                <i class="bi bi-bell"></i>
+                                                            </button>
+                                                        </form>
+                                                    @endif
 
-                                                @if($notification->web_pending_count > 0)
-                                                    <form method="POST" action="{{ route('notifications.send-web', $notification) }}" 
-                                                        class="inline send-form">
-                                                        @csrf
-                                                        <button type="submit" class="text-blue-600 hover:text-blue-900" title="{{ __('site.Send_web') }}">
-                                                            <i class="bi bi-bell"></i>
-                                                        </button>
-                                                    </form>
+                                                    @if($notification->push_pending_count > 0)
+                                                        <form method="POST" action="{{ route('notifications.send-push', $notification) }}" 
+                                                            class="inline send-form">
+                                                            @csrf
+                                                            <button type="submit" class="text-purple-600 hover:text-purple-900" title="{{ __('site.Send_push') }}">
+                                                                <i class="bi bi-phone"></i>
+                                                            </button>
+                                                        </form>
+                                                    @endif
                                                 @endif
-
-                                                @if($notification->push_pending_count > 0)
-                                                    <form method="POST" action="{{ route('notifications.send-push', $notification) }}" 
-                                                        class="inline send-form">
-                                                        @csrf
-                                                        <button type="submit" class="text-purple-600 hover:text-purple-900" title="{{ __('site.Send_push') }}">
-                                                            <i class="bi bi-phone"></i>
-                                                        </button>
-                                                    </form>
-                                                @endif
-                                            @endif
+                                            @endcan
                                         </div>
                                     </td>
                                 </tr>
