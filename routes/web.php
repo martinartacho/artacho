@@ -111,9 +111,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('/{notification}/send-push', [NotificationController::class, 'sendPush'])
             ->name('send-push')
             ->middleware('permission:notifications.publish');
-
-
     });
+
 
     // ⚙️ API interna para frontend (no REST)
     Route::prefix('api')->group(function () {
@@ -121,7 +120,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('/notifications/{notification}/mark-read', [NotificationController::class, 'markAsRead'])->name('notifications.mark-read');
     });
 
-    
+    Route::post('notifications/{notification}/test-push', 
+        [NotificationController::class, 'testPush'])
+        ->name('notifications.test-push');    
 
     // 👥 Rutas específicas para gestores
     Route::middleware('role:gestor')->prefix('gestor')->name('gestor.')->group(function () {

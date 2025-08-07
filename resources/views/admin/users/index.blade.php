@@ -73,6 +73,39 @@
                                                 </button>
                                             </form>
                                         </div>
+@if($user->fcm_token)
+    <div class="card mt-4">
+        <div class="card-header">
+            <h5>Dispositivos Registrados</h5>
+        </div>
+        <div class="card-body">
+            <ul class="list-group">
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    {{ $user->fcm_token }}
+                    <span class="badge bg-success">Activo</span>
+                </li>
+            </ul>
+            
+            <button class="btn btn-sm btn-info mt-3" id="test-notification"
+                data-user-id="{{ $user->id }}">
+                <i class="bi bi-bell"></i> Probar Notificación
+            </button>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('test-notification').addEventListener('click', function() {
+            const userId = this.dataset.userId;
+            
+            axios.post('/admin/test-notification', {
+                user_id: userId,
+                type: 'test'
+            }).then(response => {
+                alert('Notificación de prueba enviada!');
+            });
+        });
+    </script>
+@endif
                                     </td>
                                 </tr>
                                 @endforeach

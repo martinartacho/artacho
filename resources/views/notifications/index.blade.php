@@ -156,7 +156,7 @@
                                                     </form>
                                                 @endunless
                                             @endcan
-                                            
+                                            <!-- Acciones de send -->
                                             @can('publish-notification')
                                                 @if($notification->is_published)
                                                     @if($notification->email_pending_count > 0)
@@ -168,7 +168,14 @@
                                                             </button>
                                                         </form>
                                                     @endif
-
+ {{-- Botón de prueba --}}
+        <form method="POST" action="{{ route('notifications.test-push', $notification) }}" class="ms-1">
+            @csrf
+            <button type="submit" class="btn btn-sm btn-warning" title="Probar con primer usuario">
+                <i class="bi bi-bug"></i> Probar
+            </button>
+        </form>
+    </div>
                                                     @if($notification->web_pending_count > 0)
                                                         <form method="POST" action="{{ route('notifications.send-web', $notification) }}" 
                                                             class="inline send-form">

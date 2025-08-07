@@ -59,7 +59,6 @@ class User extends Authenticatable implements JWTSubject, MustVerifyEmail
      * @return $with roles
      */
     /*
-
     public function getRoleNames()
     {
         return cache()->remember("user_{$this->id}_roles", 3600, function() {
@@ -67,6 +66,7 @@ class User extends Authenticatable implements JWTSubject, MustVerifyEmail
         });
     } */
 
+        
     /**
      * Get the identifier that will be stored in the JWT.
      */

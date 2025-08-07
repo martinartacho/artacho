@@ -50,32 +50,6 @@ class UserController extends Controller
         return view('admin.users.edit', compact('user', 'roles', 'permissions'));
     }
 
-    /* public function update(Request $request, User $user)
-    {
-        $data = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|max:255',
-            'roles' => 'array',
-            'permissions' => 'array',
-        ]);
-        
-        if ($user && !$user->hasRole('admin')) {
-            $user->assignRole('admin');
-            $user->givePermissionTo(Permission::all()); // redundante, pero seguro
-            return redirect()->route('admin.users.index')->with('warning', 'Admin no puede perder privilegios.');
-
-        } else {
-            $user->update([
-                'name' => $data['name'],
-                'email' => $data['email'],
-            ]);
-
-            $user->syncRoles($request->input('roles', []));
-            $user->syncPermissions($request->input('permissions', []));
-        }
-
-        return redirect()->route('admin.users.index')->with('success', 'Usuario actualizado correctamente.');
-    } */
 
     public function update(Request $request, User $user)
     {
@@ -120,4 +94,25 @@ class UserController extends Controller
         return redirect()->route('admin.users.index')
             ->with('success', __('site.user_deleted'));
     }
+
+    public function sendTestNotification(Request $request, FCMService $fcmService)
+    {
+        $request->validate([
+            'user_id' => 'required|exists:users,id',
+            'type' => 'required|in:test,welcome'
+        ]);
+
+        $user = User::findOrFail($request->user_id);
+        $title = "Notificación de Prueba";
+        $body = "¡Funciona! Hora: " . now()->format('H:i:s');
+
+        $result = $fcmService->sendToUser($user, $title, $body);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Notificación de prueba enviada',
+            'fcm_response' => $result
+        ]);
+    }
+    
 }

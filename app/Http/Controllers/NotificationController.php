@@ -17,6 +17,7 @@ use App\Jobs\SendNotificationEmail;
 use App\Jobs\SendWebNotification;
 use App\Jobs\SendPushNotification;
 use App\Jobs\ProcessNotification;
+use Illuminate\Support\Facades\Log;
 
 class NotificationController extends Controller
 {
@@ -453,6 +454,51 @@ class NotificationController extends Controller
         FCMService::sendNotification($user, $title, $body);
 
         return response()->json(['message' => 'Notification sent.']);
+    }
+
+
+
+    public function testPush(Notification $notification, FCMService $fcmService)
+    {
+        // Validar que la notificación no se haya enviado previamente
+        if ($notification->recipients()->wherePivot('push_sent', true)->exists()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'La notificación ya fue enviada'
+            ], 400);
+        }
+
+        // Obtener primer destinatario para prueba
+        $user = $notification->recipients()->first();
+        
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No hay destinatarios para esta notificación'
+            ], 400);
+        }
+
+        // Enviar notificación de forma síncrona
+        $result = $fcmService->sendToUser(
+            $user,
+            "[TEST] " . $notification->title,
+            $notification->content
+        );
+
+        // Registrar respuesta detallada
+        Log::channel('fcm')->info('🔔 Test Push Result', [
+            'notification_id' => $notification->id,
+            'user_id' => $user->id,
+            'fcm_response' => $result,
+            'time' => now()->toDateTimeString()
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Notificación de prueba enviada',
+            'user' => $user->name,
+            'fcm_response' => $result
+        ]);
     }
 
 
