@@ -457,49 +457,41 @@ class NotificationController extends Controller
     }
 
 
+ //  para limpiar
+public function testPush(Notification $notification, FCMService $fcmService)
+{
+    // Obtener usuarios con tokens válidos
+    $users = $notification->recipients()
+        ->whereHas('fcmTokens', function($query) {
+            $query->where('is_valid', true);
+        })
+        ->get();
 
-    public function testPush(Notification $notification, FCMService $fcmService)
-    {
-        // Validar que la notificación no se haya enviado previamente
-        if ($notification->recipients()->wherePivot('push_sent', true)->exists()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'La notificación ya fue enviada'
-            ], 400);
-        }
+    if ($users->isEmpty()) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Ningún destinatario tiene tokens FCM válidos'
+        ], 400);
+    }
 
-        // Obtener primer destinatario para prueba
-        $user = $notification->recipients()->first();
-        
-        if (!$user) {
-            return response()->json([
-                'success' => false,
-                'message' => 'No hay destinatarios para esta notificación'
-            ], 400);
-        }
-
-        // Enviar notificación de forma síncrona
+    $results = [];
+    
+    foreach ($users as $user) {
         $result = $fcmService->sendToUser(
             $user,
             "[TEST] " . $notification->title,
             $notification->content
         );
-
-        // Registrar respuesta detallada
-        Log::channel('fcm')->info('🔔 Test Push Result', [
-            'notification_id' => $notification->id,
-            'user_id' => $user->id,
-            'fcm_response' => $result,
-            'time' => now()->toDateTimeString()
-        ]);
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Notificación de prueba enviada',
-            'user' => $user->name,
-            'fcm_response' => $result
-        ]);
+        
+        $results[$user->id] = $result;
     }
+
+    return response()->json([
+        'success' => true,
+        'message' => 'Pruebas enviadas',
+        'results' => $results
+    ]);
+}
 
 
 }

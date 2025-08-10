@@ -42,7 +42,7 @@ class FCMService
 	}
 
 
-
+/*
 	public function sendToUser(User $user, string $title, string $body): array|bool
 	{
 	    $tokens = FcmToken::where('user_id', $user->id)->pluck('token');
@@ -94,5 +94,22 @@ class FCMService
         	'results' => $responses
 	    ];
 	}
+*/
+
+	public function sendToUser(User $user, $title, $body, $data = [])
+{
+    // Obtener tokens válidos del usuario
+    $tokens = $user->fcmTokens()
+                   ->where('is_valid', true)
+                   ->pluck('token')
+                   ->toArray();
+
+    if (empty($tokens)) {
+        Log::error("User {$user->id} has no valid FCM tokens");
+        return false;
+    }
+
+    return $this->sendToTokens($tokens, $title, $body, $data);
+}
 
 }

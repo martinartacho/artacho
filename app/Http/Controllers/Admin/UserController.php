@@ -6,6 +6,9 @@ use App\Models\User;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 use Illuminate\Http\Request;
+use App\Services\FCMService;
+use Illuminate\Support\Facades\Log;
+
 
 class UserController extends Controller
 {
@@ -94,7 +97,7 @@ class UserController extends Controller
         return redirect()->route('admin.users.index')
             ->with('success', __('site.user_deleted'));
     }
-
+/* para limpiar
     public function sendTestNotification(Request $request, FCMService $fcmService)
     {
         $request->validate([
@@ -114,5 +117,34 @@ class UserController extends Controller
             'fcm_response' => $result
         ]);
     }
-    
+*/
+
+    public function sendTestNotification(Request $request, FCMService $fcmService)
+    {
+        $request->validate([
+            'user_id' => 'required|exists:users,id',
+        ]);
+
+        $user = User::findOrFail($request->user_id);
+        
+        // Verificar tokens válidos
+        if (!$user->fcmTokens()->where('is_valid', true)->exists()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'El usuario no tiene tokens FCM válidos'
+            ], 400);
+        }
+
+        $title = "Notificación de Prueba";
+        $body = "¡Funciona! Hora: " . now()->format('H:i:s');
+
+        $result = $fcmService->sendToUser($user, $title, $body);
+
+        return response()->json([
+            'success' => (bool) $result,
+            'message' => $result ? 'Notificación enviada' : 'Error al enviar',
+            'fcm_response' => $result
+        ]);
+    }
+
 }

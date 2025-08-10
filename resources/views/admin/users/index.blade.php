@@ -73,38 +73,32 @@
                                                 </button>
                                             </form>
                                         </div>
-@if($user->fcm_token)
-    <div class="card mt-4">
-        <div class="card-header">
-            <h5>Dispositivos Registrados</h5>
-        </div>
-        <div class="card-body">
-            <ul class="list-group">
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                    {{ $user->fcm_token }}
-                    <span class="badge bg-success">Activo</span>
-                </li>
-            </ul>
-            
-            <button class="btn btn-sm btn-info mt-3" id="test-notification"
-                data-user-id="{{ $user->id }}">
-                <i class="bi bi-bell"></i> Probar Notificación
-            </button>
-        </div>
+@if($user->fcmTokens->count() > 0)
+<div class="card mt-4">
+    <div class="card-header">
+        <h5>Dispositivos Registrados</h5>
     </div>
-
-    <script>
-        document.getElementById('test-notification').addEventListener('click', function() {
-            const userId = this.dataset.userId;
-            
-            axios.post('/admin/test-notification', {
-                user_id: userId,
-                type: 'test'
-            }).then(response => {
-                alert('Notificación de prueba enviada!');
-            });
-        });
-    </script>
+    <div class="card-body">
+        <ul class="list-group">
+            @foreach($user->fcmTokens as $token)
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                <div>
+                    <small class="text-muted d-block">{{ $token->device_name }}</small>
+                    <span>{{ $token->token }}</span>
+                </div>
+                <span class="badge bg-{{ $token->is_valid ? 'success' : 'danger' }}">
+                    {{ $token->is_valid ? 'Activo' : 'Inactivo' }}
+                </span>
+            </li>
+            @endforeach
+        </ul>
+        
+        <button class="btn btn-sm btn-info mt-3" id="test-notification"
+            data-user-id="{{ $user->id }}">
+            <i class="bi bi-bell"></i> Probar Notificación
+        </button>
+    </div>
+</div>
 @endif
                                     </td>
                                 </tr>
