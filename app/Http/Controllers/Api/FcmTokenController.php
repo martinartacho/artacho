@@ -47,8 +47,8 @@ class FcmTokenController extends Controller
     public function saveFcmToken(Request $request)
     {
 
-	Log::info('✅ Dentro de saveFcmToken');
-	Log::info('🧪 Token recibido en request', ['token' => $request->token]);
+        Log::info('✅ Dentro de saveFcmToken');
+        Log::info('🧪 Token recibido en request', ['token' => $request->token]);
 
     	$request->validate([
         	'token' => 'required|string',
@@ -68,11 +68,11 @@ class FcmTokenController extends Controller
         	]
     	);
 
-	Log::info('✅ Token FCM recibido y guardado', [
+	    Log::info('✅ Token FCM recibido y guardado', [
 	    'user_id' => auth()->id(),
 	    'token' => $request->token,
 	    'hora' => now()->toDateTimeString(),
-	]);
+	    ]);
 
 
     	return response()->json(['status' => 'success']);
