@@ -9,7 +9,6 @@ use Illuminate\Http\Request;
 
 class RoleController extends Controller
 {
-
     public function __construct()
     {
         $this->middleware('can:roles.index')->only('index');
@@ -47,7 +46,7 @@ class RoleController extends Controller
     {
         $permissions = Permission::all();
         return view('admin.roles.edit', compact('role', 'permissions'));
-        
+
     }
 
     public function update(Request $request, Role $role)

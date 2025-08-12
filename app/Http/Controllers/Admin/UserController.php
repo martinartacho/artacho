@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
@@ -7,8 +8,6 @@ use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 use Illuminate\Http\Request;
 use App\Services\FCMService;
-use Illuminate\Support\Facades\Log;
-
 
 class UserController extends Controller
 {
@@ -53,7 +52,6 @@ class UserController extends Controller
         return view('admin.users.edit', compact('user', 'roles', 'permissions'));
     }
 
-
     public function update(Request $request, User $user)
     {
         $data = $request->validate([
@@ -90,35 +88,14 @@ class UserController extends Controller
         return redirect()->route('admin.users.index')->with('success', 'Usuario actualizado correctamente.');
     }
 
-
     public function destroy(User $user)
     {
         $user->delete();
         return redirect()->route('admin.users.index')
             ->with('success', __('site.user_deleted'));
     }
-/* para limpiar
-    public function sendTestNotification(Request $request, FCMService $fcmService)
-    {
-        $request->validate([
-            'user_id' => 'required|exists:users,id',
-            'type' => 'required|in:test,welcome'
-        ]);
-
-        $user = User::findOrFail($request->user_id);
-        $title = "Notificación de Prueba";
-        $body = "¡Funciona! Hora: " . now()->format('H:i:s');
-
-        $result = $fcmService->sendToUser($user, $title, $body);
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Notificación de prueba enviada',
-            'fcm_response' => $result
-        ]);
-    }
-*/
-
+    /*
+    para limpiar
     public function sendTestNotification(Request $request, FCMService $fcmService)
     {
         $request->validate([
@@ -126,7 +103,7 @@ class UserController extends Controller
         ]);
 
         $user = User::findOrFail($request->user_id);
-        
+
         // Verificar tokens válidos
         if (!$user->fcmTokens()->where('is_valid', true)->exists()) {
             return response()->json([
@@ -146,5 +123,6 @@ class UserController extends Controller
             'fcm_response' => $result
         ]);
     }
+    */
 
 }

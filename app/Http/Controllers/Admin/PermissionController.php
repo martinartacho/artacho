@@ -3,19 +3,18 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 use Illuminate\Http\Request;
 
 class PermissionController extends Controller
 {
-  /*   public function __construct()
-    {
-        $this->middleware('can:permissions.index')->only('index');
-        $this->middleware('can:permissions.create')->only(['create', 'store']);
-        $this->middleware('can:permissions.edit')->only(['edit', 'update']);
-        $this->middleware('can:permissions.delete')->only('destroy');
-    } */
+    /*   public function __construct()
+      {
+          $this->middleware('can:permissions.index')->only('index');
+          $this->middleware('can:permissions.create')->only(['create', 'store']);
+          $this->middleware('can:permissions.edit')->only(['edit', 'update']);
+          $this->middleware('can:permissions.delete')->only('destroy');
+      } */
     public function index()
     {
         $permissions = Permission::latest()->paginate(10);

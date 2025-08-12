@@ -3,11 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 use App\Models\Setting;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Log;
 
 class SettingsController extends Controller
 {
@@ -16,14 +14,14 @@ class SettingsController extends Controller
         $logFiles = File::files(storage_path('logs'));
         // Últimos 5 logs push
         $logFiles = collect(File::files(storage_path('logs')))
-            ->filter(fn($file) => str_contains($file->getFilename(), 'push-'))
-                ->sortByDesc(fn($file) => $file->getCTime())
+            ->filter(fn ($file) => str_contains($file->getFilename(), 'push-'))
+                ->sortByDesc(fn ($file) => $file->getCTime())
                 ->take(5);
         $language = Setting::where('key', 'language')->value('value') ?? config('app.locale');
-        
+
         $settings = [
                 'logo' => \App\Models\Setting::get('logo', 'logos/default.png'),
-                'language' => $language,    
+                'language' => $language,
                 'pushLogs' => $logFiles,
             ];
         return view('settings.edit', compact('settings'));
@@ -52,18 +50,18 @@ class SettingsController extends Controller
             ['key' => 'language'],
             ['value' => $request->language]
         );
-        
+
         // cache()->forget('global_language');
         // Actualizar la caché inmediatamente
         // cache(['global_language' => $request->language], now()->addDay());
-        
+
         // Actualizar caché inmediatamente
         Cache::put('global_language', $request->language, now()->addDay());
-        
+
         // Actualizar el locale en tiempo real para esta sesión
         app()->setLocale($request->language);
         session()->put('locale', $request->language);
-        
+
         return redirect()->route('settings.edit')->with('success', __('Idioma actualizado correctamente.'));
     }
 

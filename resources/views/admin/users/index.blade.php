@@ -86,14 +86,12 @@
                                                                 <small class="text-muted d-block">{{ $token->device_name }}</small>
                                                                 <span>{{ substr($token->token, 0, 6) }}...{{ substr($token->token, -6) }}</span>
                                                             </div>
-
                                                         </li>
                                                         @endforeach
                                                     </ul>
                                                 </div>
                                             </div>
                                             @endif
-
                                     </td>
                                 </tr>
                                 @endforeach

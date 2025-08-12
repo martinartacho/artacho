@@ -24,23 +24,23 @@ class LocaleController extends Controller
         $user = $request->user();
         $action = $request->input('action');
         $conflict = session('language_conflict');
-        
+
         if (!$conflict || !$user) {
             return redirect()->back();
         }
-        
+
         switch ($action) {
             case 'use_user':
                 // Usar preferencia del usuario
                 session()->put('locale', $conflict['user_language']);
                 App::setLocale($conflict['user_language']);
                 break;
-                
+
             case 'use_session':
                 // Mantener idioma de sesión actual
                 // No se necesita acción adicional
                 break;
-                
+
             case 'update_preference':
                 // Actualizar preferencia del usuario al idioma de sesión
                 $user->settings()->updateOrCreate(
@@ -49,10 +49,10 @@ class LocaleController extends Controller
                 );
                 break;
         }
-        
+
         // Eliminar el conflicto de la sesión
         session()->forget('language_conflict');
-        
+
         return redirect()->back()->with('status', 'language-conflict-resolved');
     }
 }

@@ -18,7 +18,6 @@ class FeedbackController extends Controller
             'message' => 'required|string|min:5',
         ]);
 
-
         // 🧪 Log de depuración
         Log::info('📥 Feedback recibido:', [
             'auth' => Auth::check(),

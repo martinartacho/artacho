@@ -78,6 +78,9 @@ return [
     'View_notification' => 'View notification',
     'Edit_notification' => 'Edit notification',
     'Delete_notification' => 'Delete notification',
+    'Push_sent_success' => 'Push sent success',
+    'Web_sent_success' => 'web sent success',
+    'Email_sent_success' => 'Email sent success',
     
     'Email_queued_success' => ':count email notifications have been queued',
     'Web_queued_success' => ':count web notifications have been queued',

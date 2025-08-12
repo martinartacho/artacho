@@ -86,6 +86,9 @@ return [
     'Push_queued_success' => 'S\'han posat en cua :count notificacions push',
     'Processing' => 'Processant',
     'Please_wait' => 'Si us plau espereu...',
+    'Push_sent_success' => 'Push sent success',
+    'Web_sent_success' => 'web sent success',
+    'Email_sent_success' => 'Email sent success',
 
     'welcome' => 'Benvingut/da a HArtacho!',
     'title_1' => 'Comencem!!',

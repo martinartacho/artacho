@@ -86,6 +86,10 @@ return [
     'Push_queued_success' => 'Se han puesto en cola :count notificaciones push',
     'Processing' => 'Processing',
     'Please_wait' => 'Por favor espere...',
+    'Push_sent_success' => 'Push sent success',
+    'Web_sent_success' => 'web sent success',
+    'Email_sent_success' => 'Email sent success',
+
 
     'welcome' => '¡Bienvenido a HArtacho!',
     'title_1' => '¡¡Empecemos!!',

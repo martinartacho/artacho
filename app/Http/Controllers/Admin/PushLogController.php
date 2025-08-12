@@ -2,11 +2,9 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Response;
 use App\Http\Controllers\Controller;
-
 
 class PushLogController extends Controller
 {
@@ -15,8 +13,8 @@ class PushLogController extends Controller
         $logFiles = File::files(storage_path('logs'));
 
         $pushLogs = collect($logFiles)
-            ->filter(fn($file) => str_contains($file->getFilename(), 'push-'))
-            ->sortByDesc(fn($file) => $file->getCTime());
+            ->filter(fn ($file) => str_contains($file->getFilename(), 'push-'))
+            ->sortByDesc(fn ($file) => $file->getCTime());
 
         return view('admin.push-logs', ['logs' => $pushLogs]);
     }
@@ -32,17 +30,16 @@ class PushLogController extends Controller
         return Response::download($path);
     }
 
-
     public function delete($filename)
-	{
-	    $path = storage_path("logs/{$filename}");
+    {
+        $path = storage_path("logs/{$filename}");
 
-	    if (!File::exists($path)) {
-	        return redirect()->back()->withErrors('Archivo no encontrado.');
-	    }
+        if (!File::exists($path)) {
+            return redirect()->back()->withErrors('Archivo no encontrado.');
+        }
 
-	    File::delete($path);
+        File::delete($path);
 
-	    return redirect()->back()->with('success', "Archivo '{$filename}' eliminado correctamente.");
-	}
+        return redirect()->back()->with('success', "Archivo '{$filename}' eliminado correctamente.");
+    }
 }

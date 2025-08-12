@@ -7,15 +7,12 @@ use App\Models\FcmToken;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Notification;
-use App\Models\Notification_user;
 use App\Services\FCMService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
-
 class FcmTokenController extends Controller
 {
-
     public function getNotificationsApi(Request $request)
     {
         $user = auth()->guard('api')->user();
@@ -48,34 +45,32 @@ class FcmTokenController extends Controller
         Log::info('✅ Dentro de saveFcmToken');
         Log::info('🧪 Token recibido en request', ['token' => $request->token]);
 
-    	$request->validate([
-        	'token' => 'required|string',
-	        'device_type' => 'nullable|string',
-        	'device_name' => 'nullable|string',
-	    ]);
+        $request->validate([
+            'token' => 'required|string',
+            'device_type' => 'nullable|string',
+            'device_name' => 'nullable|string',
+        ]);
 
-	    $user = auth()->user();
+        $user = auth()->user();
 
-	    FcmToken::updateOrCreate(
-        	['user_id' => $user->id, 'token' => $request->token],
-        	[
-            	'device_type' => $request->device_type,
-            	'device_name' => $request->device_name,
-            	'last_used_at' => now(),
-            	'is_valid' => true,
-        	]
-    	);
+        FcmToken::updateOrCreate(
+            ['user_id' => $user->id, 'token' => $request->token],
+            [
+                'device_type' => $request->device_type,
+                'device_name' => $request->device_name,
+                'last_used_at' => now(),
+                'is_valid' => true,
+            ]
+        );
 
-	    Log::info('✅ Token FCM recibido y guardado', [
-	    'user_id' => auth()->id(),
-	    'token' => $request->token,
-	    'hora' => now()->toDateTimeString(),
-	    ]);
+        Log::info('✅ Token FCM recibido y guardado', [
+        'user_id' => auth()->id(),
+        'token' => $request->token,
+        'hora' => now()->toDateTimeString(),
+        ]);
 
-
-    	return response()->json(['status' => 'success']);
+        return response()->json(['status' => 'success']);
     }
-
 
     public function store(Request $request)
     {
@@ -86,7 +81,7 @@ class FcmTokenController extends Controller
         ]);
 
         if ($validator->fails()) {
-	    Log::warning('en store error 422');
+            Log::warning('en store error 422');
             return response()->json([
                 'status' => 'error',
                 'errors' => $validator->errors()
@@ -110,14 +105,13 @@ class FcmTokenController extends Controller
                 ['token' => $request->fcm_token]
             );
 
-
             return response()->json([
                 'status' => 'success',
                 'message' => 'Token guardado correctamente'
             ]);
 
         } catch (\Exception $e) {
-	    Log::warning('En store errro del servidor');
+            Log::warning('En store errro del servidor');
 
             return response()->json([
                 'status' => 'error',
@@ -125,8 +119,8 @@ class FcmTokenController extends Controller
             ], 500);
         }
     }
-
-    public function sendNotification(User $user, FCMService $fcmService)
+/* para limpiar
+    public function PEPEsendNotification(User $user, FCMService $fcmService)
     {
         Log::warning('Dentro de sendNotification, este endpoint ha sido reepplazado');
 
@@ -136,15 +130,15 @@ class FcmTokenController extends Controller
             'message' => 'Este endpoint ha sido reemplazado por /api/notifications/send-fcm.'
         ], 410); // 410 Gone
 
-    	$result = $fcmService->sendToUser($user, 'Bienvenido', 'Has iniciado sesión correctamente.');
+        $result = $fcmService->sendToUser($user, 'Bienvenido', 'Has iniciado sesión correctamente.');
 
-	    if (!$result) {
-	        return response()->json(['error' => 'Error al enviar la notificación.'], 500);
-	    }
+        if (!$result) {
+            return response()->json(['error' => 'Error al enviar la notificación.'], 500);
+        }
 
-	    return response()->json(['success' => true, 'response' => json_decode($result, true)]);
+        return response()->json(['success' => true, 'response' => json_decode($result, true)]);
     }
-
+*/
     public function unreadCount(Request $request)
     {
         $user = auth()->user();
@@ -156,14 +150,11 @@ class FcmTokenController extends Controller
         return response()->json(['count' => $count]);
     }
 
-
-
     public function getUnreadCount()
     {
         $count = Auth::user()->unreadNotifications()->count();
         return response()->json(['count' => $count]);
     }
-
 
     // marcar como leida
     public function markAsReadApi($notificationId) // Asegúrate de recibir el parámetro
@@ -171,7 +162,7 @@ class FcmTokenController extends Controller
         Log::warning('Dentro de markAsReadApi con ID: '.$notificationId);
 
         try {
-           $user = Auth::user();
+            $user = Auth::user();
 
             // Opción 1: Para relación muchos-a-muchos (pivote)
             $affected = $user->notifications()
@@ -180,23 +171,21 @@ class FcmTokenController extends Controller
                     'read_at' => now(),
                     'read' => true
                  ]);
-     	Log::warning("Se actualizó notificación para el usuario: ". $user->id . " notificationId: " .$notificationId  );
-        // Opción 2: Si es una relación directa
-        // $notification = Notification::findOrFail($notificationId);
-        // $notification->read_at = now();
-        // $notification->save();
+            Log::warning("Se actualizó notificación para el usuario: ". $user->id . " notificationId: " .$notificationId);
+            // Opción 2: Si es una relación directa
+            // $notification = Notification::findOrFail($notificationId);
+            // $notification->read_at = now();
+            // $notification->save();
 
             if ($affected === 0) {
                 Log::warning("affecte : No se actualizó ninguna notificación para el usuario: ".$user->id." notificationId ".$notificationId);
                 return response()->json(['success' => false, 'message' => 'Notificación no encontrada'], 404);
+            } else {
+                // Log::warnig("affected es else  ");
             }
-            else
-	    {
-              // Log::warnig("affected es else  ");
-	    }
 
-           Log::warning("Notificación $notificationId marcada como leída para el usuario: ".$user->id. " ". $notificationId );
-           return response()->json(['success' => true]);
+            Log::warning("Notificación $notificationId marcada como leída para el usuario: ".$user->id. " ". $notificationId);
+            return response()->json(['success' => true]);
 
         } catch (\Exception $e) {
             Log::error("Error en markAsReadApi: ".$e->getMessage());
@@ -204,6 +193,4 @@ class FcmTokenController extends Controller
         }
     }
 
-
 }
-
