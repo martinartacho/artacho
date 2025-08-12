@@ -73,33 +73,27 @@
                                                 </button>
                                             </form>
                                         </div>
-@if($user->fcmTokens->count() > 0)
-<div class="card mt-4">
-    <div class="card-header">
-        <h5>Dispositivos Registrados</h5>
-    </div>
-    <div class="card-body">
-        <ul class="list-group">
-            @foreach($user->fcmTokens as $token)
-            <li class="list-group-item d-flex justify-content-between align-items-center">
-                <div>
-                    <small class="text-muted d-block">{{ $token->device_name }}</small>
-                    <span>{{ $token->token }}</span>
-                </div>
-                <span class="badge bg-{{ $token->is_valid ? 'success' : 'danger' }}">
-                    {{ $token->is_valid ? 'Activo' : 'Inactivo' }}
-                </span>
-            </li>
-            @endforeach
-        </ul>
-        
-        <button class="btn btn-sm btn-info mt-3" id="test-notification"
-            data-user-id="{{ $user->id }}">
-            <i class="bi bi-bell"></i> Probar Notificación
-        </button>
-    </div>
-</div>
-@endif
+                                            @if(optional($user->fcmTokens)->count() > 0)
+                                            <div class="card mt-4">
+                                                <div class="card-header">
+                                                    <h5>Dispositivos Registrados</h5>
+                                                </div>
+                                                <div class="card-body">
+                                                    <ul class="list-group">
+                                                        @foreach($user->fcmTokens as $index => $token)
+                                                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                            <div>
+                                                                <small class="text-muted d-block">{{ $token->device_name }}</small>
+                                                                <span>{{ substr($token->token, 0, 6) }}...{{ substr($token->token, -6) }}</span>
+                                                            </div>
+
+                                                        </li>
+                                                        @endforeach
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                            @endif
+
                                     </td>
                                 </tr>
                                 @endforeach

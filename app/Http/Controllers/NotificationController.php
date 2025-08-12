@@ -232,7 +232,6 @@ class NotificationController extends Controller
     }
 
 
-
     protected function assignRecipients(Notification $notification)
     {
         if ($notification->recipient_type === 'all') {
@@ -456,77 +455,6 @@ class NotificationController extends Controller
         return response()->json(['message' => 'Notification sent.']);
     }
 
-
- //  para limpiar
- // 10/08/2025
-
-public function testPush(Notification $notification, FCMService $fcmService)
-{
-    $users = $notification->recipients()
-        ->whereHas('fcmTokens', function($query) {
-            $query->where('is_valid', true);
-        })
-        ->get();
-
-    if ($users->isEmpty()) {
-        return response()->json([
-            'success' => false,
-            'message' => 'Ningún destinatario tiene tokens FCM válidos'
-        ], 400);
-    }
-
-    $results = [];
-    
-    foreach ($users as $user) {
-        $results[$user->id] = $fcmService->sendToUser(
-            $user,
-            "[TEST] " . $notification->title,
-            $notification->content
-        );
-    }
-
-    return response()->json([
-        'success' => true,
-        'message' => 'Pruebas enviadas',
-        'results' => $results
-    ]);
-}
-
-
-public function testPushOLD(Notification $notification, FCMService $fcmService)
-{
-    // Obtener usuarios con tokens válidos
-    $users = $notification->recipients()
-        ->whereHas('fcmTokens', function($query) {
-            $query->where('is_valid', true);
-        })
-        ->get();
-
-    if ($users->isEmpty()) {
-        return response()->json([
-            'success' => false,
-            'message' => 'Ningún destinatario tiene tokens FCM válidos'
-        ], 400);
-    }
-
-    $results = [];
-    
-    foreach ($users as $user) {
-        $result = $fcmService->sendToUser(
-            $user,
-            "[TEST] " . $notification->title,
-            $notification->content
-        );
-        
-        $results[$user->id] = $result;
-    }
-
-    return response()->json([
-        'success' => true,
-        'message' => 'Pruebas enviadas',
-        'results' => $results
-    ]);
-}
 
 
 }

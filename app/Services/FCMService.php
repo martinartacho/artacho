@@ -16,25 +16,19 @@ class FCMService
 {
     protected string $credentialsPath;
 
-    /* public function __construct()
-	{
-       	$this->credentialsPath = storage_path('app/firebase/firebase_credentials.json');
-	} */
     
-	//10/08/2025
+
 	public function __construct()
 	{
 		try {
 			$firebase = (new Factory)
-				->withServiceAccount(Storage::path(env('FIREBASE_CREDENTIALS')))
-				->create();
-
-			$this->messaging = $firebase->getMessaging(); // Inicializar correctamente
-			
+				->withServiceAccount(storage_path(config('services.firebase.credentials')))
+				 ->createMessaging();
+		
 		} catch (\Exception $e) {
 			Log::error('Error inicializando FCMService: ' . $e->getMessage());
 		}
-	}
+	} 
 
 
 	protected function getAccessToken(): ?string
@@ -60,78 +54,6 @@ class FCMService
 	    return $token['access_token'] ?? null;
 	}
 
-
-
-	public function sendToUserOLD(User $user, string $title, string $body): array|bool
-	{
-	    $tokens = FcmToken::where('user_id', $user->id)->pluck('token');
-
-	    if ($tokens->isEmpty()) {
-        	Log::warning("El usuario {$user->id} no tiene tokens FCM.");
-	        return false;
-	    }
-
-	    $accessToken = $this->getAccessToken();
-	    if (!$accessToken) {
-        	return false;
-	    }
-
-	    $credentials = json_decode(file_get_contents($this->credentialsPath), true);
-	    $projectId = $credentials['project_id'];
-
-	    $successCount = 0;
-	    $responses = [];
-
-	    foreach ($tokens as $token) {
-        	$message = [
-	            'message' => [
-        	        'token' => $token,
-                	'notification' => [
-	                    'title' => $title,
-        	            'body' => $body,
-                	],
-	            ],
-        	];
-
-	        $response = Http::withToken($accessToken)
-        	    ->post("https://fcm.googleapis.com/v1/projects/{$projectId}/messages:send", $message);
-
-	        if ($response->successful()) {
-        	    $successCount++;
-	            $responses[] = ['token' => $token, 'status' => 'success'];
-        	} else {
-	            Log::error("❌ Error al enviar notificación FCM al token {$token}", [
-        	        'response' => $response->json()
-	            ]);
-        	    $responses[] = ['token' => $token, 'status' => 'failed', 'error' => $response->json()];
-	        }
-	    }
-
-	    return [
-        	'sent' => $successCount,
-	        'total' => $tokens->count(),
-        	'results' => $responses
-	    ];
-	}
-
-
-	public function sendToUserPEPE(User $user, $title, $body, $data = [])
-	{
-		// Obtener tokens válidos del usuario
-		$tokens = $user->fcmTokens()
-					->where('is_valid', true)
-					->pluck('token')
-					->toArray();
-
-		if (empty($tokens)) {
-			Log::error("User {$user->id} has no valid FCM tokens");
-			return false;
-		}
-
-		return $this->sendToTokens($tokens, $title, $body, $data);
-	}
-
-		// creado 10/08/2025
 	public function sendToUser(User $user, $title, $body, $data = [])
 	{
 		$tokens = $user->fcmTokens()
@@ -151,7 +73,6 @@ class FCMService
 		return $this->sendToTokens($tokens, $title, $body, $data);
 	}
 
-	// creado 10/08/2025
 	public function sendToTokens(array $tokens, string $title, string $body, array $data = [])
 	{
 		if (empty($tokens)) {

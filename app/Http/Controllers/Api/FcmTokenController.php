@@ -16,8 +16,6 @@ use Illuminate\Support\Facades\Log;
 class FcmTokenController extends Controller
 {
 
-
-
     public function getNotificationsApi(Request $request)
     {
         $user = auth()->guard('api')->user();
@@ -130,13 +128,13 @@ class FcmTokenController extends Controller
 
     public function sendNotification(User $user, FCMService $fcmService)
     {
-	Log::warning('Dentro de sendNotification, este endpoint ha sido reepplazado');
+        Log::warning('Dentro de sendNotification, este endpoint ha sido reepplazado');
 
-	return response()->json(['success' => true, 'response' => json_decode($result, true)]);
+        return response()->json(['success' => true, 'response' => json_decode($result, true)]);
 
-	return response()->json([
-	    'message' => 'Este endpoint ha sido reemplazado por /api/notifications/send-fcm.'
-	], 410); // 410 Gone
+        return response()->json([
+            'message' => 'Este endpoint ha sido reemplazado por /api/notifications/send-fcm.'
+        ], 410); // 410 Gone
 
     	$result = $fcmService->sendToUser($user, 'Bienvenido', 'Has iniciado sesión correctamente.');
 
@@ -165,7 +163,6 @@ class FcmTokenController extends Controller
         $count = Auth::user()->unreadNotifications()->count();
         return response()->json(['count' => $count]);
     }
-
 
 
     // marcar como leida

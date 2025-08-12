@@ -15,18 +15,6 @@ use App\Http\Controllers\LocaleController;
 use Illuminate\Support\Facades\Route;
 
 
-// comando temporal 
-Route::get('/test-firebase', function() {
-    try {
-        $firebase = (new Factory)
-            ->withServiceAccount(storage_path(env('FIREBASE_CREDENTIALS')))
-            ->create();
-
-        return response()->json(['success' => true]);
-    } catch (\Exception $e) {
-        return response()->json(['error' => $e->getMessage()], 500);
-    }
-});
 
 // Language
 Route::post('/set-locale', [LocaleController::class, 'set'])->name('set-locale');
@@ -120,9 +108,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('/notifications/{notification}/mark-read', [NotificationController::class, 'markAsRead'])->name('notifications.mark-read');
     });
 
-    Route::post('notifications/{notification}/test-push', 
-        [NotificationController::class, 'testPush'])
-        ->name('notifications.test-push');    
 
     // 👥 Rutas específicas para gestores
     Route::middleware('role:gestor')->prefix('gestor')->name('gestor.')->group(function () {
