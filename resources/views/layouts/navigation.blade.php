@@ -34,31 +34,26 @@
                                         </x-slot>
 
                                         <x-slot name="content">
-
                                             @can('users.view')
                                                 <x-dropdown-link :href="route('admin.feedback.index')" :active="request()->routeIs('admin.feedback.index.*')">
                                                     {{ __('site.Feedback') }}
                                                 </x-dropdown-link>
                                             @endcan
-
                                             @can('users.view')
                                                 <x-dropdown-link :href="route('admin.users.index')" :active="request()->routeIs('admin.users.*')">
                                                     {{ __('site.Users') }}
                                                 </x-dropdown-link>
                                             @endcan
-
                                             @can('roles.index')
                                                 <x-dropdown-link :href="route('admin.roles.index')" :active="request()->routeIs('admin.roles.*')">
                                                     {{ __('site.Roles') }}
                                                 </x-dropdown-link>
                                             @endcan
-
                                             @can('permissions.index')
                                                 <x-dropdown-link :href="route('admin.permissions.index')" :active="request()->routeIs('admin.permissions.*')">
                                                     {{ __('site.Permissions') }}
                                                 </x-dropdown-link>
                                             @endcan
-
                                             @can('settings.edit')
                                                 <x-dropdown-link :href="route('settings.edit')" :active="request()->routeIs('settings.*')">
                                                     {{ __('Settings') }}
@@ -71,31 +66,24 @@
                         @endcanany
                     @endauth
 
-
-   
+                    <!-- Icono notificaciones en escritorio -->
                     <div class="hidden sm:flex sm:items-center sm:ms-6">
                         <ul class="navbar-nav ms-auto">
                             @include('components.notification-bell') 
                         </ul>
                     </div>    
-                                    
                 </div>
-
             </div>
-            
 
-
-<!-- Settings Dropdown -->
+            <!-- Settings Dropdown -->
             <div class="hidden sm:flex sm:items-center sm:ms-6">
                 <x-dropdown align="right" width="48">
                     <x-slot name="trigger">
                         <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
                             <div>{{ Auth::user()->name }}</div>
-
                             <div class="ms-1">
                                 <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 15L12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9" />
-                                <!-- <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" /> -->
                                 </svg>
                             </div>
                         </button>
@@ -105,11 +93,9 @@
                         <x-dropdown-link :href="route('profile.edit')">
                             {{ __('Profile') }}
                         </x-dropdown-link>
-
                         <!-- Authentication -->
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
-
                             <x-dropdown-link :href="route('logout')"
                                     onclick="event.preventDefault();
                                                 this.closest('form').submit();">
@@ -138,6 +124,47 @@
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                 {{ __('site.Dashboard') }}
             </x-responsive-nav-link>
+
+            {{-- Menú Admin en móvil --}}
+            @auth
+                @canany(['users.view', 'roles.index', 'permissions.index', 'settings.edit'])
+                    <div class="border-t border-gray-200 mt-2">
+                        <div class="px-4 py-2 text-gray-500 text-xs uppercase">{{ __('site.Admin') }}</div>
+                        @can('users.view')
+                            <x-responsive-nav-link :href="route('admin.feedback.index')" :active="request()->routeIs('admin.feedback.index.*')">
+                                {{ __('site.Feedback') }}
+                            </x-responsive-nav-link>
+                        @endcan
+                        @can('users.view')
+                            <x-responsive-nav-link :href="route('admin.users.index')" :active="request()->routeIs('admin.users.*')">
+                                {{ __('site.Users') }}
+                            </x-responsive-nav-link>
+                        @endcan
+                        @can('roles.index')
+                            <x-responsive-nav-link :href="route('admin.roles.index')" :active="request()->routeIs('admin.roles.*')">
+                                {{ __('site.Roles') }}
+                            </x-responsive-nav-link>
+                        @endcan
+                        @can('permissions.index')
+                            <x-responsive-nav-link :href="route('admin.permissions.index')" :active="request()->routeIs('admin.permissions.*')">
+                                {{ __('site.Permissions') }}
+                            </x-responsive-nav-link>
+                        @endcan
+                        @can('settings.edit')
+                            <x-responsive-nav-link :href="route('settings.edit')" :active="request()->routeIs('settings.*')">
+                                {{ __('Settings') }}
+                            </x-responsive-nav-link>
+                        @endcan
+                    </div>
+                @endcanany
+            @endauth
+
+            {{-- Icono de notificaciones en móvil --}}
+            <div class="border-t border-gray-200 mt-2">
+                <ul class="px-4 py-2">
+                    @include('components.notification-bell')
+                </ul>
+            </div>
         </div>
 
         <!-- Responsive Settings Options -->
@@ -155,7 +182,6 @@
                 <!-- Authentication -->
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
-
                     <x-responsive-nav-link :href="route('logout')"
                             onclick="event.preventDefault();
                                         this.closest('form').submit();">
