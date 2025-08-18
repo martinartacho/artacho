@@ -88,7 +88,7 @@ Esta API está desarrollada en Laravel y utiliza JWT para autenticación. Está 
 ```json
 {
   "email": "usuario@example.com",
-  "password": "123456"
+  "password": "Pass.Seg.123"
 }
 ```
 
