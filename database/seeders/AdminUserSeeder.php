@@ -5,6 +5,8 @@ namespace Database\Seeders;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\User;
+use Carbon\Carbon;
+use Illuminate\Support\Str; 
 
 class AdminUserSeeder extends Seeder
 {
@@ -18,8 +20,8 @@ class AdminUserSeeder extends Seeder
             ['email' => 'admin@example.com'],
             [
                 'name' => 'Administrador',
-                'password' => bcrypt('password-seguro'),
-                'email_verified_at' => now()
+                'password' => Hash::make(Str::random(12)),
+                'email_verified_at' => Carbon::now(),
             ]
         );
         

@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 use Carbon\Carbon;
+use Illuminate\Support\Str; 
 
 class UserSeeder extends Seeder
 {
@@ -15,15 +16,15 @@ class UserSeeder extends Seeder
         $admin = User::create([
             'name' => 'Admin User',
             'email' => 'admin@example.com',
-            'password' => Hash::make('Site.123'),
-	    'email_verified_at' => Carbon::now(),
+            'password' => Hash::make(Str::random(12)),
+	        'email_verified_at' => Carbon::now(),
         ]);
         $admin->assignRole('admin');
 
         $gestor = User::create([
             'name' => 'Gestor User',
             'email' => 'gestor@example.com',
-            'password' => Hash::make('Site.123'),
+            'password' => Hash::make(Str::random(12)),
             'email_verified_at' => Carbon::now(),
         ]);
         $gestor->assignRole('gestor');
@@ -31,7 +32,7 @@ class UserSeeder extends Seeder
         $editor = User::create([
             'name' => 'Editor Uno',
             'email' => 'editor1@example.com',
-            'password' => Hash::make('Site.123'),
+            'password' => Hash::make(Str::random(12)),
             'email_verified_at' => Carbon::now(),
         ]);
         $editor->assignRole('editor');
@@ -39,36 +40,37 @@ class UserSeeder extends Seeder
          $editor2 = User::create([
             'name' => 'Editor Uno',
             'email' => 'editor2@example.com',
-            'password' => Hash::make('Site.123'),
-            'email_verified_at' => Carbon::now(),
+            'password' => Hash::make(Str::random(12)),
         ]);
         $editor2->assignRole('editor');
 
         $user1 = User::create([
-            'name' => 'User Dos',
+            'name' => 'User Uno',
             'email' => 'user1@example.com',
-            'password' => Hash::make('Site.123'),
+            'password' => Hash::make(Str::random(12)),
+            'email_verified_at' => Carbon::now(),
         ]);
         $user1->assignRole('user');
 
         $user2 = User::create([
             'name' => 'User Dos',
             'email' => 'user2@example.com',
-            'password' => Hash::make('Site.123'),
+            'password' => Hash::make(Str::random(12)),
         ]);
         $user2->assignRole('user');
 
         $invited1 = User::create([
             'name' => 'Invited Uno',
             'email' => 'invited1@example.com',
-            'password' => Hash::make('Site.123'),
+            'password' => Hash::make(Str::random(12)),
+            'email_verified_at' => Carbon::now(),
         ]);
         $invited1->assignRole('invited');
 
         $invited2 = User::create([
             'name' => 'Invited Dos',
             'email' => 'invited2@example.com',
-            'password' => Hash::make('Site.123'),
+            'password' => Hash::make(Str::random(12)),
         ]);
 
     }

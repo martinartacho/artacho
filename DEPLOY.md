@@ -131,7 +131,7 @@ exit
 
 ## 🔒 Seguridad recomendada
 
-* Cambiar cualquier contraseña que esté en el seeder (`Site.123`, etc).
+* Cambiar cualquier contraseña que esté en el seeder (generadas aleatorimamente, etc).
 * Nunca subir archivos `.env` al repositorio.
 * Regenerar claves y tokens si fueron publicados por error.
 
