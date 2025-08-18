@@ -73,7 +73,10 @@
                                             @elseif($notification->recipient_type === 'role')
                                                 {{ $notification->recipient_role }}
                                             @else 
-                                                {{ count($notification->recipient_ids) }} {{ __('site.Users') }}
+                                                {{ is_array($notification->recipient_ids) 
+                                                    ? count($notification->recipient_ids) 
+                                                    : count(explode(',', $notification->recipient_ids)) 
+                                                }} {{ __('site.Users') }}
                                             @endif
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
