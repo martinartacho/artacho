@@ -59,6 +59,13 @@
                                                     {{ __('Settings') }}
                                                 </x-dropdown-link>
                                             @endcan
+                                            
+                                            @canany(['events.view', 'event_types.view'])
+                                            <x-dropdown-link :href="route('admin.events.index')" :active="request()->routeIs('admin.events.*')">
+                                                {{ __('Events') }}
+                                            </x-dropdown-link>
+                                            @endcanany
+
                                         </x-slot>
                                     </x-dropdown>
                                 </div>

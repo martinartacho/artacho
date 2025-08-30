@@ -10,6 +10,8 @@ use App\Http\Controllers\Gestor\UserController as GestorUserController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\SettingsController;
+use App\Http\Controllers\Admin\EventController;
+use App\Http\Controllers\Admin\EventTypeController;
 use App\Http\Controllers\Admin\FeedbackController as AdminFeedbackController;
 use App\Http\Controllers\LocaleController;
 use Illuminate\Support\Facades\Route;
@@ -114,4 +116,19 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/dashboard', [GestorController::class, 'dashboard'])->name('dashboard');
         Route::resource('users', GestorUserController::class)->only(['index', 'edit', 'update']);
     });
+
+    // routes/web.php (sección administrativa)
+    Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(function () {
+        // Event Types Routes
+        Route::resource('event-types', \App\Http\Controllers\Admin\EventTypeController::class)
+            ->except(['show']);
+        
+        // Events Routes
+        Route::resource('events', \App\Http\Controllers\Admin\EventController::class);
+        Route::get('events-calendar', [\App\Http\Controllers\Admin\EventController::class, 'calendar'])
+            ->name('events.calendar');
+        Route::get('events-calendar/data', [\App\Http\Controllers\Admin\EventController::class, 'calendarData'])
+            ->name('events.calendar-data');
+    });
+
 });

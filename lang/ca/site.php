@@ -155,4 +155,23 @@ return [
     'Current_session' => 'Sessió actual',
     'New_preference' => 'Nova preferència',
 
+    'Events' => 'Events',
+    'Event Types' => 'Tipus d\Event',
+    'Create Event' => 'Crear Event',
+    'Edit Event' => 'Editar Event',
+    'Event created successfully' => 'Event creat exitosament',
+    'Event updated successfully' => 'event actualitzat exitosament',
+    'Event deleted successfully' => 'event eliminat exitosament',
+    'Create Event Type' => 'Crear Tipus d\'Evento',
+    'Edit Event Type' => 'Editar Tipus d\'Evento',
+    'Event type created successfully' => 'Tipus d\event creat exitosamente',
+    'Event type updated successfully' => 'Tipus d\event actualitzado exitosamente',
+    'Event type deleted successfully' => 'Tipus d\event eliminat exitosamente',
+    'Cannot delete event type that is in use' => 'No es pot eliminar un tipus d\event en ús',
+    'Event Calendar' => 'Calendari d\'Events', 
+    'Set as default' => 'Establir com predeterminat',
+    'Cancel' => 'Cancel·la',
+    'Save' => 'Desar',
+    'Update' => 'Actualitzar',  
+
 ];

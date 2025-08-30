@@ -36,13 +36,26 @@ class RolesAndPermissionsSeeder extends Seeder
             'permissions.edit',
             'permissions.delete',
 
-            
+             // Notifications
             'notifications.publish',
             'notifications.index',
             'notifications.create',
             'notifications.edit',
             'notifications.delete',
             'notifications.view',
+
+            // Event permissions
+            'events.view',
+            'events.create',
+            'events.edit',
+            'events.delete',
+                
+            // Event Type permissions
+            'event_types.view',
+            'event_types.create',
+            'event_types.edit',
+            'event_types.delete',
+           
 
         ];
 
@@ -62,7 +75,6 @@ class RolesAndPermissionsSeeder extends Seeder
         $gestor->givePermissionTo(['users.create']);
         $gestor->givePermissionTo(['users.edit']);
         $gestor->givePermissionTo(['users.delete']);
-
         
 
         $gestor->givePermissionTo(['notifications.index']);
@@ -71,6 +83,15 @@ class RolesAndPermissionsSeeder extends Seeder
         $gestor->givePermissionTo(['notifications.delete']);
         $gestor->givePermissionTo(['notifications.view']);
 
+
+        $gestor->givePermissionTo(['events.index']);
+        $gestor->givePermissionTo(['events.create']);
+        $gestor->givePermissionTo(['events.edit']);
+        $gestor->givePermissionTo(['events.delete']);
+        $gestor->givePermissionTo(['events.view']);
+
+
+
         $editor = Role::firstOrCreate(['name' => 'editor']);
         $editor->givePermissionTo(['notifications.index']);
         $editor->givePermissionTo(['notifications.create']);
@@ -78,6 +99,11 @@ class RolesAndPermissionsSeeder extends Seeder
         $editor->givePermissionTo(['notifications.delete']);
         $editor->givePermissionTo(['notifications.view']);
 
+        $editor->givePermissionTo(['events.index']);
+        $editor->givePermissionTo(['events.create']);
+        $editor->givePermissionTo(['events.edit']);
+        $editor->givePermissionTo(['events.delete']);
+        $editor->givePermissionTo(['events.view']);
 
         $user = Role::firstOrCreate(['name' => 'user']);
         $user->givePermissionTo(['notifications.view']);

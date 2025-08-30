@@ -149,5 +149,24 @@ return [
     'Current_session' => 'Sesión actual',
     'New_preference' => 'Nueva preferencia',
 
+    'Events' => 'Eventos',
+    'Event Types' => 'Tipos de Evento',
+    'Create Event' => 'Crear Evento',
+    'Edit Event' => 'Editar Evento',
+    'Event created successfully' => 'Evento creado exitosamente',
+    'Event updated successfully' => 'Evento actualizado exitosamente',
+    'Event deleted successfully' => 'Evento eliminado exitosamente',
+    'Create Event Type' => 'Crear Tipo de Evento',
+    'Edit Event Type' => 'Editar Tipo de Evento',
+    'Event type created successfully' => 'Tipo de evento creado exitosamente',
+    'Event type updated successfully' => 'Tipo de evento actualizado exitosamente',
+    'Event type deleted successfully' => 'Tipo de evento eliminado exitosamente',
+    'Cannot delete event type that is in use' => 'No se puede eliminar un tipo de evento en uso',
+    'Event Calendar' => 'Calendario de Eventos',
+    'Set as default' => 'Establecer como predeterminado',
+    'Cancel' => 'Cancelar',
+    'Save' => 'Guardar',
+    'Update' => 'Actualizar',
+
 ];
 

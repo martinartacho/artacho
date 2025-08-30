@@ -152,6 +152,25 @@ return [
     'Your_preference' => 'Your preference',
     'Current_session' => 'Current session',
     'New_preference' => 'New preference',
+
+    'Events' => 'Events',
+    'Event Types' => 'Event Types',
+    'Create Event' => 'Create Event',
+    'Edit Event' => 'Edit Event',
+    'Event created successfully' => 'Event created successfully',
+    'Event updated successfully' => 'Event updated successfully',
+    'Event deleted successfully' => 'Event deleted successfully',
+    'Create Event Type' => 'Create Event Type',
+    'Edit Event Type' => 'Edit Event Type',
+    'Event type created successfully' => 'Event type created successfully',
+    'Event type updated successfully' => 'Event type updated successfully',
+    'Event type deleted successfully' => 'Event type deleted successfully',
+    'Cannot delete event type that is in use' => 'Cannot delete event type that is in use',
+    'Event Calendar' => 'Event Calendar',
+    'Set as default' => 'Set as default',
+    'Cancel' => 'Cancel',
+    'Save' => 'Save',
+    'Update' => 'Update',
     
 ];
 
