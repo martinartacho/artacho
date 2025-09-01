@@ -109,7 +109,38 @@
                 @endif
             </x-dashboard.card>
         </div>
-        <!-- Tercera fila: Card  el ancho -->
+
+ <!-- Tercera fila: Widget de eventos (si tiene eventos y permisos) -->
+        @if($events->count() > 0 && Auth::user()->can('view-calendar'))
+        <div class="col-span-full mt-4">
+            <x-dashboard.card title="{{ __('site.Upcoming_Events') }}" color="purple">
+                <ul class="divide-y divide-gray-200">
+                    @foreach($events as $event)
+                        <li class="py-3">
+                            <div class="flex space-x-3">
+                                <div class="flex-1 min-w-0">
+                                    <p class="text-sm font-medium text-gray-900 truncate">
+                                        {{ $event->title }}
+                                    </p>
+                                    <p class="text-sm text-gray-500 truncate">
+                                         {{ \Carbon\Carbon::parse($event->start)->format('d M Y, H:i') }}
+                                    </p>
+                                </div>
+                            </div>
+                        </li>
+                    @endforeach
+                </ul>
+                
+                <div class="mt-4">
+                    <a href="{{ route('calendar.index') }}" class="text-indigo-600 hover:text-indigo-900 text-sm">
+                        {{ __('site.View_full_calendar') }} →
+                    </a>
+                </div>
+            </x-dashboard.card>
+        </div>
+        @endif
+        
+        <!--  fila: Card  el ancho -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
             
         </div>

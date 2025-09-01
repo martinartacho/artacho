@@ -127,8 +127,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::resource('events', \App\Http\Controllers\Admin\EventController::class);
         Route::get('events-calendar', [\App\Http\Controllers\Admin\EventController::class, 'calendar'])
             ->name('events.calendar');
+        //Route::get('events-calendar', [EventController::class, 'calendar'])->name('events.calendar');
         Route::get('events-calendar/data', [\App\Http\Controllers\Admin\EventController::class, 'calendarData'])
             ->name('events.calendar-data');
+            
     });
+    Route::get('/calendar', function() {
+        return view('events.calendar');
+    });
+    // Route::get('/calendar', [EventController::class, 'calendar'])->name('events.calendar');
 
 });

@@ -24,10 +24,6 @@
                                 <a href="{{ route('admin.events.create') }}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
                                     {{ __('Create Event') }}
                                 </a>
-
-                                <a href="{{ route('admin.events.create-recurring') }}" class="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded">
-                                    {{ __('Create Recurring Event') }}
-                                </a>
                             @endcan
                         </div>
                     </div>
@@ -64,6 +60,9 @@
                                         {{ __('Visible') }}
                                     </th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        {{ __('Recurrence') }}
+                                    </th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         {{ __('Actions') }}
                                     </th>
                                 </tr>
@@ -96,6 +95,16 @@
                                         <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full {{ $event->visible ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
                                             {{ $event->visible ? __('Yes') : __('No') }}
                                         </span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        @if($event->recurrence_type !== 'none')
+                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
+                                                {{ __(ucfirst($event->recurrence_type)) }} 
+                                                ({{ __('Every :interval', ['interval' => $event->recurrence_interval]) }})
+                                            </span>
+                                        @else
+                                            <span class="text-gray-400">{{ __('None') }}</span>
+                                        @endif
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                         <a href="{{ route('admin.events.edit', $event->id) }}" class="text-indigo-600 hover:text-indigo-900 mr-3">{{ __('Edit') }}</a>
