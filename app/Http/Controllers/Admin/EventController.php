@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Event;
 use App\Models\EventType;
+use App\Models\EventQuestion;
+use App\Models\EventAnswer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Log;
@@ -18,6 +20,9 @@ class EventController extends Controller
         $events = Event::with('eventType')->paginate(10);
         return view('admin.events.index', compact('events'));
     }
+
+
+
 
     public function create()
     {

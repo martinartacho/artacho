@@ -11,21 +11,20 @@
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 bg-white border-b border-gray-200">
                     <div class="flex justify-between items-center mb-6">
-                        <h3 class="text-lg font-semibold">{{ __('Events List') }}</h3>
-                        <div class="space-x-2">
-                            <a href="{{ route('admin.events.calendar') }}" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
-                                {{ __('Calendar View') }}
-                            </a>
-                            @can('create', App\Models\Event::class)
-                                <a href="{{ route('admin.event-types.index') }}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                                    {{ __('Event Types') }}
-                                </a>
-
-                                <a href="{{ route('admin.events.create') }}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                                    {{ __('Create Event') }}
-                                </a>
-                            @endcan
-                        </div>
+<h3 class="text-lg font-semibold">{{ __('site.Events List') }}</h3>
+    <div class="space-x-2">
+        <a href="{{ route('admin.events.calendar') }}" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
+            {{ __('site.Calendar View') }}
+        </a>
+        @can('create', App\Models\Event::class)
+                <a href="{{ route('admin.event-types.index') }}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+            {{ __('site.Event Types') }}
+        </a>
+        <a href="{{ route('admin.events.create') }}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+            {{ __('site.Create Event') }}
+        </a>
+        @endcan
+    </div>
                     </div>
 
                     @if(session('success'))
@@ -107,15 +106,42 @@
                                         @endif
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                        <a href="{{ route('admin.events.edit', $event->id) }}" class="text-indigo-600 hover:text-indigo-900 mr-3">{{ __('Edit') }}</a>
-                                        @can('delete', $event)
-                                        <form action="{{ route('admin.events.destroy', $event->id) }}" method="POST" class="inline-block">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="text-red-600 hover:text-red-900" onclick="return confirm('{{ __('Are you sure you want to delete this event?') }}')">{{ __('Delete') }}</button>
-                                        </form>
-                                        @endcan
-                                    </td>
+    <div class="flex flex-col space-y-1">
+        <div class="flex space-x-2">
+            <a href="{{ route('admin.events.edit', $event->id) }}" class="text-indigo-600 hover:text-indigo-900">{{ __('site.Edit') }}</a>
+            
+            {{-- Enlace a preguntas del evento --}}
+            <a href="{{ route('admin.events.questions.index', $event->id) }}" class="text-green-600 hover:text-green-900">
+                {{ __('site.Questions') }} 
+                @if($event->questions_count > 0)
+                <span class="bg-green-100 text-green-800 text-xs font-semibold px-1.5 py-0.5 rounded">
+                    {{ $event->questions_count }}
+                </span>
+                @endif
+            </a>
+            
+            {{-- Enlace a respuestas del evento --}}
+            <a href="{{ route('admin.events.answers.index', $event->id) }}" class="text-purple-600 hover:text-purple-900">
+                {{ __('site.Answers') }}
+                @if($event->answers_count > 0)
+                <span class="bg-purple-100 text-purple-800 text-xs font-semibold px-1.5 py-0.5 rounded">
+                    {{ $event->answers_count }}
+                </span>
+                @endif
+            </a>
+        </div>
+        
+        @can('delete', $event)
+        <form action="{{ route('admin.events.destroy', $event->id) }}" method="POST" class="inline-block">
+            @csrf
+            @method('DELETE')
+            <button type="submit" class="text-red-600 hover:text-red-900" onclick="return confirm('{{ __('site.Are you sure you want to delete this event?') }}')">
+                {{ __('site.Delete') }}
+            </button>
+        </form>
+        @endcan
+    </div>
+</td>
                                 </tr>
                                 @empty
                                 <tr>

@@ -45,9 +45,16 @@ class EventQuestionController extends Controller
             'required' => 'boolean',
         ]);
 
-        // Convert options array to JSON if needed
+        // Filtrar opciones vacías
         if (isset($validated['options'])) {
-            $validated['options'] = json_encode($validated['options']);
+            $validated['options'] = array_filter($validated['options'], function($option) {
+                return !empty(trim($option));
+            });
+            
+            // Si no hay opciones después de filtrar, establecer a null
+            if (empty($validated['options'])) {
+                $validated['options'] = null;
+            }
         }
 
         $event->questions()->create($validated);
@@ -81,9 +88,16 @@ class EventQuestionController extends Controller
             'required' => 'boolean',
         ]);
 
-        // Convert options array to JSON if needed
+        // Filtrar opciones vacías
         if (isset($validated['options'])) {
-            $validated['options'] = json_encode($validated['options']);
+            $validated['options'] = array_filter($validated['options'], function($option) {
+                return !empty(trim($option));
+            });
+            
+            // Si no hay opciones después de filtrar, establecer a null
+            if (empty($validated['options'])) {
+                $validated['options'] = null;
+            }
         }
 
         $question->update($validated);

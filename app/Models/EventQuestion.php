@@ -16,7 +16,7 @@ class EventQuestion extends Model
         'options' => 'array',
         'required' => 'boolean'
     ];
-
+    
     public function event(): BelongsTo
     {
         return $this->belongsTo(Event::class);

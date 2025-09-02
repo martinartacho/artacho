@@ -200,6 +200,36 @@ return [
     'View full calendar' => 'View full calendar',
     'Filter by Type' => 'Filter',
     'All Types' => 'All',
+    'Question created successfully.' => 'Question created successfully.',
+    'Question updated successfully.' => 'Question updated successfully.',
+    'Question deleted successfully.' => 'Question deleted successfully.',
+    'Answer created successfully.' => 'Answer created successfully.',
+    'Answer updated successfully.' => 'Answer updated successfully.',
+    'Answer deleted successfully.' => 'Answer deleted successfully.',
+    'Add Question' => 'Add Question',
+    'Edit Question for Event' => 'Edit Question for Event',
+    'Type' => 'Type',
+    'Text' => 'Text',
+    'Single Choice' => 'Single Choice',
+    'Multiple Choice' => 'Multiple Choice',
+    'Options' => 'Options',
+    'Add Option' => 'Add Option',
+    'Option' => 'Option',
+    'Required' => 'Required',
+    'Add Answer' => 'Add Answer',
+    'View' => 'View',
+    'Edit' => 'Edit',
+    'Delete' => 'Delete',
+    'Select a question' => 'Select a question',
+    'No answers found for this event.' => 'No answers found for this event.',
+    'Question' => 'Question',
+    'Questions' => 'Questions',
+    'Answers' => 'Answers',
+    'Questions for Event' => 'Questions for Event',
+    'Create Question' => 'Create Question',
+    'Add at least one option for choice questions'  => 'Add at least one option for choice questions'
+
+
 
     
 ];
