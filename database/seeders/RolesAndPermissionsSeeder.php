@@ -45,16 +45,33 @@ class RolesAndPermissionsSeeder extends Seeder
             'notifications.view',
 
             // Event permissions
+            'events.index',
             'events.view',
             'events.create',
             'events.edit',
             'events.delete',
                 
             // Event Type permissions
+            'event_types.index',
             'event_types.view',
             'event_types.create',
             'event_types.edit',
             'event_types.delete',
+
+            // Event Question permissions
+            'event_questions.index',
+            'event_questions.view',
+            'event_questions.create',
+            'event_questions.edit',
+            'event_questions.delete',
+
+            // Event Answer permissions
+            'event_answers.index',
+            'event_answers.view',
+            'event_answers.create',
+            'event_answers.edit',
+            'event_answers.delete',
+
            
 
         ];
@@ -68,14 +85,13 @@ class RolesAndPermissionsSeeder extends Seeder
         $admin = Role::firstOrCreate(['name' => 'admin']);
         $admin->givePermissionTo(Permission::all());
 
-
+        //gestor
         $gestor = Role::firstOrCreate(['name' => 'gestor']);
 
         $gestor->givePermissionTo(['users.index']);
         $gestor->givePermissionTo(['users.create']);
         $gestor->givePermissionTo(['users.edit']);
         $gestor->givePermissionTo(['users.delete']);
-        
 
         $gestor->givePermissionTo(['notifications.index']);
         $gestor->givePermissionTo(['notifications.create']);
@@ -90,8 +106,19 @@ class RolesAndPermissionsSeeder extends Seeder
         $gestor->givePermissionTo(['events.delete']);
         $gestor->givePermissionTo(['events.view']);
 
+        $gestor->givePermissionTo(['event_questions.index']);
+        $gestor->givePermissionTo(['event_questions.create']);
+        $gestor->givePermissionTo(['event_questions.edit']);
+        $gestor->givePermissionTo(['event_questions.delete']);
+        $gestor->givePermissionTo(['event_questions.view']);
 
+        $gestor->givePermissionTo(['events.index']);
+        $gestor->givePermissionTo(['events.create']);
+        $gestor->givePermissionTo(['events.edit']);
+        $gestor->givePermissionTo(['events.delete']);
+        $gestor->givePermissionTo(['events.view']);
 
+        // editor
         $editor = Role::firstOrCreate(['name' => 'editor']);
         $editor->givePermissionTo(['notifications.index']);
         $editor->givePermissionTo(['notifications.create']);

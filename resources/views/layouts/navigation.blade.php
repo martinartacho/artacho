@@ -54,17 +54,16 @@
                                                     {{ __('site.Permissions') }}
                                                 </x-dropdown-link>
                                             @endcan
+                                            @canany(['events.view', 'event_types.view'])
+                                                <x-dropdown-link :href="route('admin.events.index')" :active="request()->routeIs('admin.events.*')">
+                                                    {{ __('Events') }}
+                                                </x-dropdown-link>
+                                            @endcanany
                                             @can('settings.edit')
                                                 <x-dropdown-link :href="route('settings.edit')" :active="request()->routeIs('settings.*')">
                                                     {{ __('Settings') }}
                                                 </x-dropdown-link>
                                             @endcan
-                                            
-                                            @canany(['events.view', 'event_types.view'])
-                                            <x-dropdown-link :href="route('admin.events.index')" :active="request()->routeIs('admin.events.*')">
-                                                {{ __('Events') }}
-                                            </x-dropdown-link>
-                                            @endcanany
 
                                         </x-slot>
                                     </x-dropdown>

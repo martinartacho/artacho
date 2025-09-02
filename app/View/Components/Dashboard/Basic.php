@@ -2,6 +2,7 @@
 
 namespace App\View\Components\Dashboard;
 
+use App\Http\Controllers\CalendarController;
 use Illuminate\View\Component;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
@@ -15,6 +16,7 @@ class Basic extends Component
     public $currentLanguage;
     public $globalLanguage;
     public $userLanguage;
+     public $events;
     
     public function __construct()
     {
@@ -36,6 +38,9 @@ class Basic extends Component
                 ->take(5)
                 ->get()
             : collect([]);
+        
+        //$calendarController = new CalendarController();
+        //$this->events = $calendarController->getDashboardEvents(5);
         
     }
 

@@ -111,6 +111,7 @@
         </div>
 
  <!-- Tercera fila: Widget de eventos (si tiene eventos y permisos) -->
+    @isset($events)
         @if($events->count() > 0 && Auth::user()->can('view-calendar'))
         <div class="col-span-full mt-4">
             <x-dashboard.card title="{{ __('site.Upcoming_Events') }}" color="purple">
@@ -132,13 +133,14 @@
                 </ul>
                 
                 <div class="mt-4">
-                    <a href="{{ route('calendar.index') }}" class="text-indigo-600 hover:text-indigo-900 text-sm">
-                        {{ __('site.View_full_calendar') }} →
+                    <a href="{{ route('calendar.show') }}" class="text-indigo-600 hover:text-indigo-900 text-sm">
+                        {{ __('site.View full calendar') }} →
                     </a>
                 </div>
             </x-dashboard.card>
         </div>
         @endif
+    @endisset
         
         <!--  fila: Card  el ancho -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">

@@ -193,7 +193,10 @@ return [
     'Month' => 'Mes',
     'Week' => 'Semana',
     'Day' => 'Día',
-    'View full calendar' => 'Ver calendario'
+    'View full calendar' => 'Ver calendario',
+    'Filter by Type' => 'Filtrar Tipos',
+    'All Types' => 'Todos',
+
 
 
 ];

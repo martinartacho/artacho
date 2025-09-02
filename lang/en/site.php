@@ -197,7 +197,9 @@ return [
     'Month' => 'Month',
     'Week' => 'Week',
     'Day' => 'Day',
-    'View full calendar' => 'View full calendar'
+    'View full calendar' => 'View full calendar',
+    'Filter by Type' => 'Filter',
+    'All Types' => 'All',
 
     
 ];

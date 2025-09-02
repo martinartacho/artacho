@@ -12,6 +12,11 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\Admin\EventController;
 use App\Http\Controllers\Admin\EventTypeController;
+// use App\Http\Controllers\Admin\CalendarController;
+use App\Http\Controllers\Admin\EventQuestionController;
+use App\Http\Controllers\Admin\EventAnswerController;
+use App\Http\Controllers\CalendarController;
+
 use App\Http\Controllers\Admin\FeedbackController as AdminFeedbackController;
 use App\Http\Controllers\LocaleController;
 use Illuminate\Support\Facades\Route;
@@ -117,24 +122,27 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::resource('users', GestorUserController::class)->only(['index', 'edit', 'update']);
     });
 
-    // routes/web.php (sección administrativa)
+    // Rutas administrativas
     Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(function () {
         // Event Types Routes
-        Route::resource('event-types', \App\Http\Controllers\Admin\EventTypeController::class)
-            ->except(['show']);
+        Route::resource('event-types', EventTypeController::class)->except(['show']);
         
         // Events Routes
-        Route::resource('events', \App\Http\Controllers\Admin\EventController::class);
-        Route::get('events-calendar', [\App\Http\Controllers\Admin\EventController::class, 'calendar'])
-            ->name('events.calendar');
-        //Route::get('events-calendar', [EventController::class, 'calendar'])->name('events.calendar');
-        Route::get('events-calendar/data', [\App\Http\Controllers\Admin\EventController::class, 'calendarData'])
-            ->name('events.calendar-data');
-            
+        Route::resource('events', EventController::class);
+        Route::get('events-calendar', [EventController::class, 'calendar'])->name('events.calendar');
+        Route::get('events-calendar/data', [EventController::class, 'calendarData'])->name('events.calendar-data');
+
+        // Rutas para preguntas de eventos
+        Route::resource('events.questions', EventQuestionController::class)->except(['show']);
+        
+        // Rutas para respuestas de eventos
+        Route::resource('events.answers', EventAnswerController::class);
     });
-    Route::get('/calendar', function() {
-        return view('events.calendar');
-    });
-    // Route::get('/calendar', [EventController::class, 'calendar'])->name('events.calendar');
+
+    // Rutas públicas del calendario
+    Route::get('/calendar', [CalendarController::class, 'index'])->name('calendar.index');
+    Route::get('/calendar/event/{event}', [CalendarController::class, 'show'])->name('calendar.event.show');
+    Route::get('/calendar/events', [CalendarController::class, 'events'])->name('calendar.events');
+
 
 });

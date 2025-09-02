@@ -224,6 +224,9 @@ return [
     'Month' => 'Mes',
     'Week' => 'Setmana',
     'Day' => 'Dia',
-    'View full calendar' => 'Veure calendari'
+    'View full calendar' => 'Veure calendari',
+    'Filter by Type' => 'Filtrar',
+    'All Types' => 'Tots',
+
 
 ];
