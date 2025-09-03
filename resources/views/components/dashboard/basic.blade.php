@@ -133,7 +133,7 @@
                 </ul>
                 
                 <div class="mt-4">
-                    <a href="{{ route('calendar.show') }}" class="text-indigo-600 hover:text-indigo-900 text-sm">
+                    <a href="{{ route('calendar.index') }}" class="text-indigo-600 hover:text-indigo-900 text-sm">
                         {{ __('site.View full calendar') }} →
                     </a>
                 </div>

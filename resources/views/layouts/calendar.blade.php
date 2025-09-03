@@ -20,7 +20,7 @@
         body {
             font-family: 'Figtree', sans-serif;
             margin: 0;
-            padding: 0;
+            padding: 20px;
             background-color: #f8fafc;
         }
         

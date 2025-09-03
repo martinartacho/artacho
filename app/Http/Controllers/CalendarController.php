@@ -29,7 +29,7 @@ class CalendarController extends Controller
             ($event->end_visible && $event->end_visible < now())) {
             abort(404);
         }
-
+      //   dd('Prepara vista show',  $event);
         return view('calendar.show', compact('event'));
     }
 
