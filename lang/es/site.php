@@ -222,8 +222,36 @@ return [
     'Question' => 'Pregunta',
     'Answers' => 'Respuestas',
     'Questions for Event' => 'Preguntas del Evento',
-    'Add at least one option for choice questions'  => 'Agregue al menos una opción para preguntas de opción múltiple'
+    'Add at least one option for choice questions'  => 'Agregue al menos una opción para preguntas de opción múltiple',
 
+    'Event Details' => 'Detalles del Evento',
+    'Date' => 'Fecha',
+    'Time' => 'Hora',
+    'Description' => 'Descripción',
+    'No description' => 'Sin descripción',
+    'Visibility Information' => 'Información de Visibilidad',
+    'Visible from' => 'Visible desde',
+    'Visible to' => 'Visible hasta',
+    'until' => 'hasta', 
+    'Not set' => 'No establecido',
+    'Event Questions' => 'Preguntas del Evento',
+    'Answer Questions' => 'Responder preguntas',
+    'Available' => 'Disponible',
+    'Not available' => 'No disponible',
+    'No questions available' => 'No hay preguntas',
+    'Submit Answers' => 'Enviar Respuestas',
+    'Cancel' => 'Cancelar',
+    'Close' => 'Cerrar',
+    'This event has questions' => 'Este evento tiene preguntas',
+    'All day' => 'Todo el día',
+    'Write your answer here...' => 'Escribe tu respuesta aquí...',
+    'Answers submitted successfully' => 'Respuestas enviadas con éxito',
+    'Are you sure you want to cancel your answers? All entered data will be lost.' => '¿Estás seguro de que quieres cancelar tus respuestas? Todos los datos introducidos se perderán.',
+    'Error loading event details' => 'Error al cargar los detalles del evento',
+    'Error submitting answers' => 'Error al enviar las respuestas',
+    'Available for answers' => 'Disponible para respuestas',
+
+    'Event deleted successfully' => 'Evento eliminado'
 
 
 ];

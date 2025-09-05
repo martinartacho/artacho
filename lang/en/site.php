@@ -237,10 +237,13 @@ return [
     'Visibility Information' => 'Información de Visibilidad',
     'Visible from' => 'Visible desde',
     'Visible to' => 'Visible hasta',
+    'until' => 'until', 
     'Not set' => 'No establecido',
     'Event Questions' => 'Preguntas del Evento',
     'Answer Questions' => 'Responder Preguntas',
     'Available' => 'Disponible',
+    'Not available' => 'No disponible',
+    'No questions available' => 'No questions available',
     'Submit Answers' => 'Enviar Respuestas',
     'Cancel' => 'Cancelar',
     'Close' => 'Cerrar',
@@ -252,6 +255,8 @@ return [
     'Error loading event details' => 'Error al cargar los detalles del evento',
     'Error submitting answers' => 'Error al enviar las respuestas',
     'Available for answers' => 'Disponible para respuestas',
+
+    'Event deleted successfully' => 'Event deleted successfully'
     
 ];
 

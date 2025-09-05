@@ -264,9 +264,12 @@ return [
     'Visibility Information' => 'Informació de Visibilitat',
     'Visible from' => 'Visible des de',
     'Visible to' => 'Visible fins a',
+    'until' => 'until', 
     'Not set' => 'No establert',
     'Event Questions' => 'Preguntes de l\'Esdeveniment',
     'Answer Questions' => 'Respondre Preguntes',
+    'Not available' => 'No disponible',
+    'No questions available' => 'No hi ha preguntes',
     'Available' => 'Disponible',
     'Submit Answers' => 'Enviar Respostes',
     'Cancel' => 'Cancel·lar',
@@ -278,6 +281,8 @@ return [
     'Are you sure you want to cancel your answers? All entered data will be lost.' => 'Estàs segur que vols cancel·lar les teves respostes? Totes les dades introduïdes es perdran.',
     'Error loading event details' => 'Error en carregar els detalls de l\'esdeveniment',
     'Error submitting answers' => 'Error en enviar les respostes',
-    'Available for answers' => 'Disponible per a respostes',    
+    'Available for answers' => 'Disponible per a respostes',
+
+    'Event deleted successfully' => 'Esdeveniment eliminat'
 
 ];

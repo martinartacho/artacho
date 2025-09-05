@@ -151,21 +151,45 @@ class CalendarController extends Controller
         try {
             // Guardar cada respuesta
             foreach ($request->responses as $questionId => $answer) {
-                // Para checkboxes (múltiples valores)
-                if (is_array($answer)) {
-                    $answer = implode(',', $answer);
+                // Validar que la pregunta existe y pertenece al evento
+                $question = EventQuestion::where('id', $questionId)
+                    ->where('event_id', $event->id)
+                    ->first();
+                    
+                if (!$question) {
+                    continue; // Saltar preguntas que no existen o no pertenecen al evento
                 }
-
-                EventAnswer::updateOrCreate(
-                    [
-                        'event_id' => $event->id,
-                        'question_id' => $questionId,
-                        'user_id' => Auth::id()
-                    ],
-                    [
-                        'answer' => $answer
-                    ]
-                );
+                
+                // Preparar la respuesta para guardar
+                $answerToSave = '';
+                
+                if (is_array($answer)) {
+                    // Para respuestas múltiples (checkboxes)
+                    $filteredAnswers = array_filter($answer, function($value) {
+                        return !empty($value) && trim($value) !== '';
+                    });
+                    
+                    if (!empty($filteredAnswers)) {
+                        $answerToSave = implode(',', $filteredAnswers);
+                    }
+                } else {
+                    // Para respuestas simples (texto o radio)
+                    $answerToSave = trim($answer);
+                }
+                
+                // Solo guardar si la respuesta no está vacía
+                if (!empty($answerToSave)) {
+                    EventAnswer::updateOrCreate(
+                        [
+                            'event_id' => $event->id,
+                            'question_id' => $questionId,
+                            'user_id' => Auth::id()
+                        ],
+                        [
+                            'answer' => $answerToSave
+                        ]
+                    );
+                }
             }
 
             return response()->json([
@@ -173,13 +197,15 @@ class CalendarController extends Controller
                 'message' => 'Respuestas guardadas correctamente'
             ]);
         } catch (\Exception $e) {
+            \Log::error('Error al guardar respuestas: ' . $e->getMessage());
+            \Log::error('Datos de la solicitud: ', $request->all());
+            
             return response()->json([
                 'success' => false,
-                'message' => 'Error al guardar las respuestas: ' . $e->getMessage()
+                'message' => 'Error interno del servidor al guardar las respuestas'
             ], 500);
         }
     }
-
 
 
     /**

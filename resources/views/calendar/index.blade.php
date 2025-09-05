@@ -193,6 +193,16 @@
             content: " *";
             color: #dc3545;
         }
+
+            .error-message {
+            color: #dc3545;
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+        }
+
+        .is-invalid {
+            border-color: #dc3545 !important;
+        }
     </style>
 </head>
 <body>
@@ -350,10 +360,11 @@
                         info.el.appendChild(badge);
                     }
                 },
+
                 eventClick: function(info) {
                     info.jsEvent.preventDefault();
                     
-                    // Obtener detalles completos del evento - CORRECCIÓN DE LA URL
+                    // Obtener detalles completos del evento
                     const eventId = info.event.id;
                     const url = `{{ route('calendar.event.details', ['event' => ':eventId']) }}`.replace(':eventId', eventId);
                     
@@ -369,7 +380,7 @@
                             
                             // Cargar datos del evento en el modal
                             const event = info.event;
-                            const extendedProps = eventDetails.extendedProps || {};
+                            const extendedProps = eventDetails.extendedProps || {}; // Definir extendedProps aquí
                             
                             // Información básica
                             document.getElementById('eventTitle').textContent = event.title;
@@ -435,8 +446,6 @@
                                     const formGroup = document.createElement('div');
                                     formGroup.className = 'mb-4 p-3 border rounded';
                                     
-                                    let inputField = '';
-                                    
                                     // Título de la pregunta
                                     const questionTitle = document.createElement('div');
                                     questionTitle.className = `question-title ${question.required ? 'required-field' : ''}`;
@@ -445,14 +454,20 @@
                                     
                                     if (question.type === 'text') {
                                         // Campo de texto
-                                        inputField = `
-                                            <textarea class="form-control mt-2" id="question${question.id}" name="responses[${question.id}]" rows="3" ${question.required ? 'required' : ''} placeholder="{{ __("site.Write your answer here...") }}">${question.user_response || ''}</textarea>
-                                        `;
-                                        formGroup.innerHTML += inputField;
-                                    } else if (question.type === 'unique') {
-                                        // Opciones únicas (radio buttons) - estilo mejorado
+                                        console.log('option es t ', question.type );
+                                        const textarea = document.createElement('textarea');
+                                        textarea.className = 'form-control mt-2';
+                                        textarea.name = `answer_${question.id}`;
+                                        textarea.rows = 3;
+                                        textarea.placeholder = '{{ __("site.Write your answer here...") }}';
+                                        if (question.required) textarea.required = true;
+                                        if (question.user_response) textarea.value = question.user_response;
+                                        formGroup.appendChild(textarea);
+                                    } else if (question.type === 'single') {
+                                        // Opciones únicas (radio buttons)
+                                        console.log('option es u ', question.type );
                                         const optionsContainer = document.createElement('div');
-                                        optionsContainer.className = 'radio-options-container';
+                                        optionsContainer.className = 'radio-options-container mt-2';
                                         
                                         if (question.options) {
                                             // Convertir options a array si es necesario
@@ -470,16 +485,17 @@
                                                 const optionDiv = document.createElement('div');
                                                 optionDiv.className = 'radio-option';
                                                 
+                                                
                                                 const radioInput = document.createElement('input');
                                                 radioInput.type = 'radio';
-                                                radioInput.name = `responses[${question.id}]`;
-                                                radioInput.id = `question${question.id}_opt${optIndex}`;
+                                                radioInput.name = `answer_${question.id}`;
                                                 radioInput.value = optionValue;
+                                                radioInput.id = `question_${question.id}_option_${optIndex}`;
                                                 if (question.required) radioInput.required = true;
                                                 if (isChecked) radioInput.checked = true;
                                                 
                                                 const radioLabel = document.createElement('label');
-                                                radioLabel.htmlFor = `question${question.id}_opt${optIndex}`;
+                                                radioLabel.htmlFor = `question_${question.id}_option_${optIndex}`;
                                                 radioLabel.textContent = optionValue;
                                                 
                                                 optionDiv.appendChild(radioInput);
@@ -489,9 +505,10 @@
                                         }
                                         formGroup.appendChild(optionsContainer);
                                     } else if (question.type === 'multiple') {
+                                        console.log('option es m ', question.type );
                                         // Opciones múltiples (checkboxes)
                                         const optionsContainer = document.createElement('div');
-                                        optionsContainer.className = 'checkbox-options-container';
+                                        optionsContainer.className = 'checkbox-options-container mt-2';
                                         
                                         if (question.options) {
                                             // Convertir options a array si es necesario
@@ -521,13 +538,13 @@
                                                 
                                                 const checkboxInput = document.createElement('input');
                                                 checkboxInput.type = 'checkbox';
-                                                checkboxInput.name = `responses[${question.id}][]`;
-                                                checkboxInput.id = `question${question.id}_opt${optIndex}`;
+                                                checkboxInput.name = `answer_${question.id}[]`;
                                                 checkboxInput.value = optionValue;
+                                                checkboxInput.id = `question_${question.id}_option_${optIndex}`;
                                                 if (isChecked) checkboxInput.checked = true;
                                                 
                                                 const checkboxLabel = document.createElement('label');
-                                                checkboxLabel.htmlFor = `question${question.id}_opt${optIndex}`;
+                                                checkboxLabel.htmlFor = `question_${question.id}_option_${optIndex}`;
                                                 checkboxLabel.textContent = optionValue;
                                                 
                                                 optionDiv.appendChild(checkboxInput);
@@ -555,6 +572,12 @@
                                 responseForm.appendChild(buttonGroup);
                             } else {
                                 responseSection.style.display = 'none';
+                                responseSection.style.display = 'block';
+                                responseStatus.textContent = '{{ __("site.No questions available") }}';
+                                responseStatus.className = 'badge bg-info';
+                                
+                                // Limpiar formulario anterior
+                                responseForm.innerHTML = '';
                             }
                             
                             // Mostrar el modal
@@ -565,6 +588,7 @@
                             alert('{{ __("site.Error loading event details") }}: ' + error.message);
                         });
                 },
+
                 eventTimeFormat: {
                     hour: '2-digit',
                     minute: '2-digit',
@@ -587,63 +611,160 @@
                 calendar.refetchEvents();
             });
             
-// Manejar el envío del formulario de respuestas
-document.getElementById('responseForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-    
-    // Recopilar todas las respuestas de forma correcta
-    const formData = new FormData(this);
-    const responses = {};
-    
-    for (let [key, value] of formData.entries()) {
-        // Extraer el ID de la pregunta del nombre del campo
-        let questionId = key;
-        
-        // Para campos de checkbox (múltiples valores)
-        if (key.endsWith('[]')) {
-            questionId = key.replace('[]', '');
-            if (!responses[questionId]) {
-                responses[questionId] = [];
+            // Manejar el envío del formulario de respuestas
+            document.getElementById('responseForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Recopilar y validar todas las respuestas
+                const responses = {};
+                let hasErrors = false;
+                
+                // Obtener todas las preguntas del evento
+                const questions = currentEventDetails.extendedProps.questions || [];
+                
+                // Validar cada pregunta
+                questions.forEach(question => {
+                    let answerValue;
+                    
+                    if (question.type === 'text') {
+                        // Para campos de texto
+                        const textarea = document.querySelector(`textarea[name="answer_${question.id}"]`);
+                        answerValue = textarea ? textarea.value.trim() : '';
+                        
+                        // Validar campo requerido
+                        if (question.required && !answerValue) {
+                            markFieldAsError(textarea, 'Esta pregunta es obligatoria');
+                            hasErrors = true;
+                        } else {
+                            clearFieldError(textarea);
+                        }
+                    } 
+                    else if (question.type === 'single') {
+                        // Para opciones únicas (radio buttons)
+                        const selectedRadio = document.querySelector(`input[name="answer_${question.id}"]:checked`);
+                        answerValue = selectedRadio ? selectedRadio.value : '';
+                        
+                        // Validar campo requerido
+                        if (question.required && !answerValue) {
+                            const radioContainer = document.querySelector(`.radio-options-container[name="answer_${question.id}"]`);
+                            markFieldAsError(radioContainer, 'Esta pregunta es obligatoria');
+                            hasErrors = true;
+                        } else {
+                            const radioContainer = document.querySelector(`.radio-options-container[name="answer_${question.id}"]`);
+                            clearFieldError(radioContainer);
+                        }
+                    }
+                    else if (question.type === 'multiple') {
+                        // Para opciones múltiples (checkboxes)
+                        const checkboxes = document.querySelectorAll(`input[name="answer_${question.id}[]"]:checked`);
+                        answerValue = Array.from(checkboxes).map(cb => cb.value);
+                        
+                        // Validar campo requerido
+                        if (question.required && answerValue.length === 0) {
+                            const checkboxContainer = document.querySelector(`.checkbox-options-container[name="answer_${question.id}"]`);
+                            markFieldAsError(checkboxContainer, 'Esta pregunta es obligatoria');
+                            hasErrors = true;
+                        } else {
+                            const checkboxContainer = document.querySelector(`.checkbox-options-container[name="answer_${question.id}"]`);
+                            clearFieldError(checkboxContainer);
+                        }
+                    }
+                    
+                    // Solo agregar respuestas no vacías
+                    if (answerValue && (!Array.isArray(answerValue) || answerValue.length > 0)) {
+                        responses[question.id] = answerValue;
+                    }
+                });
+                
+                // Si hay errores, no enviar el formulario
+                if (hasErrors) {
+                    alert('Por favor, complete todas las preguntas obligatorias.');
+                    return;
+                }
+                
+                // Verificar que hay al menos una respuesta
+                if (Object.keys(responses).length === 0) {
+                    alert('No hay respuestas para guardar.');
+                    return;
+                }
+                
+                // Mostrar indicador de carga
+                const submitBtn = document.getElementById('submitResponseBtn');
+                const originalText = submitBtn.innerHTML;
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
+                submitBtn.disabled = true;
+                
+                // Enviar respuestas al servidor
+                fetch('{{ route("calendar.event.answers") }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: JSON.stringify({
+                        event_id: currentEventDetails.id,
+                        responses: responses
+                    })
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        // Si la respuesta no es exitosa, obtener más detalles del error
+                        return response.text().then(text => {
+                            throw new Error(`Error del servidor: ${response.status} - ${text}`);
+                        });
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.success) {
+                        alert('{{ __("site.Answers submitted successfully") }}');
+                        eventModal.hide();
+                    } else {
+                        throw new Error(data.message || 'Error desconocido del servidor');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error al enviar las respuestas: ' + error.message);
+                })
+                .finally(() => {
+                    // Restaurar el botón a su estado original
+                    submitBtn.innerHTML = originalText;
+                    submitBtn.disabled = false;
+                });
+            });
+
+            // Función para marcar un campo como error
+            function markFieldAsError(element, message) {
+                if (!element) return;
+                
+                element.classList.add('is-invalid');
+                
+                // Eliminar mensaje de error anterior si existe
+                const existingError = element.nextElementSibling;
+                if (existingError && existingError.classList.contains('error-message')) {
+                    existingError.remove();
+                }
+                
+                // Agregar mensaje de error
+                const errorElement = document.createElement('div');
+                errorElement.className = 'error-message text-danger small mt-1';
+                errorElement.textContent = message;
+                element.parentNode.appendChild(errorElement);
             }
-            responses[questionId].push(value);
-        } 
-        // Para campos de radio y texto (valores únicos)
-        else if (key.startsWith('question_')) {
-            questionId = key.replace('question_', '');
-            responses[questionId] = value;
-        }
-        // Para campos con formato antiguo (mantener compatibilidad)
-        else {
-            responses[key] = value;
-        }
-    }
-    
-    // Enviar respuestas al servidor
-    fetch('{{ route("calendar.event.answers") }}', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': '{{ csrf_token() }}'
-        },
-        body: JSON.stringify({
-            event_id: currentEventDetails.id,
-            responses: responses
-        })
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            alert('{{ __("site.Answers submitted successfully") }}');
-            eventModal.hide();
-        } else {
-            alert('Error: ' + data.message);
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        alert('{{ __("site.Error submitting answers") }}');
-    });
-});
+
+            // Función para limpiar el error de un campo
+            function clearFieldError(element) {
+                if (!element) return;
+                
+                element.classList.remove('is-invalid');
+                
+                // Eliminar mensaje de error si existe
+                const errorElement = element.nextElementSibling;
+                if (errorElement && errorElement.classList.contains('error-message')) {
+                    errorElement.remove();
+                }
+            }
 
             // Manejar la cancelación de respuestas
             document.getElementById('cancelResponseBtn').addEventListener('click', function() {
