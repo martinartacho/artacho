@@ -256,4 +256,28 @@ return [
     'Add at least one option for choice questions'  => 'Afegeix com a mínim una opció per a les preguntes de selecció', 
 
 
+    'Event Details' => 'Detalls de l\'Esdeveniment',
+    'Date' => 'Data',
+    'Time' => 'Hora',
+    'Description' => 'Descripció',
+    'No description' => 'Sense descripció',
+    'Visibility Information' => 'Informació de Visibilitat',
+    'Visible from' => 'Visible des de',
+    'Visible to' => 'Visible fins a',
+    'Not set' => 'No establert',
+    'Event Questions' => 'Preguntes de l\'Esdeveniment',
+    'Answer Questions' => 'Respondre Preguntes',
+    'Available' => 'Disponible',
+    'Submit Answers' => 'Enviar Respostes',
+    'Cancel' => 'Cancel·lar',
+    'Close' => 'Tancar',
+    'This event has questions' => 'Aquest esdeveniment té preguntes',
+    'All day' => 'Tot el dia',
+    'Write your answer here...' => 'Escriu la teva resposta aquí...',
+    'Answers submitted successfully' => 'Respostes enviades amb èxit',
+    'Are you sure you want to cancel your answers? All entered data will be lost.' => 'Estàs segur que vols cancel·lar les teves respostes? Totes les dades introduïdes es perdran.',
+    'Error loading event details' => 'Error en carregar els detalls de l\'esdeveniment',
+    'Error submitting answers' => 'Error en enviar les respostes',
+    'Available for answers' => 'Disponible per a respostes',    
+
 ];

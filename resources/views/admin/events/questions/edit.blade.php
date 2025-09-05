@@ -62,7 +62,7 @@
 
                         <div class="mb-4">
                             <div class="flex items-center">
-                                <input type="checkbox" name="required" id="required" value="1" {{ old('required', $question->required) ? 'checked' : '' }}
+                                <input type="checkbox" name="required" id="required" value="" {{ old('required', $question->required) ? 'checked' : '' }}
                                     class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded">
                                 <label for="required" class="ml-2 block text-sm text-gray-900">{{ __('site.Required') }}</label>
                             </div>

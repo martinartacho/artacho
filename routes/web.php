@@ -142,6 +142,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Rutas públicas del calendario
     Route::get('/calendar', [CalendarController::class, 'index'])->name('calendar.index');
     Route::get('/calendar/event/{event}', [CalendarController::class, 'show'])->name('calendar.event.show');
+    Route::get('/calendar/event/{event}/details', [CalendarController::class, 'eventDetails'])->name('calendar.event.details');
+    Route::post('/calendar/event/answers', [CalendarController::class, 'saveAnswers'])->name('calendar.event.answers');
     Route::get('/calendar/events', [CalendarController::class, 'events'])->name('calendar.events');
 
 

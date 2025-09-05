@@ -7,6 +7,10 @@
     
     <!-- FullCalendar CSS -->
     <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css" rel="stylesheet">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <!-- Styles -->
     <style>
@@ -75,6 +79,120 @@
         .fc-event {
             cursor: pointer;
         }
+        
+        .event-with-questions {
+            border-left: 3px solid #f6c23e;
+        }
+        
+        .question-badge {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background-color: #f6c23e;
+            color: #000;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+        
+        .modal-content {
+            border-radius: 10px;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+        }
+        
+        .modal-header {
+            background: linear-gradient(90deg, #4e73df 0%, #2a3e9d 100%);
+            color: white;
+            border-radius: 10px 10px 0 0;
+        }
+        
+        .badge-event-detail {
+            font-size: 0.85em;
+            margin-right: 5px;
+        }
+        
+        .response-form {
+            background-color: #f8f9fc;
+            border-radius: 5px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+        
+        .visibility-info {
+            background-color: #f8f9fc;
+            padding: 10px 15px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            border-left: 4px solid #4e73df;
+        }
+        
+        /* Estilos para opciones de radio button mejoradas */
+        .radio-options-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 8px;
+        }
+        
+        .radio-option {
+            position: relative;
+        }
+        
+        .radio-option input[type="radio"] {
+            position: absolute;
+            opacity: 0;
+        }
+        
+        .radio-option label {
+            display: inline-block;
+            padding: 8px 16px;
+            background-color: #f8f9fc;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .radio-option input[type="radio"]:checked + label {
+            background-color: #4e73df;
+            color: white;
+            border-color: #4e73df;
+        }
+        
+        .radio-option label:hover {
+            background-color: #e9ecef;
+        }
+        
+        /* Estilos para checkboxes */
+        .checkbox-options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 8px;
+        }
+        
+        .checkbox-option {
+            display: flex;
+            align-items: center;
+        }
+        
+        .checkbox-option input[type="checkbox"] {
+            margin-right: 8px;
+        }
+        
+        .question-title {
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+        
+        .required-field::after {
+            content: " *";
+            color: #dc3545;
+        }
     </style>
 </head>
 <body>
@@ -106,14 +224,86 @@
         <div id="calendar"></div>
     </div>
 
+    <!-- Event Modal -->
+    <div class="modal fade" id="eventModal" tabindex="-1" aria-labelledby="eventModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="eventModalLabel">{{ __('site.Event Details') }}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <h4 id="eventTitle">{{ __('site.Title') }}</h4>
+                            <div class="d-flex flex-wrap mb-2">
+                                <span class="badge bg-primary badge-event-detail" id="eventDate"><i class="fas fa-calendar me-1"></i> {{ __('site.Date') }}</span>
+                                <span class="badge bg-info badge-event-detail" id="eventTime"><i class="fas fa-clock me-1"></i> {{ __('site.Time') }}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-12">
+                            <h5>{{ __('site.Description') }}</h5>
+                            <p id="eventDescription">{{ __('site.No description') }}</p>
+                        </div>
+                    </div>
+
+                    <!-- Información de Visibilidad como frase -->
+                    <div class="row mb-3">
+                        <div class="col-12">
+                            <div class="visibility-info">
+                                <i class="fas fa-eye me-1"></i>
+                                <span id="visibilityText">{{ __('site.Visible from') }} ...</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Sección de Respuestas -->
+                    <div class="row" id="responseSection">
+                        <div class="col-12">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <h5>{{ __('site.Answer Questions') }}</h5>
+                                <span class="badge bg-info" id="responseStatus">{{ __('site.Available') }}</span>
+                            </div>
+                            <div class="response-form">
+                                <form id="responseForm">
+                                    <!-- Los campos de respuesta se insertarán aquí dinámicamente -->
+                                    <div class="d-grid gap-2">
+                                        <button type="submit" class="btn btn-success" id="submitResponseBtn">
+                                            <i class="fas fa-paper-plane me-1"></i> {{ __('site.Submit Answers') }}
+                                        </button>
+                                        <button type="button" class="btn btn-outline-danger" id="cancelResponseBtn">
+                                            <i class="fas fa-times me-1"></i> {{ __('site.Cancel') }}
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ __('site.Close') }}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- FullCalendar JS -->
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/locales/{{ app()->getLocale() }}.js"></script>
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             var calendarEl = document.getElementById('calendar');
             var eventTypeFilter = document.getElementById('event_type_filter');
+            var eventModal = new bootstrap.Modal(document.getElementById('eventModal'));
+            var currentEventDetails = null; // Variable global para almacenar los detalles del evento actual
             
             var calendar = new FullCalendar.Calendar(calendarEl, {
                 initialView: 'dayGridMonth',
@@ -126,7 +316,19 @@
                     
                     fetch(url)
                         .then(response => response.json())
-                        .then(events => successCallback(events))
+                        .then(events => {
+                            // Procesar eventos para añadir información sobre preguntas
+                            const processedEvents = events.map(event => {
+                                return {
+                                    ...event,
+                                    extendedProps: {
+                                        ...event.extendedProps,
+                                        has_questions: event.extendedProps.has_questions || false
+                                    }
+                                };
+                            });
+                            successCallback(processedEvents);
+                        })
                         .catch(error => failureCallback(error));
                 },
                 headerToolbar: {
@@ -134,11 +336,234 @@
                     center: 'title',
                     right: 'dayGridMonth,timeGridWeek,timeGridDay'
                 },
+                eventDidMount: function(info) {
+                    // Resaltar eventos con preguntas
+                    if (info.event.extendedProps.has_questions) {
+                        info.el.classList.add('event-with-questions');
+                        
+                        // Agregar badge de preguntas
+                        const badge = document.createElement('div');
+                        badge.classList.add('question-badge');
+                        badge.title = '{{ __("site.This event has questions") }}';
+                        badge.innerHTML = '<i class="fas fa-question"></i>';
+                        
+                        info.el.appendChild(badge);
+                    }
+                },
                 eventClick: function(info) {
                     info.jsEvent.preventDefault();
-                    if (info.event.url) {
-                        window.location.href = info.event.url;
-                    }
+                    
+                    // Obtener detalles completos del evento - CORRECCIÓN DE LA URL
+                    const eventId = info.event.id;
+                    const url = `{{ route('calendar.event.details', ['event' => ':eventId']) }}`.replace(':eventId', eventId);
+                    
+                    fetch(url)
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error('Error al cargar los detalles del evento: ' + response.status);
+                            }
+                            return response.json();
+                        })
+                        .then(eventDetails => {
+                            currentEventDetails = eventDetails; // Almacenar detalles del evento
+                            
+                            // Cargar datos del evento en el modal
+                            const event = info.event;
+                            const extendedProps = eventDetails.extendedProps || {};
+                            
+                            // Información básica
+                            document.getElementById('eventTitle').textContent = event.title;
+                            document.getElementById('eventDescription').textContent = extendedProps.description || '{{ __("site.No description") }}';
+                            
+                            // Fechas y horas
+                            const startDate = event.start ? new Date(event.start) : null;
+                            const endDate = event.end ? new Date(event.end) : null;
+                            
+                            if (event.allDay) {
+                                document.getElementById('eventDate').textContent = startDate.toLocaleDateString('es-ES');
+                                document.getElementById('eventTime').textContent = '{{ __("site.All day") }}';
+                            } else {
+                                document.getElementById('eventDate').textContent = startDate.toLocaleDateString('es-ES');
+                                
+                                // Si es el mismo día, mostrar solo la hora para el final
+                                if (startDate.toDateString() === endDate.toDateString()) {
+                                    document.getElementById('eventTime').textContent = 
+                                        startDate.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' }) + 
+                                        ' - ' + 
+                                        endDate.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+                                } else {
+                                    document.getElementById('eventTime').textContent = 
+                                        startDate.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' }) + 
+                                        ' (' + startDate.toLocaleDateString('es-ES') + ') - ' + 
+                                        endDate.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' }) + 
+                                        ' (' + endDate.toLocaleDateString('es-ES') + ')';
+                                }
+                            }
+                            
+                            // Información de visibilidad como frase
+                            const startVisible = eventDetails.start_visible ? 
+                                new Date(eventDetails.start_visible).toLocaleDateString('es-ES') : '{{ __("site.Not set") }}';
+                            const endVisible = eventDetails.end_visible ? 
+                                new Date(eventDetails.end_visible).toLocaleDateString('es-ES') : '{{ __("site.Not set") }}';
+                            document.getElementById('visibilityText').textContent = 
+                                `{{ __("site.Visible from") }} ${startVisible} {{ __("site.until") }} ${endVisible}`;
+                            
+                            // Respuestas
+                            const responseSection = document.getElementById('responseSection');
+                            const responseForm = document.getElementById('responseForm');
+                            const responseStatus = document.getElementById('responseStatus');
+                            
+                            // Verificar condiciones para aceptar respuestas
+                            const now = new Date();
+                            const startVisibleDate = eventDetails.start_visible ? new Date(eventDetails.start_visible) : null;
+                            const endVisibleDate = eventDetails.end_visible ? new Date(eventDetails.end_visible) : null;
+                            
+                            const isVisible = (!startVisibleDate || now >= startVisibleDate) && (!endVisibleDate || now <= endVisibleDate);
+                            const hasSpace = !eventDetails.max_users || (extendedProps.registered_users || 0) < eventDetails.max_users;
+                            const hasQuestions = extendedProps.questions && extendedProps.questions.length > 0;
+                            
+                            if (isVisible && hasSpace && hasQuestions) {
+                                responseSection.style.display = 'block';
+                                responseStatus.textContent = '{{ __("site.Available for answers") }}';
+                                responseStatus.className = 'badge bg-success';
+                                
+                                // Limpiar formulario anterior
+                                responseForm.innerHTML = '';
+                                
+                                // Agregar campos para respuestas
+                                extendedProps.questions.forEach((question, index) => {
+                                    const formGroup = document.createElement('div');
+                                    formGroup.className = 'mb-4 p-3 border rounded';
+                                    
+                                    let inputField = '';
+                                    
+                                    // Título de la pregunta
+                                    const questionTitle = document.createElement('div');
+                                    questionTitle.className = `question-title ${question.required ? 'required-field' : ''}`;
+                                    questionTitle.textContent = `${index + 1}. ${question.question}`;
+                                    formGroup.appendChild(questionTitle);
+                                    
+                                    if (question.type === 'text') {
+                                        // Campo de texto
+                                        inputField = `
+                                            <textarea class="form-control mt-2" id="question${question.id}" name="responses[${question.id}]" rows="3" ${question.required ? 'required' : ''} placeholder="{{ __("site.Write your answer here...") }}">${question.user_response || ''}</textarea>
+                                        `;
+                                        formGroup.innerHTML += inputField;
+                                    } else if (question.type === 'unique') {
+                                        // Opciones únicas (radio buttons) - estilo mejorado
+                                        const optionsContainer = document.createElement('div');
+                                        optionsContainer.className = 'radio-options-container';
+                                        
+                                        if (question.options) {
+                                            // Convertir options a array si es necesario
+                                            let optionsArray = [];
+                                            if (Array.isArray(question.options)) {
+                                                optionsArray = question.options;
+                                            } else if (typeof question.options === 'string') {
+                                                optionsArray = question.options.split(',');
+                                            }
+                                            
+                                            optionsArray.forEach((option, optIndex) => {
+                                                const optionValue = option.trim ? option.trim() : option;
+                                                const isChecked = (question.user_response === optionValue);
+                                                
+                                                const optionDiv = document.createElement('div');
+                                                optionDiv.className = 'radio-option';
+                                                
+                                                const radioInput = document.createElement('input');
+                                                radioInput.type = 'radio';
+                                                radioInput.name = `responses[${question.id}]`;
+                                                radioInput.id = `question${question.id}_opt${optIndex}`;
+                                                radioInput.value = optionValue;
+                                                if (question.required) radioInput.required = true;
+                                                if (isChecked) radioInput.checked = true;
+                                                
+                                                const radioLabel = document.createElement('label');
+                                                radioLabel.htmlFor = `question${question.id}_opt${optIndex}`;
+                                                radioLabel.textContent = optionValue;
+                                                
+                                                optionDiv.appendChild(radioInput);
+                                                optionDiv.appendChild(radioLabel);
+                                                optionsContainer.appendChild(optionDiv);
+                                            });
+                                        }
+                                        formGroup.appendChild(optionsContainer);
+                                    } else if (question.type === 'multiple') {
+                                        // Opciones múltiples (checkboxes)
+                                        const optionsContainer = document.createElement('div');
+                                        optionsContainer.className = 'checkbox-options-container';
+                                        
+                                        if (question.options) {
+                                            // Convertir options a array si es necesario
+                                            let optionsArray = [];
+                                            if (Array.isArray(question.options)) {
+                                                optionsArray = question.options;
+                                            } else if (typeof question.options === 'string') {
+                                                optionsArray = question.options.split(',');
+                                            }
+                                            
+                                            // Para checkboxes, obtener respuestas del usuario como array
+                                            let userResponses = [];
+                                            if (question.user_response) {
+                                                if (Array.isArray(question.user_response)) {
+                                                    userResponses = question.user_response;
+                                                } else if (typeof question.user_response === 'string') {
+                                                    userResponses = question.user_response.split(',');
+                                                }
+                                            }
+                                            
+                                            optionsArray.forEach((option, optIndex) => {
+                                                const optionValue = option.trim ? option.trim() : option;
+                                                const isChecked = userResponses.includes(optionValue);
+                                                
+                                                const optionDiv = document.createElement('div');
+                                                optionDiv.className = 'checkbox-option';
+                                                
+                                                const checkboxInput = document.createElement('input');
+                                                checkboxInput.type = 'checkbox';
+                                                checkboxInput.name = `responses[${question.id}][]`;
+                                                checkboxInput.id = `question${question.id}_opt${optIndex}`;
+                                                checkboxInput.value = optionValue;
+                                                if (isChecked) checkboxInput.checked = true;
+                                                
+                                                const checkboxLabel = document.createElement('label');
+                                                checkboxLabel.htmlFor = `question${question.id}_opt${optIndex}`;
+                                                checkboxLabel.textContent = optionValue;
+                                                
+                                                optionDiv.appendChild(checkboxInput);
+                                                optionDiv.appendChild(checkboxLabel);
+                                                optionsContainer.appendChild(optionDiv);
+                                            });
+                                        }
+                                        formGroup.appendChild(optionsContainer);
+                                    }
+                                    
+                                    responseForm.appendChild(formGroup);
+                                });
+                                
+                                // Agregar botones de envío
+                                const buttonGroup = document.createElement('div');
+                                buttonGroup.className = 'd-grid gap-2 mt-4';
+                                buttonGroup.innerHTML = `
+                                    <button type="submit" class="btn btn-success" id="submitResponseBtn">
+                                        <i class="fas fa-paper-plane me-1"></i> {{ __("site.Submit Answers") }}
+                                    </button>
+                                    <button type="button" class="btn btn-outline-danger" id="cancelResponseBtn">
+                                        <i class="fas fa-times me-1"></i> {{ __("site.Cancel") }}
+                                    </button>
+                                `;
+                                responseForm.appendChild(buttonGroup);
+                            } else {
+                                responseSection.style.display = 'none';
+                            }
+                            
+                            // Mostrar el modal
+                            eventModal.show();
+                        })
+                        .catch(error => {
+                            console.error('Error al cargar los detalles del evento:', error);
+                            alert('{{ __("site.Error loading event details") }}: ' + error.message);
+                        });
                 },
                 eventTimeFormat: {
                     hour: '2-digit',
@@ -160,6 +585,71 @@
             // Aplicar filtro cuando cambie el tipo de evento
             eventTypeFilter.addEventListener('change', function() {
                 calendar.refetchEvents();
+            });
+            
+// Manejar el envío del formulario de respuestas
+document.getElementById('responseForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    // Recopilar todas las respuestas de forma correcta
+    const formData = new FormData(this);
+    const responses = {};
+    
+    for (let [key, value] of formData.entries()) {
+        // Extraer el ID de la pregunta del nombre del campo
+        let questionId = key;
+        
+        // Para campos de checkbox (múltiples valores)
+        if (key.endsWith('[]')) {
+            questionId = key.replace('[]', '');
+            if (!responses[questionId]) {
+                responses[questionId] = [];
+            }
+            responses[questionId].push(value);
+        } 
+        // Para campos de radio y texto (valores únicos)
+        else if (key.startsWith('question_')) {
+            questionId = key.replace('question_', '');
+            responses[questionId] = value;
+        }
+        // Para campos con formato antiguo (mantener compatibilidad)
+        else {
+            responses[key] = value;
+        }
+    }
+    
+    // Enviar respuestas al servidor
+    fetch('{{ route("calendar.event.answers") }}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+        },
+        body: JSON.stringify({
+            event_id: currentEventDetails.id,
+            responses: responses
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('{{ __("site.Answers submitted successfully") }}');
+            eventModal.hide();
+        } else {
+            alert('Error: ' + data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('{{ __("site.Error submitting answers") }}');
+    });
+});
+
+            // Manejar la cancelación de respuestas
+            document.getElementById('cancelResponseBtn').addEventListener('click', function() {
+                if (confirm('{{ __("site.Are you sure you want to cancel your answers? All entered data will be lost.") }}')) {
+                    document.getElementById('responseForm').reset();
+                }
             });
         });
     </script>

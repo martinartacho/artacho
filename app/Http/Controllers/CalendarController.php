@@ -4,8 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\Event;
 use App\Models\EventType;
+use App\Models\EventQuestion;
+use App\Models\EventAnswer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+
 
 class CalendarController extends Controller
 {
@@ -15,6 +18,7 @@ class CalendarController extends Controller
     public function index()
     {
         $eventTypes = EventType::all();
+       //  dd($eventTypes);
         return view('calendar.index', compact('eventTypes'));
     }
 
@@ -29,9 +33,154 @@ class CalendarController extends Controller
             ($event->end_visible && $event->end_visible < now())) {
             abort(404);
         }
-      //   dd('Prepara vista show',  $event);
+      
         return view('calendar.show', compact('event'));
     }
+
+    /**
+     * Obtener detalles completos de un evento (para AJAX)
+     */
+    public function eventDetails(Event $event)
+    {
+       
+        // Verificar que el evento es visible
+        if (!$event->visible || 
+            ($event->start_visible && $event->start_visible > now()) ||
+            ($event->end_visible && $event->end_visible < now())) {
+            return response()->json(['error' => 'Evento no encontrado'], 404);
+        }
+
+        // Obtener preguntas del evento
+        $questions = EventQuestion::where('event_id', $event->id)->get();
+        
+        // Obtener respuestas del usuario actual (si está autenticado)
+        $userResponses = [];
+        if (Auth::check()) {
+            $userResponses = EventAnswer::where('event_id', $event->id)
+                ->where('user_id', Auth::id())
+                ->get()
+                ->keyBy('question_id');
+        }
+        
+        // Contar número de respuestas totales para el evento
+        $registeredUsers = EventAnswer::where('event_id', $event->id)
+            ->distinct('user_id')
+            ->count('user_id');
+            
+        // Contar número de preguntas respondidas por el usuario actual
+        $questionsAnswered = 0;
+        if (Auth::check()) {
+            $questionsAnswered = EventAnswer::where('event_id', $event->id)
+                ->where('user_id', Auth::id())
+                ->count();
+        }
+        // PARA BORRAR dd('Event: '.  $event,  'questions: '.$questions, 'userResponses: '. $userResponses, 'registeredUsers: '. $registeredUsers, 'questionsAnswered: '. $questionsAnswered);
+        return response()->json([
+            'id' => $event->id,
+            'title' => $event->title,
+            'start' => $event->start,
+            'end' => $event->end,
+            'allDay' => $event->all_day,
+            'start_visible' => $event->start_visible,
+            'end_visible' => $event->end_visible,
+            'max_users' => $event->max_users,
+            'extendedProps' => [
+                'description' => $event->description,
+                'event_type' => $event->eventType->name ?? 'None',
+                'has_questions' => $questions->count() > 0,
+                'questions_count' => $questions->count(),
+                'questions_answered' => $questionsAnswered,
+                'registered_users' => $registeredUsers,
+                'questions' => $questions->map(function($question) use ($userResponses) {
+                    return [
+                        'id' => $question->id,
+                        'question' => $question->question, // Cambiado de question_text a question
+                        'type' => $question->type,
+                        'options' => $question->options,
+                        'required' => $question->required,
+                        'user_response' => isset($userResponses[$question->id]) ? $userResponses[$question->id]->answer : null
+                    ];
+                }),
+                'user_responses' => $userResponses->map(function($response) {
+                    return [
+                        'question_id' => $response->question_id,
+                        'answer' => $response->answer
+                    ];
+                })->values()
+            ]
+        ]);
+    }
+
+
+    /**
+     * Guardar respuestas a las preguntas de un evento
+     */
+    public function saveAnswers(Request $request)
+    {
+        $request->validate([
+            'event_id' => 'required|exists:events,id',
+            'responses' => 'required|array'
+        ]);
+
+        $event = Event::findOrFail($request->event_id);
+        
+        // Verificar que el evento es visible y acepta respuestas
+        if (!$event->visible || 
+            ($event->start_visible && $event->start_visible > now()) ||
+            ($event->end_visible && $event->end_visible < now())) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Este evento no acepta respuestas en este momento'
+            ], 403);
+        }
+
+        // Verificar límite de usuarios
+        if ($event->max_users) {
+            $currentUsers = EventAnswer::where('event_id', $event->id)
+                ->distinct('user_id')
+                ->count('user_id');
+                
+            if ($currentUsers >= $event->max_users) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Se ha alcanzado el límite máximo de participantes para este evento'
+                ], 403);
+            }
+        }
+
+        try {
+            // Guardar cada respuesta
+            foreach ($request->responses as $questionId => $answer) {
+                // Para checkboxes (múltiples valores)
+                if (is_array($answer)) {
+                    $answer = implode(',', $answer);
+                }
+
+                EventAnswer::updateOrCreate(
+                    [
+                        'event_id' => $event->id,
+                        'question_id' => $questionId,
+                        'user_id' => Auth::id()
+                    ],
+                    [
+                        'answer' => $answer
+                    ]
+                );
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Respuestas guardadas correctamente'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al guardar las respuestas: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+
 
     /**
      * Obtener eventos para el calendario (JSON)
@@ -68,6 +217,9 @@ class CalendarController extends Controller
         $events = $query->get();
 
         return response()->json($events->map(function ($event) {
+            // Verificar si el evento tiene preguntas
+            $hasQuestions = EventQuestion::where('event_id', $event->id)->exists();
+            
             return [
                 'id' => $event->id,
                 'title' => $event->title,
@@ -79,6 +231,7 @@ class CalendarController extends Controller
                     'description' => $event->description,
                     'event_type' => $event->eventType->name ?? 'None',
                     'max_users' => $event->max_users,
+                    'has_questions' => $hasQuestions,
                 ]
             ];
         }));
@@ -105,4 +258,5 @@ class CalendarController extends Controller
 
         return $events;
     }
+
 }
