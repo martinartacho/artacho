@@ -20,12 +20,7 @@
                                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                                 @enderror
                             </div>
-                            @if(request()->is('admin/events/create'))
-                                <div class="bg-blue-100 border-l-4 border-blue-500 text-blue-700 p-4 mb-4" role="alert">
-                                    <p class="font-bold">{{ __('site.Information') }}</p>
-                                    <p>{{ __('site.To create recurring events, select a recurrence type other than "None".') }}</p>
-                                </div>
-                            @endif
+                           
                             <div>
                                 <label for="event_type_id" class="block text-sm font-medium text-gray-700">{{ __('site.Event Type') }}</label>
                                 <select name="event_type_id" id="event_type_id" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
@@ -41,7 +36,7 @@
                             
                             <div>
                                 <label for="start" class="block text-sm font-medium text-gray-700">{{ __('site.Start Date/Time') }} *</label>
-                                <input type="datetime-local" name="start" id="start" value="{{ old('start') }}" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                                <input type="datetime-local" name="start" id="start" value="{{ old('start', now()->format('Y-m-d\TH:i')) }}" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                                 @error('start')
                                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                                 @enderror
@@ -49,7 +44,7 @@
                             
                             <div>
                                 <label for="end" class="block text-sm font-medium text-gray-700">{{ __('site.End Date/Time') }}</label>
-                                <input type="datetime-local" name="end" id="end" value="{{ old('end') }}" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                                <input type="datetime-local" name="end" id="end" value="{{ old('end', now()->addHour()->format('Y-m-d\TH:i')) }}" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                                 @error('end')
                                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                                 @enderror
@@ -81,7 +76,7 @@
                             
                             <div>
                                 <label for="start_visible" class="block text-sm font-medium text-gray-700">{{ __('site.Visible From') }}</label>
-                                <input type="datetime-local" name="start_visible" id="start_visible" value="{{ old('start_visible') }}" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                                <input type="datetime-local" name="start_visible" id="start_visible" value="{{ old('start_visible', now()->format('Y-m-d\TH:i')) }}" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                                 @error('start_visible')
                                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                                 @enderror
@@ -103,42 +98,48 @@
                                 @enderror
                             </div>
 
-                            <div class="md:col-span-2 border-t pt-4 mt-4">
-    <h4 class="text-lg font-medium text-gray-900 mb-4">{{ __('site.Recurrence Settings') }}</h4>
-    
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div>
-            <label for="recurrence_type" class="block text-sm font-medium text-gray-700">{{ __('site.Recurrence Type') }}</label>
-            <select name="recurrence_type" id="recurrence_type" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-                <option value="none" {{ old('recurrence_type', isset($event) ? $event->recurrence_type : 'none') == 'none' ? 'selected' : '' }}>{{ __('site.None') }}</option>
-                <option value="daily" {{ old('recurrence_type', isset($event) ? $event->recurrence_type : 'none') == 'daily' ? 'selected' : '' }}>{{ __('site.Daily') }}</option>
-                <option value="weekly" {{ old('recurrence_type', isset($event) ? $event->recurrence_type : 'none') == 'weekly' ? 'selected' : '' }}>{{ __('site.Weekly') }}</option>
-                <option value="monthly" {{ old('recurrence_type', isset($event) ? $event->recurrence_type : 'none') == 'monthly' ? 'selected' : '' }}>{{ __('site.Monthly') }}</option>
-                <option value="yearly" {{ old('recurrence_type', isset($event) ? $event->recurrence_type : 'none') == 'yearly' ? 'selected' : '' }}>{{ __('site.Yearly') }}</option>
-            </select>
-        </div>
-        
-        <div>
-            <label for="recurrence_interval" class="block text-sm font-medium text-gray-700">{{ __('site.Repeat Every') }}</label>
-            <div class="mt-1 flex rounded-md shadow-sm">
-                <input type="number" name="recurrence_interval" id="recurrence_interval" min="1" value="{{ old('recurrence_interval', isset($event) ? $event->recurrence_interval : 1) }}" class="focus:ring-indigo-500 focus:border-indigo-500 block w-20 rounded-none rounded-l-md sm:text-sm border-gray-300">
-                <span class="inline-flex items-center px-3 rounded-r-md border border-l-0 border-gray-300 bg-gray-50 text-gray-500 sm:text-sm" id="recurrence_interval_label">
-                   {{ __('site.days') }}
-                </span>
-            </div>
-        </div>
-        
-        <div>
-            <label for="recurrence_end_date" class="block text-sm font-medium text-gray-700">{{ __('site.End Date') }}</label>
-            <input type="date" name="recurrence_end_date" id="recurrence_end_date" value="{{ old('recurrence_end_date', isset($event) && $event->recurrence_end_date ? $event->recurrence_end_date->format('Y-m-d') : '') }}" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-        </div>
-        
-        <div>
-            <label for="recurrence_count" class="block text-sm font-medium text-gray-700">{{ __('site.Number of Occurrences') }}</label>
-            <input type="number" name="recurrence_count" id="recurrence_count" min="1" value="{{ old('recurrence_count', isset($event) ? $event->recurrence_count : '') }}" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-        </div>
-    </div>
-</div>
+                            <div class="md:col-span-4 border-t pt-4 mt-4">
+                                @if(request()->is('admin/events/create'))
+                                    <div class="bg-blue-100 border-l-4 border-blue-500 text-blue-700 p-4 mb-4" role="alert">
+                                        <p class="font-bold">{{ __('site.Information') }}</p>
+                                        <p>{{ __('site.To create recurring events, select a recurrence type other than "None".') }}</p>
+                                    </div>
+                                @endif
+                                <h4 class="text-lg font-medium text-gray-900 mb-">{{ __('site.Recurrence Settings') }}</h4>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label for="recurrence_type" class="block text-sm font-medium text-gray-700">{{ __('site.Recurrence Type') }}</label>
+                                    <select name="recurrence_type" id="recurrence_type" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                                        <option value="none" {{ old('recurrence_type', isset($event) ? $event->recurrence_type : 'none') == 'none' ? 'selected' : '' }}>{{ __('site.None') }}</option>
+                                        <option value="daily" {{ old('recurrence_type', isset($event) ? $event->recurrence_type : 'none') == 'daily' ? 'selected' : '' }}>{{ __('site.Daily') }}</option>
+                                        <option value="weekly" {{ old('recurrence_type', isset($event) ? $event->recurrence_type : 'none') == 'weekly' ? 'selected' : '' }}>{{ __('site.Weekly') }}</option>
+                                        <option value="monthly" {{ old('recurrence_type', isset($event) ? $event->recurrence_type : 'none') == 'monthly' ? 'selected' : '' }}>{{ __('site.Monthly') }}</option>
+                                        <option value="yearly" {{ old('recurrence_type', isset($event) ? $event->recurrence_type : 'none') == 'yearly' ? 'selected' : '' }}>{{ __('site.Yearly') }}</option>
+                                    </select>
+                                </div>
+                                
+                                <div>
+                                    <label for="recurrence_interval" class="block text-sm font-medium text-gray-700">{{ __('site.Repeat Every') }}</label>
+                                    <div class="mt-1 flex rounded-md shadow-sm">
+                                        <input type="number" name="recurrence_interval" id="recurrence_interval" min="1" value="{{ old('recurrence_interval', isset($event) ? $event->recurrence_interval : 1) }}" class="focus:ring-indigo-500 focus:border-indigo-500 block w-20 rounded-none rounded-l-md sm:text-sm border-gray-300">
+                                        <span class="inline-flex items-center px-3 rounded-r-md border border-l-0 border-gray-300 bg-gray-50 text-gray-500 sm:text-sm" id="recurrence_interval_label">
+                                        {{ __('site.days') }}
+                                        </span>
+                                    </div>
+                                </div>
+                                
+                                <div>
+                                    <label for="recurrence_end_date" class="block text-sm font-medium text-gray-700">{{ __('site.End Date') }}</label>
+                                    <input type="date" name="recurrence_end_date" id="recurrence_end_date" value="{{ old('recurrence_end_date', isset($event) && $event->recurrence_end_date ? $event->recurrence_end_date->format('Y-m-d') : '') }}" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                                </div>
+                                
+                                <div>
+                                    <label for="recurrence_count" class="block text-sm font-medium text-gray-700">{{ __('site.Number of Occurrences') }}</label>
+                                    <input type="number" name="recurrence_count" id="recurrence_count" min="1" value="{{ old('recurrence_count', isset($event) ? $event->recurrence_count : '') }}" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                                </div>
+                            </div>
+                        </div>
                         </div>
                         
                         <div class="mt-6 flex justify-end">
@@ -157,6 +158,7 @@
 @push('scripts')
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+    
         const recurrenceType = document.getElementById('recurrence_type');
         const intervalLabel = document.getElementById('recurrence_interval_label');
         const endDateField = document.getElementById('recurrence_end_date').closest('div');
