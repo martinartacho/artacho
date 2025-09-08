@@ -11,7 +11,8 @@ class Event extends Model
     protected $fillable = [
         'title', 'description', 'start', 'end', 'color', 
         'max_users', 'visible', 'start_visible', 'end_visible', 'event_type_id',
-        'recurrence_type', 'recurrence_interval', 'recurrence_end_date', 'recurrence_count'
+        'recurrence_type', 'recurrence_interval', 'recurrence_end_date', 'recurrence_count',
+        'parent_id',
     ];
     
     protected $casts = [
@@ -53,6 +54,16 @@ class Event extends Model
             'type_text' => __(ucfirst($this->recurrence_type)),
             'interval_text' => $types[$this->recurrence_type] ?? '',
         ];
+    }
+
+    public function parent()
+    {
+        return $this->belongsTo(Event::class, 'parent_id');
+    }
+
+    public function children()
+    {
+        return $this->hasMany(Event::class, 'parent_id');
     }
 
     

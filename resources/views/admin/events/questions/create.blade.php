@@ -104,7 +104,7 @@
         </div>
     </div>
 
-    <script>
+<script>
     document.addEventListener('DOMContentLoaded', function() {
         console.log('DOM cargado - Iniciando script para gestión de preguntas');
 

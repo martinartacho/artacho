@@ -105,6 +105,24 @@
                                 @enderror
                             </div>
 
+                                                        <div class="md:col-span-2 border-t pt-4 mt-4">
+                                <h4 class="text-lg font-medium text-gray-900 mb-4">{{ __('Question Template') }}</h4>
+                                <div class="flex items-center space-x-2">
+                                    <select name="question_template_id" id="question-template-selector" class="flex-1 border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                                        <option value="">{{ __('site.Select a template') }}</option>
+                                        @foreach($questionTemplates as $template)
+                                            <option value="{{ $template->id }}">{{ $template->template_name }} ({{ $template->type }})</option>
+                                        @endforeach
+                                    </select>
+                                    <button type="button" id="load-template-questions-btn" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                                        {{ __('site.Load Questions') }}
+                                    </button>
+                                </div>
+                                <p class="mt-2 text-sm text-gray-500">{{ __('Selecting a template will add these questions to all recurring events.') }}</p>
+                            </div>
+                            <div id="questions-container" class="md:col-span-2">
+                            </div>
+
 
                             <div class="md:col-span-2 border-t pt-4 mt-4">
                                 <h4 class="text-lg font-medium text-gray-900 mb-4">{{ __('Recurrence Settings') }}</h4>
@@ -160,6 +178,7 @@
 @push('scripts')
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+        // Lógica para la recurrencia
         const recurrenceType = document.getElementById('recurrence_type');
         const intervalLabel = document.getElementById('recurrence_interval_label');
         const endDateField = document.getElementById('recurrence_end_date').closest('div');
@@ -169,7 +188,6 @@
             const type = recurrenceType.value;
             let label = '';
             
-            // Actualizar etiqueta del intervalo
             switch(type) {
                 case 'daily':
                     label = '{{ __("site.days") }}';
@@ -189,7 +207,6 @@
             
             intervalLabel.textContent = label;
             
-            // Mostrar/ocultar campos según el tipo de recurrencia
             if (type === 'none') {
                 endDateField.style.display = 'none';
                 countField.style.display = 'none';
@@ -200,8 +217,66 @@
         }
         
         recurrenceType.addEventListener('change', updateRecurrenceFields);
-        updateRecurrenceFields(); // Initial call
+        updateRecurrenceFields(); // Llamada inicial
+
+        // --- Lógica para las plantillas de preguntas (NUEVO CÓDIGO) ---
+        const loadTemplateBtn = document.getElementById('load-template-questions-btn');
+        const templateSelector = document.getElementById('question-template-selector');
+        const questionsContainer = document.getElementById('questions-container'); // Se crea en el paso 2
+
+        if (loadTemplateBtn) {
+            loadTemplateBtn.addEventListener('click', function() {
+                console.info('Dendro de loadTemplateBtn');
+
+                const templateId = templateSelector.value;
+                if (!templateId) {
+                    alert('Por favor, selecciona una plantilla.');
+                    return;
+                }
+
+                // Realiza la petición AJAX al servidor
+                fetch(`/admin/question-templates/${templateId}/questions`) // Asegúrate de que esta URL sea correcta
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('No se pudo cargar la plantilla.');
+                        }
+                        return response.json();
+                    })
+                    .then(questions => {
+                        // Limpia el contenedor de preguntas existente
+                        if (questionsContainer) {
+                            questionsContainer.innerHTML = '';
+                            
+                            // Construye el HTML para cada pregunta
+                            questions.forEach((question, index) => {
+                                const questionHtml = `
+                                    <div class="mb-4 p-4 border rounded-md bg-gray-50">
+                                        <div class="mb-2">
+                                            <label class="block text-sm font-medium text-gray-700">Pregunta ${index + 1}:</label>
+                                            <input type="text" name="questions[${index}][question_text]" value="${question.question_text}" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700">Tipo:</label>
+                                            <input type="text" value="${question.question_type}" readonly class="mt-1 block w-full bg-gray-100 border-gray-300 rounded-md shadow-sm cursor-not-allowed">
+                                        </div>
+                                        <div class="mt-2">
+                                            <label class="block text-sm font-medium text-gray-700">Opciones (separadas por coma):</label>
+                                            <input type="text" name="questions[${index}][options]" value="${question.options.join(', ')}" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
+                                        </div>
+                                        <input type="hidden" name="questions[${index}][question_type]" value="${question.question_type}">
+                                    </div>
+                                `;
+                                questionsContainer.innerHTML += questionHtml;
+                            });
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error al cargar la plantilla:', error);
+                        alert('Hubo un error al cargar la plantilla. Por favor, inténtalo de nuevo.');
+                    });
+            });
+        }
     });
 </script>
-@endpush    
+@endpush
 </x-app-layout>
