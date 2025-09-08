@@ -1,7 +1,8 @@
+
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('site.Questions for Event: ') }} {{ $event->title }}
+            {{ __('site.Question Templates') }}
         </h2>
     </x-slot>
 
@@ -12,23 +13,26 @@
                     <div class="flex justify-between items-center mb-6">
                         <div>
                             <a href="{{ route('admin.events.index') }}" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
-                                {{ __('site.Back to Events List') }}
+                                {{ __('site.Back to Events') }}
                             </a>
                         </div>
                         <div>
-                            <a href="{{ route('admin.events.questions.create', $event) }}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                                {{ __('site.Add Question') }}
+                            <a href="{{ route('admin.event-question-templates.create') }}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                                {{ __('site.Create Template') }}
                             </a>
                         </div>
                     </div>
 
-                    @if($questions->count() > 0)
+                    @if($templates->count() > 0)
                     <div class="overflow-x-auto">
                         <table class="min-w-full divide-y divide-gray-200">
                             <thead class="bg-gray-50">
                                 <tr>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        {{ __('site.Questions') }}
+                                        {{ __('site.Template Name') }}
+                                    </th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        {{ __('site.Question') }}
                                     </th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         {{ __('site.Type') }}
@@ -42,27 +46,28 @@
                                 </tr>
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-200">
-                                @foreach($questions as $question)
+                                @foreach($templates as $template)
                                 <tr>
                                     <td class="px-6 py-4 whitespace-nowrap">
-                                        <div class="text-sm text-gray-900">{{ $question->question }}</div>
-                                        @if($question->is_template)
-                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
-                                                {{ __('site.Template') }}: {{ $question->template_name }}
-                                            </span>
+                                        <div class="text-sm font-medium text-gray-900">{{ $template->template_name }}</div>
+                                        @if($template->template_description)
+                                        <div class="text-sm text-gray-500">{{ $template->template_description }}</div>
                                         @endif
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap">
-                                        <div class="text-sm text-gray-900">{{ ucfirst($question->type) }}</div>
+                                        <div class="text-sm text-gray-900">{{ $template->question }}</div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="text-sm text-gray-900">{{ ucfirst($template->type) }}</div>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <div class="text-sm text-gray-900">
-                                            {{ $question->required ? __('site.Yes') : __('site.No') }}
+                                            {{ $template->required ? __('site.Yes') : __('site.No') }}
                                         </div>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                        <a href="{{ route('admin.events.questions.edit', [$event, $question]) }}" class="text-indigo-600 hover:text-indigo-900 mr-3">{{ __('site.Edit') }}</a>
-                                        <form action="{{ route('admin.events.questions.destroy', [$event, $question]) }}" method="POST" class="inline-block">
+                                        <a href="{{ route('admin.event-question-templates.edit', $template) }}" class="text-indigo-600 hover:text-indigo-900 mr-3">{{ __('site.Edit') }}</a>
+                                        <form action="{{ route('admin.event-question-templates.destroy', $template) }}" method="POST" class="inline-block">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="text-red-600 hover:text-red-900" onclick="return confirm('{{ __('site.Are you sure?') }}')">{{ __('site.Delete') }}</button>
@@ -73,9 +78,13 @@
                             </tbody>
                         </table>
                     </div>
+                    
+                    <div class="mt-4">
+                        {{ $templates->links() }}
+                    </div>
                     @else
                     <div class="text-center py-4">
-                        <p class="text-gray-500">{{ __('site.No questions found for this event.') }}</p>
+                        <p class="text-gray-500">{{ __('site.No templates found.') }}</p>
                     </div>
                     @endif
                 </div>

@@ -54,4 +54,6 @@ class Event extends Model
             'interval_text' => $types[$this->recurrence_type] ?? '',
         ];
     }
+
+    
 }

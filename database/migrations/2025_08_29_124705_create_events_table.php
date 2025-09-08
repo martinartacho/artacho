@@ -23,6 +23,10 @@ return new class extends Migration
             $table->dateTime('start_visible')->nullable();
             $table->dateTime('end_visible')->nullable();
             $table->foreignId('event_type_id')->nullable()->constrained()->onDelete('set null');
+            $table->enum('recurrence_type', ['none', 'daily', 'weekly', 'monthly', 'yearly'])->default('none');
+            $table->integer('recurrence_interval')->nullable();
+            $table->date('recurrence_end_date')->nullable();
+            $table->integer('recurrence_count')->nullable();
             $table->timestamps();
         });
     }

@@ -5,7 +5,10 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Event;
 use App\Models\EventQuestion;
+use App\Models\EventQuestionTemplate;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class EventQuestionController extends Controller
 {
@@ -17,6 +20,7 @@ class EventQuestionController extends Controller
         $this->authorize('viewAny', EventQuestion::class);
         
         $questions = $event->questions;
+
         return view('admin.events.questions.index', compact('event', 'questions'));
     }
 
@@ -27,9 +31,10 @@ class EventQuestionController extends Controller
     {
         $this->authorize('create', EventQuestion::class);
         
-        return view('admin.events.questions.create', compact('event'));
+        $templates = EventQuestionTemplate::where('is_template', true)->get();
+        
+        return view('admin.events.questions.create', compact('event', 'templates'));
     }
-
     /**
      * Store a newly created question.
      */
@@ -61,16 +66,6 @@ class EventQuestionController extends Controller
 
         return redirect()->route('admin.events.questions.index', $event)
             ->with('success', __('site.Question created successfully.'));
-    }
-
-    /**
-     * Show the form for editing the specified question.
-     */
-    public function edit(Event $event, EventQuestion $question)
-    {
-        $this->authorize('update', $question);
-        
-        return view('admin.events.questions.edit', compact('event', 'question'));
     }
 
     /**
@@ -106,6 +101,19 @@ class EventQuestionController extends Controller
             ->with('success', __('site.Question updated successfully.'));
     }
 
+
+    /**
+     * Show the form for editing the specified question.
+     */
+    public function edit(Event $event, EventQuestion $question)
+    {
+        $this->authorize('update', $question);
+        
+        $templates = EventQuestionTemplate::where('is_template', true)->get();
+        
+        return view('admin.events.questions.edit', compact('event', 'question', 'templates'));
+    }
+
     /**
      * Remove the specified question.
      */
@@ -118,4 +126,6 @@ class EventQuestionController extends Controller
         return redirect()->route('admin.events.questions.index', $event)
             ->with('success', __('site.Question deleted successfully.'));
     }
+
+
 }

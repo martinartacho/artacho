@@ -251,8 +251,29 @@ return [
     'Error submitting answers' => 'Error al enviar las respuestas',
     'Available for answers' => 'Disponible para respuestas',
 
-    'Event deleted successfully' => 'Evento eliminado'
+    'Event deleted successfully' => 'Evento eliminado',
 
+    'Apply Question Template' => 'Aplicar Plantilla de Preguntas',
+    'Select Template' => 'Seleccionar Plantilla',
+    'Apply Template' => 'Aplicar Plantilla',
+    'No question templates available' => 'No hay plantillas de preguntas disponibles',
+    'Save as template for future events' => 'Guardar como plantilla para eventos futuros',
+    'Template Description' => 'Descripción de la Plantilla',
+    'Template' => 'Plantilla',
+    'Template applied successfully' => 'Plantilla aplicada correctamente',
+
+    'Question Templates' => 'Question Templates',
+    'Create Template' => 'Create Template',
+    'Template created successfully.' => 'Template created successfully.',
+    'Template updated successfully.' => 'Template updated successfully.',
+    'Template deleted successfully.' => 'Template deleted successfully.',
+    'Template Name' => 'Nombre de la Plantilla',
+    'Load from Template' => 'Load from Template',
+    'Select a template' => 'Select a template',
+    'Load Template' => 'Load Template',
+    'Template loaded successfully' => 'Template loaded successfully',
+    'Please select a template' => 'Please select a template',
+    'No templates found.' => 'No templates found.',
 
 ];
 

@@ -255,9 +255,29 @@ return [
     'Error loading event details' => 'Error al cargar los detalles del evento',
     'Error submitting answers' => 'Error al enviar las respuestas',
     'Available for answers' => 'Disponible para respuestas',
-
-    'Event deleted successfully' => 'Event deleted successfully'
+    'Event deleted successfully' => 'Event deleted successfully',
     
+    'Apply Question Template' => 'Apply Question Template',
+    'Select Template' => 'Select Template',
+    'Apply Template' => 'Apply Template',
+    'No question templates available' => 'No question templates available',
+    'Save as template for future events' => 'Save as template for future events',
+    'Template Description' => 'Template Description',
+    'Template' => 'Template',
+    'Template applied successfully' => 'Template applied successfully',   
+    
+    'Question Templates' => 'Question Templates',
+    'Create Template' => 'Create Template',
+    'Template created successfully.' => 'Template created successfully.',
+    'Template updated successfully.' => 'Template updated successfully.',
+    'Template deleted successfully.' => 'Template deleted successfully.',
+    'Template Name' => 'Template Name',
+    'Load from Template' => 'Load from Template',
+    'Select a template' => 'Select a template',
+    'Load Template' => 'Load Template',
+    'Template loaded successfully' => 'Template loaded successfully',
+    'Please select a template' => 'Please select a template',
+    'No templates found.' => 'No templates found.',
 ];
 
 

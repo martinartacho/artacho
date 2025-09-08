@@ -72,7 +72,13 @@ class RolesAndPermissionsSeeder extends Seeder
             'event_answers.edit',
             'event_answers.delete',
 
-           
+            // Question Templates permissions
+            'event_question_templates.index',
+            'event_question_templates.view',
+            'event_question_templates.create',
+            'event_question_templates.edit',
+            'event_question_templates.delete',
+          
 
         ];
 
@@ -117,6 +123,13 @@ class RolesAndPermissionsSeeder extends Seeder
         $gestor->givePermissionTo(['events.edit']);
         $gestor->givePermissionTo(['events.delete']);
         $gestor->givePermissionTo(['events.view']);
+
+        $gestor->givePermissionTo(['event_question_templates.index']);
+        $gestor->givePermissionTo(['event_question_templates.create']);
+        $gestor->givePermissionTo(['event_question_templates.edit']);
+        $gestor->givePermissionTo(['event_question_templates.delete']);
+        $gestor->givePermissionTo(['event_question_templates.view']);
+
 
         // editor
         $editor = Role::firstOrCreate(['name' => 'editor']);

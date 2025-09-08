@@ -8,6 +8,7 @@ use App\Models\Event;
 use App\Models\EventType;
 use App\Models\Notification;
 use App\Models\User;
+use EventQuestionTemplate;
 use App\Policies\EventPolicy;
 use App\Policies\EventTypePolicy;
 
@@ -21,6 +22,8 @@ class AuthServiceProvider extends ServiceProvider
     protected $policies = [
         Event::class => EventPolicy::class,
         EventType::class => EventTypePolicy::class,
+        EventQuestionTemplate::class => EventQuestionTemplatePolicy::class,
+
         // ... otras políticas
     ];
 

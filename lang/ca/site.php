@@ -283,6 +283,28 @@ return [
     'Error submitting answers' => 'Error en enviar les respostes',
     'Available for answers' => 'Disponible per a respostes',
 
-    'Event deleted successfully' => 'Esdeveniment eliminat'
+    'Event deleted successfully' => 'Esdeveniment eliminat',
+
+    'Apply Question Template' => 'Aplicar Plantilla de Preguntes',
+    'Select Template' => 'Seleccionar Plantilla',
+    'Apply Template' => 'Aplicar Plantilla',
+    'No question templates available' => 'No hi ha plantilles de preguntes disponibles',
+    'Save as template for future events' => 'Desar com a plantilla per a esdeveniments futurs',
+    'Template Description' => 'Descripció de la Plantilla',
+    'Template' => 'Plantilla',
+    'Template applied successfully' => 'Plantilla aplicada correctament',
+
+    'Question Templates' => 'Question Templates',
+    'Create Template' => 'Create Template',
+    'Template created successfully.' => 'Template created successfully.',
+    'Template updated successfully.' => 'Template updated successfully.',
+    'Template deleted successfully.' => 'Template deleted successfully.',
+    'Template Name' => 'Nom de la Plantilla',
+    'Load from Template' => 'Load from Template',
+    'Select a template' => 'Select a template',
+    'Load Template' => 'Load Template',
+    'Template loaded successfully' => 'Template loaded successfully',
+    'Please select a template' => 'Please select a template',
+    'No templates found.' => 'No templates found.',
 
 ];

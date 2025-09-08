@@ -7,6 +7,26 @@
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <div class="mb-6 bg-blue-50 p-4 rounded-lg">
+                <h4 class="text-lg font-medium text-blue-800 mb-2">{{ __('site.Load from Template') }}</h4>
+                <div class="flex items-center space-x-2">
+                    <select id="template-selector" class="flex-1 border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                        <option value="">{{ __('site.Select a template') }}</option>
+                        @foreach($templates as $template)
+                            <option value="{{ $template->id }}" 
+                                data-question="{{ $template->question }}"
+                                data-type="{{ $template->type }}"
+                                data-options="{{ $template->options ? json_encode($template->options) : '[]' }}"
+                                data-required="{{ $template->required ? '1' : '0' }}">
+                                {{ $template->template_name }} ({{ $template->type }})
+                            </option>
+                        @endforeach
+                    </select>
+                    <button type="button" id="load-template-btn" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                        {{ __('site.Load Template') }}
+                    </button>
+                </div>
+            </div>
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 bg-white border-b border-gray-200">
                     <form action="{{ route('admin.events.questions.store', $event) }}" method="POST">
@@ -86,39 +106,48 @@
 
     <script>
     document.addEventListener('DOMContentLoaded', function() {
-        console.log('DOM cargado - Iniciando script de opciones');
-        
+        console.log('DOM cargado - Iniciando script para gestión de preguntas');
+
+        // --- Elementos del DOM ---
+        const templateSelector = document.getElementById('template-selector');
+        const loadTemplateBtn = document.getElementById('load-template-btn');
         const typeSelect = document.getElementById('type');
         const optionsContainer = document.getElementById('options-container');
         const optionsList = document.getElementById('options-list');
         const addOptionButton = document.getElementById('add-option');
-        
-        if (!typeSelect || !optionsContainer || !optionsList || !addOptionButton) {
-            console.error('No se encontraron todos los elementos necesarios');
+        const questionField = document.getElementById('question');
+        const requiredField = document.getElementById('required');
+
+        // Verificar que los elementos principales existan
+        if (!typeSelect || !optionsContainer || !optionsList || !addOptionButton || !templateSelector || !loadTemplateBtn) {
+            console.error('No se encontraron todos los elementos necesarios para el script.');
             return;
         }
-        
-        console.log('Elementos encontrados correctamente');
-        
-        // Función para mostrar/ocultar el contenedor de opciones
+
+        console.log('Elementos del DOM encontrados correctamente.');
+
+        // --- Funciones auxiliares ---
+
+        // Muestra/oculta el contenedor de opciones basado en el tipo de pregunta
         function toggleOptions() {
             console.log('Cambiando tipo a:', typeSelect.value);
             if (typeSelect.value === 'single' || typeSelect.value === 'multiple') {
                 optionsContainer.style.display = 'block';
-                console.log('Mostrando opciones');
-                // Asegurar que haya al menos una opción
+                console.log('Mostrando opciones.');
+                // Asegura que siempre haya al menos una opción si el contenedor se muestra por primera vez
                 if (optionsList.children.length === 0) {
                     addOption();
                 }
             } else {
                 optionsContainer.style.display = 'none';
-                console.log('Ocultando opciones');
+                console.log('Ocultando opciones.');
+                // Opcional: limpiar las opciones al ocultar el contenedor
+                optionsList.innerHTML = '';
             }
         }
-        
-        // Función para añadir una nueva opción
+
+        // Añade un nuevo campo de opción al formulario
         function addOption(value = '') {
-            console.log('Añadiendo opción:', value);
             const optionIndex = optionsList.children.length;
             const optionDiv = document.createElement('div');
             optionDiv.className = 'flex items-center mb-2';
@@ -133,47 +162,91 @@
                 </button>
             `;
             optionsList.appendChild(optionDiv);
-            
-            // Añadir evento al botón de eliminar
+
+            // Añadir evento de clic para el botón de eliminar
             const removeButton = optionDiv.querySelector('.remove-option');
             removeButton.addEventListener('click', function() {
-                console.log('Eliminando opción');
                 optionDiv.remove();
                 reindexOptions();
             });
         }
-        
-        // Función para reindexar las opciones
+
+        // Reindexa los nombres de los campos de opción después de eliminar uno
         function reindexOptions() {
-            console.log('Reindexando opciones');
             const options = optionsList.querySelectorAll('input');
             options.forEach((input, index) => {
                 input.name = `options[${index}]`;
             });
         }
-        
-        // Evento para el cambio de tipo de pregunta
-        typeSelect.addEventListener('change', toggleOptions);
-        
+
+        // --- Gestión de la carga de plantillas ---
+
+        loadTemplateBtn.addEventListener('click', function() {
+            const selectedOption = templateSelector.options[templateSelector.selectedIndex];
+
+            if (!selectedOption.value) {
+                alert('Por favor, selecciona una plantilla para cargar.');
+                return;
+            }
+            
+            // Extraer datos de los atributos `data-*` de la opción seleccionada
+            const templateData = {
+                question: selectedOption.dataset.question,
+                type: selectedOption.dataset.type,
+                options: selectedOption.dataset.options,
+                required: selectedOption.dataset.required === '1'
+            };
+
+            console.log('Cargando plantilla:', templateData);
+
+            // 1. Rellenar los campos del formulario
+            questionField.value = templateData.question;
+            typeSelect.value = templateData.type;
+            requiredField.checked = templateData.required;
+
+            // 2. Limpiar las opciones existentes antes de cargar las nuevas
+            optionsList.innerHTML = '';
+            
+            // 3. Cargar las opciones si el tipo lo requiere
+            if (templateData.type === 'single' || templateData.type === 'multiple') {
+                try {
+                    const options = JSON.parse(templateData.options);
+                    options.forEach(option => {
+                        addOption(option);
+                    });
+                } catch (e) {
+                    console.error('Error al analizar las opciones de la plantilla:', e);
+                }
+            }
+
+            // 4. Asegurar que la interfaz de usuario se actualice
+            toggleOptions();
+
+            alert('Plantilla cargada correctamente. Puedes editarla antes de guardar.');
+        });
+
+        // --- Inicialización de eventos y estado ---
+
         // Evento para el botón de añadir opción
         addOptionButton.addEventListener('click', function() {
-            console.log('Botón de añadir opción clickeado');
+            console.log('Botón de añadir opción clickeado.');
             addOption();
         });
-        
-        // Inicializar el estado
-        console.log('Inicializando estado de opciones');
-        toggleOptions();
-        
-        // Cargar opciones del old input si hay error de validación
+
+        // Evento para el cambio de tipo de pregunta
+        typeSelect.addEventListener('change', toggleOptions);
+
+        // Cargar opciones si el formulario tiene errores de validación (uso de `old()`)
         @if(old('options'))
-            console.log('Cargando opciones de validación anterior');
+            console.log('Recuperando opciones de la sesión anterior (validación fallida).');
             @foreach(old('options') as $option)
                 addOption('{{ $option }}');
             @endforeach
         @endif
         
-        console.log('Script de opciones inicializado correctamente');
+        // Llamada inicial para establecer el estado de la UI
+        toggleOptions();
+        console.log('Script de preguntas inicializado correctamente.');
     });
-    </script>
+</script>
 </x-app-layout>

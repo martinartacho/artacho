@@ -12,9 +12,9 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\Admin\EventController;
 use App\Http\Controllers\Admin\EventTypeController;
-// use App\Http\Controllers\Admin\CalendarController;
 use App\Http\Controllers\Admin\EventQuestionController;
 use App\Http\Controllers\Admin\EventAnswerController;
+use App\Http\Controllers\Admin\EventQuestionTemplateController;
 use App\Http\Controllers\CalendarController;
 
 use App\Http\Controllers\Admin\FeedbackController as AdminFeedbackController;
@@ -137,6 +137,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
         
         // Rutas para respuestas de eventos
         Route::resource('events.answers', EventAnswerController::class);
+
+         // Rutas para plantillas de preguntas
+        Route::resource('event-question-templates', EventQuestionTemplateController::class);
+        
+        // API para plantillas
+        Route::get('event-question-templates/api/list', [EventQuestionTemplateController::class, 'apiIndex'])
+            ->name('event-question-templates.api');
+        
     });
 
     // Rutas públicas del calendario
