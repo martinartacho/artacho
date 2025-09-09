@@ -15,6 +15,9 @@
     <div class="space-x-2">
 
         @can('create', App\Models\Event::class)
+            <a href="{{ route('admin.event-question-templates.index') }}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                {{ __('site.Templates') }}
+            </a>
             <a href="{{ route('admin.event-types.index') }}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
                 {{ __('site.Event Types') }}
             </a>

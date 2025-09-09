@@ -46,34 +46,28 @@
                                 </tr>
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-200">
-                                @foreach($templates as $template)
-                                <tr>
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <div class="text-sm font-medium text-gray-900">{{ $template->template_name }}</div>
-                                        @if($template->template_description)
-                                        <div class="text-sm text-gray-500">{{ $template->template_description }}</div>
-                                        @endif
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <div class="text-sm text-gray-900">{{ $template->question }}</div>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <div class="text-sm text-gray-900">{{ ucfirst($template->type) }}</div>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <div class="text-sm text-gray-900">
-                                            {{ $template->required ? __('site.Yes') : __('site.No') }}
-                                        </div>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                        <a href="{{ route('admin.event-question-templates.edit', $template) }}" class="text-indigo-600 hover:text-indigo-900 mr-3">{{ __('site.Edit') }}</a>
-                                        <form action="{{ route('admin.event-question-templates.destroy', $template) }}" method="POST" class="inline-block">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="text-red-600 hover:text-red-900" onclick="return confirm('{{ __('site.Are you sure?') }}')">{{ __('site.Delete') }}</button>
-                                        </form>
-                                    </td>
-                                </tr>
+                                 @foreach($templates as $template)
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                            {{ $template->template_name }}
+                                        </td>
+                                        <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                            {{ $template->question }}
+                                        </td>
+                                        <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                            {{ $template->type }}
+                                        </td>
+                                        <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                            <div class="flex items-center">
+                                                <a href="{{ route('admin.event-question-templates.edit', $template) }}" class="text-indigo-600 hover:text-indigo-900 mr-3">{{ __('site.Edit') }}</a>
+                                                <form action="{{ route('admin.event-question-templates.destroy', $template) }}" method="POST" class="inline-block">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="text-red-600 hover:text-red-900" onclick="return confirm('{{ __('site.Are you sure?') }}')">{{ __('site.Delete') }}</button>
+                                                </form>
+                                            </div>
+                                        </td>
+                                    </tr>
                                 @endforeach
                             </tbody>
                         </table>

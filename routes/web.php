@@ -139,7 +139,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::resource('events.answers', EventAnswerController::class);
 
          // Rutas para plantillas de preguntas
-        Route::resource('event-question-templates', EventQuestionTemplateController::class);
+         
+        Route::resource('event-question-templates', EventQuestionTemplateController::class)->except(['show']);
+
         Route::get('question-templates/{templateId}/questions', [EventQuestionTemplateController::class, 'getQuestions'])->name('question-templates.questions');
 
         // API para plantillas

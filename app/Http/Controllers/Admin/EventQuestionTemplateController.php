@@ -19,7 +19,7 @@ class EventQuestionTemplateController extends Controller
             ->orderBy('template_name')
             ->paginate(10);
             
-        return view('admin.event-question-templates.index', compact('templates'));
+        return view('admin.events.event-question-templates.index', compact('templates'));
     }
 
     /**
@@ -49,15 +49,10 @@ class EventQuestionTemplateController extends Controller
             'required' => 'boolean',
         ]);
 
-        // Marcar como plantilla y guardar
         $validated['is_template'] = true;
         
-        // Filtrar opciones vacías
         if (isset($validated['options'])) {
-            $validated['options'] = array_filter($validated['options'], function($option) {
-                return !empty(trim($option));
-            });
-            
+            $validated['options'] = array_filter($validated['options'], fn($option) => !empty(trim($option)));
             if (empty($validated['options'])) {
                 $validated['options'] = null;
             }
@@ -76,7 +71,7 @@ class EventQuestionTemplateController extends Controller
     {
         $this->authorize('update', $template);
         
-        return view('admin.event-question-templates.edit', compact('template'));
+        return view('admin.events.event-question-templates.edit', compact('template'));
     }
 
     /**
@@ -96,12 +91,8 @@ class EventQuestionTemplateController extends Controller
             'required' => 'boolean',
         ]);
 
-        // Filtrar opciones vacías
         if (isset($validated['options'])) {
-            $validated['options'] = array_filter($validated['options'], function($option) {
-                return !empty(trim($option));
-            });
-            
+            $validated['options'] = array_filter($validated['options'], fn($option) => !empty(trim($option)));
             if (empty($validated['options'])) {
                 $validated['options'] = null;
             }
@@ -119,7 +110,7 @@ class EventQuestionTemplateController extends Controller
     public function destroy(EventQuestionTemplate $template)
     {
         $this->authorize('delete', $template);
-        
+
         $template->delete();
 
         return redirect()->route('admin.event-question-templates.index')
@@ -129,7 +120,7 @@ class EventQuestionTemplateController extends Controller
     /**
      * API endpoint para obtener plantillas (usado en AJAX)
      */
-    public function apiIndex(Request $request)
+    public function apiIndex()
     {
         $this->authorize('viewAny', EventQuestionTemplate::class);
         
@@ -139,15 +130,4 @@ class EventQuestionTemplateController extends Controller
             
         return response()->json($templates);
     }
-
-    public function getQuestions($templateId)
-    {
-        dd('PEPE en getQuestion');
-        $template = QuestionTemplate::with('questions')->findOrFail($templateId);
-
-        // Devolvemos las preguntas de la plantilla como JSON
-        return response()->json($template->questions);
-    }
-    
-    
 }
