@@ -131,9 +131,10 @@
                         @endforeach
                     </ul>
                     
+
                     <div class="mt-4">
-                        <a href="{{ route('admin.events.calendar') }}" class="text-indigo-600 hover:text-indigo-900 text-sm">
-                            {{ __('site.View full calendar') }} →
+                        <a href="{{ route('admin.events.index') }}" class="text-indigo-600 hover:text-indigo-900 text-sm">
+                            {{ __('site.Events List') }} →
                         </a>
                     </div>
                 </x-dashboard.card>

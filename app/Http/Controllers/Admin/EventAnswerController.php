@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Event;
-use App\Models\EventAnswer;
+use App\Models\EventAnswer; 
 use Illuminate\Http\Request;
 
 class EventAnswerController extends Controller

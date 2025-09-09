@@ -129,8 +129,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         
         // Events Routes
         Route::resource('events', EventController::class);
-        Route::get('events-calendar', [EventController::class, 'calendar'])->name('events.calendar');
-        Route::get('events-calendar/data', [EventController::class, 'calendarData'])->name('events.calendar-data');
+       // Route::get('events-calendar', [EventController::class, 'calendar'])->name('events.calendar');
+       // Route::get('events-calendar/data', [EventController::class, 'calendarData'])->name('events.calendar-data');
 
         // Rutas para preguntas de eventos
         Route::resource('events.questions', EventQuestionController::class)->except(['show']);
@@ -141,7 +141,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
          // Rutas para plantillas de preguntas
         Route::resource('event-question-templates', EventQuestionTemplateController::class);
         Route::get('question-templates/{templateId}/questions', [EventQuestionTemplateController::class, 'getQuestions'])->name('question-templates.questions');
-        Route::get('question-templates/{templateId}/questions', [\App\Http\Controllers\EventQuestionTemplateController::class, 'getQuestions'])->name('question-templates.questions');
+
         // API para plantillas
         Route::get('event-question-templates/api/list', [EventQuestionTemplateController::class, 'apiIndex'])
             ->name('event-question-templates.api');

@@ -22,7 +22,7 @@
                             </div>
                            
                             <div>
-                                <label for="event_type_id" class="block text-sm font-medium text-gray-700">{{ __('site.Event Type') }}</label>
+                                <label for="event_type_id" class="block text-sm font-medium text-gray-700">{{ __('site.Event Types') }}</label>
                                 <select name="event_type_id" id="event_type_id" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                                     <option value="">{{ __('site.Select an event type') }}</option>
                                     @foreach($eventTypes as $type)
@@ -130,7 +130,7 @@
                                 </div>
                                 
                                 <div>
-                                    <label for="recurrence_end_date" class="block text-sm font-medium text-gray-700">{{ __('site.End Date') }}</label>
+                                    <label for="recurrence_end_date" class="block text-sm font-medium text-gray-700">{{ __('site.End Date/Time') }}</label>
                                     <input type="date" name="recurrence_end_date" id="recurrence_end_date" value="{{ old('recurrence_end_date', isset($event) && $event->recurrence_end_date ? $event->recurrence_end_date->format('Y-m-d') : '') }}" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                                 </div>
                                 

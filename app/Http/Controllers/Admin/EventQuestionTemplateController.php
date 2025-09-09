@@ -140,8 +140,9 @@ class EventQuestionTemplateController extends Controller
         return response()->json($templates);
     }
 
-     public function getQuestions($templateId)
+    public function getQuestions($templateId)
     {
+        dd('PEPE en getQuestion');
         $template = QuestionTemplate::with('questions')->findOrFail($templateId);
 
         // Devolvemos las preguntas de la plantilla como JSON

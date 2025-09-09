@@ -13,16 +13,14 @@
                     <div class="flex justify-between items-center mb-6">
 <h3 class="text-lg font-semibold">{{ __('site.Events List') }}</h3>
     <div class="space-x-2">
-        <a href="{{ route('admin.events.calendar') }}" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
-            {{ __('site.Calendar View') }}
-        </a>
+
         @can('create', App\Models\Event::class)
-                <a href="{{ route('admin.event-types.index') }}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-            {{ __('site.Event Types') }}
-        </a>
-        <a href="{{ route('admin.events.create') }}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-            {{ __('site.Create Event') }}
-        </a>
+            <a href="{{ route('admin.event-types.index') }}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                {{ __('site.Event Types') }}
+            </a>
+            <a href="{{ route('admin.events.create') }}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                {{ __('site.Create Event') }}
+            </a>
         @endcan
     </div>
                     </div>

@@ -306,5 +306,12 @@ return [
     'Template loaded successfully' => 'Template loaded successfully',
     'Please select a template' => 'Please select a template',
     'No templates found.' => 'No templates found.',
+        // Pendientes 
+    'Recurring Event Update' => 'Recurring Event Update',
+    'How do you want to apply these changes?' => '.How do you want to apply these changes?',
+    'Only this event' =>  'Only this event',
+    'This and all future events' =>  'This and all future events',
+    'Start Date/Time' => 'Date/Time',
+    'End Date/Time' => 'End Date/Time',
 
 ];
