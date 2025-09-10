@@ -6,6 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Models\Event;
 use App\Models\EventAnswer; 
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\EventAnswersExport;
 
 class EventAnswerController extends Controller
 {
@@ -16,8 +19,29 @@ class EventAnswerController extends Controller
     {
         $this->authorize('viewAny', EventAnswer::class);
         
-        $answers = $event->answers()->with(['user', 'question'])->get();
-        return view('admin.events.answers.index', compact('event', 'answers'));
+        // Obtener todas las preguntas del evento
+        $questions = $event->questions()->orderBy('id')->get();
+        
+        // Obtener todas las respuestas relacionadas con las preguntas de este evento
+        $answers = EventAnswer::whereHas('question', function($query) use ($event) {
+            $query->where('event_id', $event->id);
+        })->with(['user', 'question'])->get();
+        
+        // Agrupar respuestas por usuario
+        $groupedAnswers = [];
+        foreach ($answers as $answer) {
+            $userId = $answer->user_id;
+            
+            if (!isset($groupedAnswers[$userId])) {
+                $groupedAnswers[$userId] = [
+                    'user' => $answer->user,
+                    'answers' => collect()
+                ];
+            }
+            
+            $groupedAnswers[$userId]['answers']->push($answer);
+        }
+        return view('admin.events.answers.index', compact('event', 'questions', 'groupedAnswers', 'answers'));
     }
 
     /**
@@ -74,4 +98,67 @@ class EventAnswerController extends Controller
         return redirect()->route('admin.events.answers.index', $event)
             ->with('success', __('site.Answer deleted successfully.'));
     }
+
+    public function export(Event $event, $format)
+    {
+        $this->authorize('viewAny', EventAnswer::class);
+        
+        // Obtener datos (misma lógica que el método index)
+        $questions = $event->questions()->orderBy('id')->get();
+        $answers = $event->answers()->with(['user', 'question'])->get();
+        
+        $groupedAnswers = [];
+        foreach ($answers as $answer) {
+            $userId = $answer->user_id;
+            
+            if (!isset($groupedAnswers[$userId])) {
+                $groupedAnswers[$userId] = [
+                    'user' => $answer->user,
+                    'answers' => collect()
+                ];
+            }
+            
+            $groupedAnswers[$userId]['answers']->push($answer);
+        }
+        
+        // Exportar según el formato solicitado
+        if ($format === 'pdf') {
+            $pdf = PDF::loadView('admin.events.answers.export-pdf', 
+                compact('event', 'questions', 'groupedAnswers'))
+                ->setPaper('a4', 'landscape');
+                
+            return $pdf->download("answers-event-{$event->id}.pdf");
+        } elseif ($format === 'excel') {
+            return Excel::download(new EventAnswersExport($event, $questions, $groupedAnswers), 
+                "answers-event-{$event->id}.xlsx");
+        }
+        
+        return redirect()->back()->with('error', __('Invalid export format'));
+    }
+
+    public function print(Event $event)
+    {
+        $this->authorize('viewAny', EventAnswer::class);
+        // Obtener datos (misma lógica que el método index)
+        $questions = $event->questions()->orderBy('id')->get();
+        $answers = $event->answers()->with(['user', 'question'])->get();
+        
+        $groupedAnswers = [];
+        foreach ($answers as $answer) {
+            $userId = $answer->user_id;
+            
+            if (!isset($groupedAnswers[$userId])) {
+                $groupedAnswers[$userId] = [
+                    'user' => $answer->user,
+                    'answers' => collect()
+                ];
+            }
+            
+            $groupedAnswers[$userId]['answers']->push($answer);
+        }
+        
+        return view('admin.events.answers.print', 
+            compact('event', 'questions', 'groupedAnswers'));
+    }
+
 }

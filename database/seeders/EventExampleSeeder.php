@@ -16,7 +16,7 @@ class EventExampleSeeder extends Seeder
         $thirtyDaysLater = $now->copy()->addDays(30);
         
         // Crear tipo de evento si no existe
-        $eventTypeId = DB::table('event_types')->insertGetId([
+       $eventTypeId = DB::table('event_types')->insertGetId([
             'name' => 'Reunión',
             'color' => '#3c8dbc',
             'is_default' => true,
@@ -32,7 +32,7 @@ class EventExampleSeeder extends Seeder
         ]);
 
         $eventTypeId = DB::table('event_types')->insertGetId([
-            'name' => 'Sala',
+            'name' => 'Espacio',
             'color' => '#c6ff7cff',
             'created_at' => $now,
             'updated_at' => $now,
@@ -62,9 +62,6 @@ class EventExampleSeeder extends Seeder
                 'type' => "single",
                 'options' => json_encode(["Si", "No", "Potser"]),
                 'required' => 1,
-                //'is_template' => 0,
-                //'template_name' => null,
-                //'template_description' => null,
                 'created_at' => $now,
                 'updated_at' => $now,
             ],
@@ -74,9 +71,6 @@ class EventExampleSeeder extends Seeder
                 'type' => "multiple",
                 'options' => json_encode(["Ensalada", "Verdura", "Carne", "Pescado", "Flan", "Fruta"]),
                 'required' => 0,
-                //'is_template' => 0,
-                //'template_name' => null,
-                //'template_description' => null,
                 'created_at' => $now,
                 'updated_at' => $now,
             ],
@@ -86,9 +80,6 @@ class EventExampleSeeder extends Seeder
                 'type' => "text",
                 'options' => null,
                 'required' => 0,
-                //'is_template' => 0,
-                //'template_name' => null,
-                //'template_description' => null,
                 'created_at' => $now,
                 'updated_at' => $now,
             ]
@@ -119,7 +110,19 @@ class EventExampleSeeder extends Seeder
                 'template_description' => "Plantilla para recoger preferencias dietéticas",
                 'created_at' => $now,
                 'updated_at' => $now,
+            ],
+            [
+                'question' => "Haz tu reserva",
+                'type' => "multiple",
+                'options' => json_encode(["Individual", "Para 2 personas", "Estandar 4 personas", "Sin lactosa", "Más de 4"]),
+                'required' => 1,
+                'is_template' => 1,
+                'template_name' => "Reservar espacio",
+                'template_description' => "Reservar espacio en coworking, restaurante, oficina, colegio, gimansio",
+                'created_at' => $now,
+                'updated_at' => $now,
             ]
+
         ];
 
         DB::table('event_question_templates')->insert($templates);

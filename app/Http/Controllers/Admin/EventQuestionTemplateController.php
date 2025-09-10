@@ -22,6 +22,7 @@ class EventQuestionTemplateController extends Controller
         return view('admin.events.event-question-templates.index', compact('templates'));
     }
 
+
     /**
      * Show the form for creating a new template.
      */
@@ -29,7 +30,7 @@ class EventQuestionTemplateController extends Controller
     {
         $this->authorize('create', EventQuestionTemplate::class);
         
-        return view('admin.event-question-templates.create');
+        return view('admin.events.event-question-templates.create');
     }
 
     /**
@@ -66,9 +67,10 @@ class EventQuestionTemplateController extends Controller
 
     /**
      * Show the form for editing the specified template.
-     */
-    public function edit(EventQuestionTemplate $template)
+    */
+   public function edit($id)
     {
+        $template = EventQuestionTemplate::findOrFail($id);
         $this->authorize('update', $template);
         
         return view('admin.events.event-question-templates.edit', compact('template'));
@@ -76,9 +78,10 @@ class EventQuestionTemplateController extends Controller
 
     /**
      * Update the specified template.
-     */
-    public function update(Request $request, EventQuestionTemplate $template)
+    */
+    public function update(Request $request, $id)
     {
+        $template = EventQuestionTemplate::findOrFail($id);
         $this->authorize('update', $template);
         
         $validated = $request->validate([
@@ -107,8 +110,9 @@ class EventQuestionTemplateController extends Controller
     /**
      * Remove the specified template.
      */
-    public function destroy(EventQuestionTemplate $template)
+    public function destroy($id)
     {
+        $template = EventQuestionTemplate::findOrFail($id);
         $this->authorize('delete', $template);
 
         $template->delete();

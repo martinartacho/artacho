@@ -66,5 +66,17 @@ class Event extends Model
         return $this->hasMany(Event::class, 'parent_id');
     }
 
+    public function answers()
+    {
+        // Si la columna se llama diferente a 'event_question_id', ajústala aquí
+        return $this->hasManyThrough(
+            EventAnswer::class,
+            EventQuestion::class,
+            'event_id',      // Foreign key on EventQuestion table
+            'question_id',   // Foreign key on EventAnswer table (ajusta según tu BD)
+            'id',            // Local key on Event table
+            'id'             // Local key on EventQuestion table
+        );
+    }
     
 }

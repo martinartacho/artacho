@@ -11,21 +11,21 @@
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 bg-white border-b border-gray-200">
                     <div class="flex justify-between items-center mb-6">
-<h3 class="text-lg font-semibold">{{ __('site.Events List') }}</h3>
-    <div class="space-x-2">
+                        <h3 class="text-lg font-semibold">{{ __('site.Events List') }}</h3>
+                        <div class="space-x-2">
 
-        @can('create', App\Models\Event::class)
-            <a href="{{ route('admin.event-question-templates.index') }}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                {{ __('site.Templates') }}
-            </a>
-            <a href="{{ route('admin.event-types.index') }}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                {{ __('site.Event Types') }}
-            </a>
-            <a href="{{ route('admin.events.create') }}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                {{ __('site.Create Event') }}
-            </a>
-        @endcan
-    </div>
+                            @can('create', App\Models\Event::class)
+                                <a href="{{ route('admin.event-question-templates.index') }}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                                    {{ __('site.Templates') }}
+                                </a>
+                                <a href="{{ route('admin.event-types.index') }}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                                    {{ __('site.Event Types') }}
+                                </a>
+                                <a href="{{ route('admin.events.create') }}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                                    {{ __('site.Create Event') }}
+                                </a>
+                            @endcan
+                        </div>
                     </div>
 
                     @if(session('success'))
@@ -40,30 +40,29 @@
                         </div>
                     @endif
 
-                    <div class="overflow-x-auto">
+                    <div class="overflow-x-auto rounded-lg shadow">
                         <table class="min-w-full divide-y divide-gray-200">
                             <thead class="bg-gray-50">
                                 <tr>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    <th class="min-w-40 px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         {{ __('Title') }}
                                     </th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    <th class="w-24 px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         {{ __('Type') }}
                                     </th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    <th class="w-40 px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         {{ __('Start') }}
                                     </th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    <th class="w-40 px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         {{ __('End') }}
                                     </th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                   <th class="w-40 px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         {{ __('Visible') }}
                                     </th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    <th class="w-32 px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden md:table-cell">
                                         {{ __('Recurrence') }}
                                     </th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        {{ __('Actions') }}
+                                    <th class="w-20 px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">                                        {{ __('Actions') }}
                                     </th>
                                 </tr>
                             </thead>
@@ -107,42 +106,81 @@
                                         @endif
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-    <div class="flex flex-col space-y-1">
-        <div class="flex space-x-2">
-            <a href="{{ route('admin.events.edit', $event->id) }}" class="text-indigo-600 hover:text-indigo-900">{{ __('site.Edit') }}</a>
-            
-            {{-- Enlace a preguntas del evento --}}
-            <a href="{{ route('admin.events.questions.index', $event->id) }}" class="text-green-600 hover:text-green-900">
-                {{ __('site.Questions') }} 
-                @if($event->questions_count > 0)
-                <span class="bg-green-100 text-green-800 text-xs font-semibold px-1.5 py-0.5 rounded">
-                    {{ $event->questions_count }}
-                </span>
-                @endif
-            </a>
-            
-            {{-- Enlace a respuestas del evento --}}
-            <a href="{{ route('admin.events.answers.index', $event->id) }}" class="text-purple-600 hover:text-purple-900">
-                {{ __('site.Answers') }}
-                @if($event->answers_count > 0)
-                <span class="bg-purple-100 text-purple-800 text-xs font-semibold px-1.5 py-0.5 rounded">
-                    {{ $event->answers_count }}
-                </span>
-                @endif
-            </a>
-        </div>
-        
-        @can('delete', $event)
-        <form action="{{ route('admin.events.destroy', $event->id) }}" method="POST" class="inline-block">
-            @csrf
-            @method('DELETE')
-            <button type="submit" class="text-red-600 hover:text-red-900" onclick="return confirm('{{ __('site.Are you sure you want to delete this event?') }}')">
-                {{ __('site.Delete') }}
-            </button>
-        </form>
-        @endcan
-    </div>
-</td>
+                                        <div class="flex flex-col space-y-1">
+                                            <div class="flex space-x-2">
+                                                {{-- <a href="{{ route('admin.events.edit', $event->id) }}" class="text-indigo-600 hover:text-indigo-900">{{ __('site.Edit') }}</a> --}}
+                                                <a href="{{ route('admin.events.edit', $event->id) }}" class="text-indigo-600 hover:text-indigo-900" title="{{ __('site.Edit') }}">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                                </svg>
+                            </a>
+                                                
+                                                {{-- Enlace a preguntas del evento --}}
+                                                {{-- <a href="{{ route('admin.events.questions.index', $event->id) }}" class="text-green-600 hover:text-green-900">
+                                                    {{ __('site.Questions') }} 
+                                                    @if($event->questions_count > 0)
+                                                    <span class="bg-green-100 text-green-800 text-xs font-semibold px-1.5 py-0.5 rounded">
+                                                        {{ $event->questions_count }}
+                                                    </span>
+                                                    @endif
+                                                </a> --}}
+
+                                                <a href="{{ route('admin.events.questions.index', $event->id) }}" class="text-green-600 hover:text-green-900" title="{{ __('site.Questions') }}">
+                                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                                    </svg>
+                                                    @if($event->questions_count > 0)
+                                                    <span class="absolute -mt-3 -mr-3 bg-green-100 text-green-800 text-xs font-semibold px-1.5 py-0.5 rounded">
+                                                        {{ $event->questions_count }}
+                                                    </span>
+                                                    @endif
+                                                </a>
+                                                
+                                                {{-- Enlace a respuestas del evento --}}
+                                                {{-- <a href="{{ route('admin.events.answers.index', $event->id) }}" class="text-purple-600 hover:text-purple-900">
+                                                    {{ __('site.Answers') }}
+                                                    @if($event->answers_count > 0)
+                                                    <span class="bg-purple-100 text-purple-800 text-xs font-semibold px-1.5 py-0.5 rounded">
+                                                        {{ $event->answers_count }}
+                                                    </span>
+                                                    @endif
+                                                </a> --}}
+
+                                                 <a href="{{ route('admin.events.answers.index', $event->id) }}" class="text-purple-600 hover:text-purple-900" title="{{ __('site.Answers') }}">
+                                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                                    </svg>
+                                                    @if($event->answers_count > 0)
+                                                    <span class="absolute -mt-3 -mr-3 bg-purple-100 text-purple-800 text-xs font-semibold px-1.5 py-0.5 rounded">
+                                                        {{ $event->answers_count }}
+                                                    </span>
+                                                    @endif
+                                                </a>
+                                            </div>
+                                            
+                                            {{-- @can('delete', $event)
+                                            <form action="{{ route('admin.events.destroy', $event->id) }}" method="POST" class="inline-block">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="text-red-600 hover:text-red-900" onclick="return confirm('{{ __('site.Are you sure you want to delete this event?') }}')">
+                                                    {{ __('site.Delete') }}
+                                                </button>
+                                            </form>
+                                            @endcan --}}
+
+                                             @can('delete', $event)
+                                                <form action="{{ route('admin.events.destroy', $event->id) }}" method="POST" class="inline-block">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="text-red-600 hover:text-red-900" onclick="return confirm('{{ __('site.Are you sure you want to delete this event?') }}')" title="{{ __('site.Delete') }}">
+                                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                                        </svg>
+                                                    </button>
+                                                </form>
+                                                @endcan
+                                        </div>
+                                    </td>
                                 </tr>
                                 @empty
                                 <tr>
@@ -161,7 +199,7 @@
                     </div>
                     @endif
                 </div>
-            </div>
+            </div> 
         </div>
     </div>
 </x-app-layout>

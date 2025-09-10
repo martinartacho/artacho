@@ -5,64 +5,36 @@
         </h2>
     </x-slot>
 
-        <style>
-        .options-container {
-            transition: all 0.3s ease;
-        }
-        
-        .option-item {
-            display: flex;
-            align-items: center;
-            margin-bottom: 0.5rem;
-        }
-        
-        .option-input {
-            flex: 1;
-        }
-        
-        .remove-option {
-            cursor: pointer;
-            padding: 0.5rem;
-            margin-left: 0.5rem;
-            border-radius: 0.25rem;
-            background-color: #fef2f2;
-            color: #dc2626;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .remove-option:hover {
-            background-color: #fee2e2;
-        }
-        
-        #add-option {
-            margin-top: 0.5rem;
-        }
-        
-        .option-required {
-            color: #ef4444;
-        }
-    </style>
-    
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 bg-white border-b border-gray-200">
+                    <!-- Botones de acción -->
                     <div class="flex justify-between items-center mb-6">
-                        <div>
-                            <a href="{{ route('admin.events.index') }}" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
-                                {{ __('site.Back to Events List') }}
+                        <a href="{{ route('admin.events.index') }}" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
+                            {{ __('site.Back to Events') }}
+                        </a>
+                        <div class="space-x-2">
+                            {{-- <a href="{{ route('admin.events.answers.export', ['event' => $event->id, 'format' => 'pdf']) }}" --}} 
+                            <a href="#" 
+                               class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
+                                {{ __('site.Download PDF') }}
                             </a>
-                        </div>
-                        <div>
-                            <a href="{{ route('admin.events.answers.create', $event) }}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                                {{ __('site.Add Answer') }}
+                            {{-- <a href="{{ route('admin.events.answers.export', ['event' => $event->id, 'format' => 'excel']) }}"  --}}
+                            <a href="#" 
+                               class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
+                                {{ __('site.Download Excel') }}
+                            </a>
+                            
+                            <a href="{{ route('admin.events.answers.print', $event->id) }}" 
+                               target="_blank"
+                               class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                                {{ __('site.Print View') }} 
                             </a>
                         </div>
                     </div>
 
-                    @if($answers->count() > 0)
+                   @if(count($groupedAnswers) > 0)
                     <div class="overflow-x-auto">
                         <table class="min-w-full divide-y divide-gray-200">
                             <thead class="bg-gray-50">
@@ -71,36 +43,41 @@
                                         {{ __('site.User') }}
                                     </th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        {{ __('site.Questions') }}
+                                        {{ __('site.Email') }}
                                     </th>
+                                    @foreach($questions as $question)
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        {{ __('site.Answer') }}
+                                        {{ $question->question }}
                                     </th>
+                                    @endforeach
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        {{ __('site.Actions') }}
+                                        {{ __('site.Submission Date') }}
                                     </th>
                                 </tr>
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-200">
-                                @foreach($answers as $answer)
+                                @foreach($groupedAnswers as $userId => $userAnswers)
                                 <tr>
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <div class="text-sm text-gray-900">{{ $answer->user->name }}</div>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                        {{ $userAnswers['user']->name }}
                                     </td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <div class="text-sm text-gray-900">{{ $answer->question->question }}</div>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        {{ $userAnswers['user']->email }}
                                     </td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <div class="text-sm text-gray-900">{{ Str::limit($answer->answer, 50) }}</div>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                        <a href="{{ route('admin.events.answers.show', [$event, $answer]) }}" class="text-indigo-600 hover:text-indigo-900 mr-3">{{ __('site.View') }}</a>
-                                        <a href="{{ route('admin.events.answers.edit', [$event, $answer]) }}" class="text-indigo-600 hover:text-indigo-900 mr-3">{{ __('site.Edit') }}</a>
-                                        <form action="{{ route('admin.events.answers.destroy', [$event, $answer]) }}" method="POST" class="inline-block">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="text-red-600 hover:text-red-900" onclick="return confirm('{{ __('site.Are you sure?') }}')">{{ __('site.Delete') }}</button>
-                                        </form>
+                                    @foreach($questions as $question)
+                                        <td class="px-6 py-4 text-sm text-gray-900">
+                                           
+                                            @php
+                                                $answer = $userAnswers['answers']->firstWhere('question_id', $question->id);
+                                            @endphp
+                                            {{ $answer->answer ?? '-' }}
+                                        </td>
+                                    @endforeach
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        @php
+                                            $firstAnswer = collect($userAnswers['answers'])->first();
+                                        @endphp
+                                        {{ $firstAnswer->created_at->format('Y-m-d H:i') }}
                                     </td>
                                 </tr>
                                 @endforeach

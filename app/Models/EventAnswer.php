@@ -23,6 +23,6 @@ class EventAnswer extends Model
 
     public function question(): BelongsTo
     {
-        return $this->belongsTo(EventQuestion::class);
+         return $this->belongsTo(EventQuestion::class, 'question_id');
     }
 }

@@ -35,25 +35,25 @@ Route::get('/', fn () => view('welcome'));
 // Auth
 require __DIR__.'/auth.php';
 
-// 🔐 Rutas protegidas por login y verificación
+//  Rutas protegidas por login y verificación
 Route::middleware(['auth', 'verified'])->group(function () {
 
-    // 🏠 Dashboard principal
+    //  Dashboard principal
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-    // 👤 Perfil
+    //  Perfil
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    // 👮‍♂️ Rutas Admin (roles, permisos, usuarios)
+    //  Rutas Admin (roles, permisos, usuarios)
     Route::prefix('admin')->name('admin.')->group(function () {
         Route::middleware('can:users.index')->resource('users', AdminUserController::class);
         Route::middleware('can:roles.index')->resource('roles', RoleController::class);
         Route::middleware('can:permissions.index')->resource('permissions', PermissionController::class);
     });
 
-    // ⚙️ Configuración del sistema (logo, idioma)
+    //  Configuración del sistema (logo, idioma)
     Route::middleware('can:admin.access')->group(function () {
         Route::get('/settings', [SettingsController::class, 'edit'])->name('settings.edit');
         Route::post('/settings/logo', [SettingsController::class, 'updateLogo'])->name('settings.updateLogo');
@@ -70,14 +70,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
        Route::delete('/feedback/{id}', [AdminFeedbackController::class, 'destroy'])->name('admin.feedback.destroy');
     });
 
-    // 🗂 Logs Push relacionados con notificaciones
+    //  Logs Push relacionados con notificaciones
     Route::prefix('settings/push-logs')->name('push.logs.')->middleware('can:notifications.logs')->group(function () {
         Route::get('/', [PushLogController::class, 'index'])->name('');
         Route::get('/download/{filename}', [PushLogController::class, 'download'])->name('download');
         Route::delete('/delete/{filename}', [PushLogController::class, 'delete'])->name('delete');
     });
 
-    // 📬 Notificaciones (CRUD completo + acciones)
+    //  Notificaciones (CRUD completo + acciones)
     Route::prefix('notifications')->name('notifications.')->group(function () {
         Route::get('/', [NotificationController::class, 'index'])->name('index')->middleware('permission:notifications.view');
         Route::get('/create', [NotificationController::class, 'create'])->name('create')->middleware('permission:notifications.create');
@@ -109,14 +109,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
 
 
-    // ⚙️ API interna para frontend (no REST)
+    // API interna para frontend (no REST)
     Route::prefix('api')->group(function () {
         Route::get('/notifications/unread-count', [NotificationController::class, 'getUnreadCount'])->name('notifications.unread-count');
         Route::post('/notifications/{notification}/mark-read', [NotificationController::class, 'markAsRead'])->name('notifications.mark-read');
     });
 
 
-    // 👥 Rutas específicas para gestores
+    // Rutas específicas para gestores
     Route::middleware('role:gestor')->prefix('gestor')->name('gestor.')->group(function () {
         Route::get('/dashboard', [GestorController::class, 'dashboard'])->name('dashboard');
         Route::resource('users', GestorUserController::class)->only(['index', 'edit', 'update']);
@@ -124,6 +124,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // Rutas administrativas
     Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(function () {
+        // Rutas para respuestas de eventos
+        Route::get('events/{event}/answers/export/{format}', [EventAnswerController::class, 'export'])
+            ->name('events.answers.export'); // Nombre: admin.events.answers.export
+            
+        Route::get('events/{event}/answers/print', [EventAnswerController::class, 'print'])
+            ->name('events.answers.print'); // Nombre: admin.events.answers.print    
+
         // Event Types Routes
         Route::resource('event-types', EventTypeController::class)->except(['show']);
         
@@ -138,8 +145,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         // Rutas para respuestas de eventos
         Route::resource('events.answers', EventAnswerController::class);
 
-         // Rutas para plantillas de preguntas
-         
+        // Rutas para plantillas de preguntas 
         Route::resource('event-question-templates', EventQuestionTemplateController::class)->except(['show']);
 
         Route::get('question-templates/{templateId}/questions', [EventQuestionTemplateController::class, 'getQuestions'])->name('question-templates.questions');
@@ -147,8 +153,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         // API para plantillas
         Route::get('event-question-templates/api/list', [EventQuestionTemplateController::class, 'apiIndex'])
             ->name('event-question-templates.api');
-
-            
+        
+          
     });
 
     // Rutas públicas del calendario

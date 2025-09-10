@@ -256,7 +256,8 @@ return [
     'Error submitting answers' => 'Error al enviar las respuestas',
     'Available for answers' => 'Disponible para respuestas',
     'Event deleted successfully' => 'Event deleted successfully',
-    
+
+    'Templates' => 'Templates',
     'Apply Question Template' => 'Apply Question Template',
     'Select Template' => 'Select Template',
     'Apply Template' => 'Apply Template',
@@ -265,7 +266,6 @@ return [
     'Template Description' => 'Template Description',
     'Template' => 'Template',
     'Template applied successfully' => 'Template applied successfully',   
-    
     'Question Templates' => 'Question Templates',
     'Create Template' => 'Create Template',
     'Template created successfully.' => 'Template created successfully.',
@@ -285,24 +285,14 @@ return [
     'This and all future events' =>  'This and all future events',
     'Start Date/Time' => 'Start Date/Time',
     'End Date/Time' => 'End Date/Time',
-    '' =>  '',
-    '' =>  '',
-    '' =>  '',
-    '' =>  '',
-    '' =>  '',
-    '' =>  '',
-    '' =>  '',
-    '' =>  '',
-    '' =>  '',
-    '' =>  '',
-    '' =>  '',
-    '' =>  '',
-    '' =>  '',
-    '' =>  '',
-    '' =>  '',
-    '' =>  '',
-    '' =>  '',
-    '' =>  '',
+    'Edit Question Template' =>  'Edit Question Template',
+    'Back to Events' => 'Back to Events',
+    'Submission Date' =>  'Submission Date',
+    'Download PDF' => 'Download PDF',
+    'Download Excel' => 'Download Excel',
+    'Print View' => 'Print View ',
+    'xxx' =>  'xxx',
+
     
 ];
 

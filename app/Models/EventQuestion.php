@@ -10,7 +10,6 @@ class EventQuestion extends Model
 {
     protected $fillable = [
         'event_id', 'question', 'type', 'options', 'required',
-        //'is_template', 'template_name', 'template_description'
     ];
 
     protected $casts = [

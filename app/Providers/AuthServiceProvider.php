@@ -11,6 +11,7 @@ use App\Models\User;
 use EventQuestionTemplate;
 use App\Policies\EventPolicy;
 use App\Policies\EventTypePolicy;
+use App\Policies\EventQuestionTemplatePolicy;
 
 class AuthServiceProvider extends ServiceProvider
 {
