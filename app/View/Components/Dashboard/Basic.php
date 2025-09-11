@@ -38,9 +38,7 @@ class Basic extends Component
                 ->take(5)
                 ->get()
             : collect([]);
-        
-        //$calendarController = new CalendarController();
-        //$this->events = $calendarController->getDashboardEvents(5);
+
         
     }
 

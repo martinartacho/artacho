@@ -45,6 +45,7 @@ class Advanced extends Component
         // 6. Próximos eventos (solo si el usuario tiene permiso para ver el calendario)
         $this->events = Auth::check() && Auth::user()->can('view-calendar')
             ? Event::whereDate('start', '>=', now())
+                ->withCount('answers')
                 ->orderBy('start', 'asc')
                 ->take(5)
                 ->get()

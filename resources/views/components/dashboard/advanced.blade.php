@@ -113,6 +113,7 @@
              <!-- Tercera fila: Widget de eventos (si tiene eventos y permisos) -->
             @if($events->count() > 0 && Auth::user()->can('view-calendar'))
             <div class="col-span-full">
+                <div class="flex items-center justify-between">
                 <x-dashboard.card title="{{ __('site.Events') }}" color="purple">
                     <ul class="divide-y divide-gray-200">
                         @foreach($events as $event)
@@ -120,11 +121,19 @@
                                 <div class="flex space-x-3">
                                     <div class="flex-1 min-w-0">
                                         <p class="text-sm font-medium text-gray-900 truncate">
-                                            {{ $event->title }}
+                                            {{ $event->title }} 
                                         </p>
                                         <p class="text-sm text-gray-500 truncate">
                                             {{ \Carbon\Carbon::parse($event->start)->format('d M Y, H:i') }}
                                         </p>
+                                    </div>
+                                     <div class="shrink-0">
+                                        @if($event->answers_count > 0)
+                                            <span class="inline-flex items-center justify-center px-1.5 py-0.5 text-xs font-bold leading-none text-white bg-success-600 rounded-full transform translate-x-1/2 -translate-y-1/2">
+                                                {{ $event->answers_count }}
+                                            </span>
+                                            
+                                        @endif
                                     </div>
                                 </div>
                             </li>
@@ -138,6 +147,7 @@
                         </a>
                     </div>
                 </x-dashboard.card>
+                </div>
             </div>
             @endif
             

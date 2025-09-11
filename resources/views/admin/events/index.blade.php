@@ -116,15 +116,6 @@
                             </a>
                                                 
                                                 {{-- Enlace a preguntas del evento --}}
-                                                {{-- <a href="{{ route('admin.events.questions.index', $event->id) }}" class="text-green-600 hover:text-green-900">
-                                                    {{ __('site.Questions') }} 
-                                                    @if($event->questions_count > 0)
-                                                    <span class="bg-green-100 text-green-800 text-xs font-semibold px-1.5 py-0.5 rounded">
-                                                        {{ $event->questions_count }}
-                                                    </span>
-                                                    @endif
-                                                </a> --}}
-
                                                 <a href="{{ route('admin.events.questions.index', $event->id) }}" class="text-green-600 hover:text-green-900" title="{{ __('site.Questions') }}">
                                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
@@ -136,15 +127,6 @@
                                                     @endif
                                                 </a>
                                                 
-                                                {{-- Enlace a respuestas del evento --}}
-                                                {{-- <a href="{{ route('admin.events.answers.index', $event->id) }}" class="text-purple-600 hover:text-purple-900">
-                                                    {{ __('site.Answers') }}
-                                                    @if($event->answers_count > 0)
-                                                    <span class="bg-purple-100 text-purple-800 text-xs font-semibold px-1.5 py-0.5 rounded">
-                                                        {{ $event->answers_count }}
-                                                    </span>
-                                                    @endif
-                                                </a> --}}
 
                                                  <a href="{{ route('admin.events.answers.index', $event->id) }}" class="text-purple-600 hover:text-purple-900" title="{{ __('site.Answers') }}">
                                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -158,17 +140,7 @@
                                                 </a>
                                             </div>
                                             
-                                            {{-- @can('delete', $event)
-                                            <form action="{{ route('admin.events.destroy', $event->id) }}" method="POST" class="inline-block">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="text-red-600 hover:text-red-900" onclick="return confirm('{{ __('site.Are you sure you want to delete this event?') }}')">
-                                                    {{ __('site.Delete') }}
-                                                </button>
-                                            </form>
-                                            @endcan --}}
-
-                                             @can('delete', $event)
+                                            @can('delete', $event)
                                                 <form action="{{ route('admin.events.destroy', $event->id) }}" method="POST" class="inline-block">
                                                     @csrf
                                                     @method('DELETE')
@@ -178,7 +150,7 @@
                                                         </svg>
                                                     </button>
                                                 </form>
-                                                @endcan
+                                            @endcan
                                         </div>
                                     </td>
                                 </tr>
