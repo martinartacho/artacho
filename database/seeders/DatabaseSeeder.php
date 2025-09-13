@@ -21,6 +21,7 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,                // Luego los usuarios
             // AdminUserSeeder::class,
             NotificationSeeder::class,        // Finalmente las notificaciones
+            EventExampleSeeder::class,        // Ejemplo de event
             // Otros seeders...
         ]);
         

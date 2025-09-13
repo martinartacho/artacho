@@ -3,12 +3,31 @@
 namespace App\Providers;
 
 use Illuminate\Support\Facades\Gate;
-use Illuminate\Support\ServiceProvider;
+use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+use App\Models\Event;
+use App\Models\EventType;
 use App\Models\Notification;
 use App\Models\User;
+use EventQuestionTemplate;
+use App\Policies\EventPolicy;
+use App\Policies\EventTypePolicy;
+use App\Policies\EventQuestionTemplatePolicy;
 
 class AuthServiceProvider extends ServiceProvider
 {
+    /**
+     * The policy mappings for the application.
+     *
+     * @var array
+     */
+    protected $policies = [
+        Event::class => EventPolicy::class,
+        EventType::class => EventTypePolicy::class,
+        EventQuestionTemplate::class => EventQuestionTemplatePolicy::class,
+
+        // ... otras políticas
+    ];
+
     /**
      * Register services.
      */
@@ -22,6 +41,7 @@ class AuthServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        $this->registerPolicies();
         
         // Gates para notificaciones
         Gate::define('view-notification', function (User $user, Notification $notification) {
@@ -58,5 +78,21 @@ class AuthServiceProvider extends ServiceProvider
             return $user->hasAnyRole(['admin', 'gestor']);
         });
 
+        // Gates para eventos (mantenemos estos gates para compatibilidad)
+        Gate::define('view-calendar', function (User $user) {
+            return true; // Todos los usuarios autenticados pueden ver el calendario
+        });
+
+        Gate::define('create-events', function (User $user) {
+            return $user->hasRole(['admin', 'gestor', 'editor']);
+        });
+
+        Gate::define('edit-events', function (User $user) {
+            return $user->hasRole(['admin', 'gestor', 'editor']);
+        });
+
+        Gate::define('delete-events', function (User $user) {
+            return $user->hasRole(['admin', 'gestor']);
+        });
     }
 }

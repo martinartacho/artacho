@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Session;
 use App\Notifications\Channels\FcmChannel;
 use Illuminate\Support\Facades\Mail;
+use App\Services\ExportService;
 
 
 
@@ -19,7 +20,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->bind(ExportService::class, function () {
+            return new ExportService();
+        });
     }
 
     /**

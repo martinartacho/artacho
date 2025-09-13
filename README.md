@@ -156,5 +156,23 @@ Genera un warning en `laravel.log`.
 
 ---
 
+## ✨ Colores Personalizados en Tailwind
+- Se ha editado  archivo tailwind.config.js para usar nombres semánticos como "success", usando Tailwind.
+
+Ejemplo de uso:
+```<span class="inline-flex items-center justify-center px-1.5 py-0.5 text-xs font-bold leading-none text-white bg-green-600 rounded-full transform translate-x-1/2 -translate-y-1/2">
+{{ $event->answers_count }}
+</span>
+```
+- Después de modificar tailwind.config.js, recompila los estilos ejecutando
+
+```
+npm run dev
+# o
+npm run build
+```
+
+---
+
 ## Autor
 Artacho DevTeam ✨

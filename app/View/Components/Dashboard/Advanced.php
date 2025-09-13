@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Setting;
 use App\Models\UserSetting;
+use App\Models\Event;
 use Illuminate\Support\Facades\Cache;
 
 class Advanced extends Component
@@ -16,6 +17,7 @@ class Advanced extends Component
     public $userLanguage;
     public $defaultLanguage;
     public $appLocale;
+    public $events;
 
     public function __construct()
     {
@@ -39,6 +41,15 @@ class Advanced extends Component
         
         // 5. Locale de la aplicación (.env)
         $this->appLocale = config('app.locale');
+
+        // 6. Próximos eventos (solo si el usuario tiene permiso para ver el calendario)
+        $this->events = Auth::check() && Auth::user()->can('view-calendar')
+            ? Event::whereDate('start', '>=', now())
+                ->withCount('answers')
+                ->orderBy('start', 'asc')
+                ->take(5)
+                ->get()
+            : collect([]);
     }
     
     public function render()
