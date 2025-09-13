@@ -188,6 +188,7 @@ return [
     'Recurrence' => 'Recurrencia',
     'Every :interval' => 'Cada :interval',
     'Back to Events List' => 'Volver a la Lista de Eventos',
+    'Events List' => 'Lista de Eventos',
     'There was an error fetching events!' => '¡Hubo un error al cargar los eventos!',
     'Today' => 'Hoy',
     'Month' => 'Mes',

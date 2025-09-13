@@ -12,7 +12,7 @@
                     <div class="flex justify-between items-center mb-6">
                         <div>
                             <a href="{{ route('admin.events.index') }}" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
-                                {{ __('site.Back to Events List') }}
+                                {{ __('site.Events List') }}
                             </a>
                         </div>
                         <div>

@@ -192,6 +192,7 @@ return [
     'Recurrence' => 'Recurrence',
     'Every :interval' => 'Every :interval',
     'Back to Events List' => 'Back to Events List',
+    'Events List' => 'Events List',
     'There was an error fetching events!' => 'There was an error fetching events!',
     'Today' => 'Today',
     'Month' => 'Month',

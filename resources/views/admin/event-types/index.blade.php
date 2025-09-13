@@ -11,7 +11,7 @@
                 <div class="p-6 bg-white border-b border-gray-200">
                     @can('create', App\Models\EventType::class)
                         <div class="flex justify-between items-center mb-6">
-                            <h3 class="text-lg font-semibold">{{ __('Events List') }}</h3>
+                            <h3 class="text-lg font-semibold">{{ __('site.Events List') }}</h3>
                             <div class="space-x-2">
                                 <a href="{{ route('admin.events.index') }}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
                                     {{ __('Events') }}
