@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('site.Answers for Event: ') }} {{ $event->title }}
+            {{ __('site.Answers for Event') }}: {{ $event->title }}
         </h2>
     </x-slot>
 
@@ -14,18 +14,16 @@
                         <a href="{{ route('admin.events.index') }}" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
                             {{ __('site.Back to Events') }}
                         </a>
+
                         <div class="space-x-2">
-                            {{-- <a href="{{ route('admin.events.answers.export', ['event' => $event->id, 'format' => 'pdf']) }}" --}} 
-                            <a href="#" 
+                            <a href="{{ route('admin.events.answers.export', ['event' => $event->id, 'format' => 'pdf']) }}"                            
                                class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
                                 {{ __('site.Download PDF') }}
                             </a>
-                            {{-- <a href="{{ route('admin.events.answers.export', ['event' => $event->id, 'format' => 'excel']) }}"  --}}
-                            <a href="#" 
+                            <a href="{{ route('admin.events.answers.export', ['event' => $event->id, 'format' => 'excel']) }}" 
                                class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
                                 {{ __('site.Download Excel') }}
                             </a>
-                            
                             <a href="{{ route('admin.events.answers.print', $event->id) }}" 
                                target="_blank"
                                class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">

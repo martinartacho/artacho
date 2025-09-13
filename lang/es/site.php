@@ -285,6 +285,7 @@ return [
     'Download PDF' => 'Descargar PDF',
     'Download Excel' => 'Descargar Excel',
     'Print View' => 'Vista para Imprimir',
+    'Answers for Event' => 'Respuestas del event',
 
 ];
 

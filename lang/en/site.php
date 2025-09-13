@@ -291,6 +291,7 @@ return [
     'Download PDF' => 'Download PDF',
     'Download Excel' => 'Download Excel',
     'Print View' => 'Print View ',
+    'Answers for Event' => 'Answers for Event',
     'xxx' =>  'xxx',
 
     

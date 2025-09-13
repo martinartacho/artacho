@@ -131,13 +131,17 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('events/{event}/answers/print', [EventAnswerController::class, 'print'])
             ->name('events.answers.print'); // Nombre: admin.events.answers.print    
 
+        // Exportar eventos
+        /* Route::get('/events/{event}/export-pdf', [EventController::class, 'exportAnswersToPDF'])
+            ->name('events.export.pdf');
+        Route::get('/events/{event}/export-excel', [EventController::class, 'exportAnswersToExcel'])
+            ->name('events.export.excel'); */
+
         // Event Types Routes
         Route::resource('event-types', EventTypeController::class)->except(['show']);
         
         // Events Routes
         Route::resource('events', EventController::class);
-       // Route::get('events-calendar', [EventController::class, 'calendar'])->name('events.calendar');
-       // Route::get('events-calendar/data', [EventController::class, 'calendarData'])->name('events.calendar-data');
 
         // Rutas para preguntas de eventos
         Route::resource('events.questions', EventQuestionController::class)->except(['show']);

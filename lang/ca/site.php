@@ -316,5 +316,8 @@ return [
     'Download PDF' => 'Descarregar PDF',
     'Download Excel' => 'Descarregar Excel',
     'Print View' => 'Vista per Imprimir',
+    'Answers for Event' => 'Respostes de l\'Event',
+
+
 
 ];
