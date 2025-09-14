@@ -317,7 +317,10 @@ return [
     'Download Excel' => 'Descarregar Excel',
     'Print View' => 'Vista per Imprimir',
     'Answers for Event' => 'Respostes de l\'Event',
-
+    'Select an event type' => 'Selecciona tipus',
+    'Visible' =>  'Visible',
+    'Color' =>  'Color',
+    'Save Event' =>  'Desar event',
 
 
 ];

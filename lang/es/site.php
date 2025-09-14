@@ -262,7 +262,7 @@ return [
     'Template Description' => 'Descripción de la Plantilla',
     'Template' => 'Plantilla',
     'Template applied successfully' => 'Plantilla aplicada correctamente',
-'Question Templates' => 'Plantillas de Preguntas',
+    'Question Templates' => 'Plantillas de Preguntas',
     'Create Template' => 'Crear Plantilla',
     'Template created successfully.' => 'Plantilla creada correctamente.',
     'Template updated successfully.' => 'Plantilla actualizada correctamente.',
@@ -287,6 +287,11 @@ return [
     'Download Excel' => 'Descargar Excel',
     'Print View' => 'Vista para Imprimir',
     'Answers for Event' => 'Respuestas del event',
+    'Select an event type' => 'Selecciona tipo',
+    'Visible' =>  'Visible',
+    'Color' =>  'Color',
+    'Save Event' =>  'Guardar Evento',
+
 
 ];
 
