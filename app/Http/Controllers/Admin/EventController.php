@@ -19,7 +19,9 @@ class EventController extends Controller
     {
         $this->authorize('viewAny', Event::class);
         
-        $events = Event::with('eventType')->paginate(10);
+        $events = Event::with('eventType')
+            ->withCount(['questions', 'answers'])
+            ->paginate(10);
         return view('admin.events.index', compact('events'));
     }
 
@@ -227,6 +229,79 @@ class EventController extends Controller
         }
     }
 
+    public function destroy($id)
+    {
+        $event = Event::findOrFail($id);
+
+        $deleted = [];
+        $skipped = [];
+
+        try {
+            DB::transaction(function () use ($event, &$deleted, &$skipped) {
+                // Si es evento recurrente: intentamos borrar sus hijos (solo los que no tengan respuestas)
+                if ($event->recurrence_type !== 'none') {
+                    // Obtener todos los hijos directos
+                    $children = Event::where('parent_id', $event->id)->get();
+
+                    foreach ($children as $child) {
+                        $hasAnswers = EventAnswer::where('event_id', $child->id)->exists();
+
+                        if (!$hasAnswers) {
+                            $child->delete();
+                            $deleted[] = $child->id;
+                        } else {
+                            $skipped[] = $child->id;
+                        }
+                    }
+
+                    // Comprobamos si quedan hijos (aquellos que tenían respuestas)
+                    $remainingChildren = Event::where('parent_id', $event->id)->count();
+
+                    // Solo borrar el padre si:
+                    // 1) no tiene respuestas, y 2) no quedan hijos (evitamos orfanear eventos)
+                    $parentHasAnswers = EventAnswer::where('event_id', $event->id)->exists();
+                    if (!$parentHasAnswers && $remainingChildren === 0) {
+                        $event->delete();
+                        $deleted[] = $event->id;
+                    } else {
+                        // No podemos borrar el padre (bien porque tiene respuestas, bien porque quedan hijos con respuestas)
+                        $skipped[] = $event->id;
+                    }
+                } else {
+                    // Evento sin recurrencia: borrar solo si no tiene respuestas
+                    $hasAnswers = EventAnswer::where('admin.event_id', $event->id)->exists();
+                    if (!$hasAnswers) {
+                        $event->delete();
+                        $deleted[] = $event->id;
+                    } else {
+                        $skipped[] = $event->id;
+                    }
+                }
+            });
+        } catch (\Throwable $e) {
+            // Manejo de error: rollback automático por la transacción
+            return redirect()->route('admin.events.index')
+                ->with('error', 'Error al eliminar el evento: ' . $e->getMessage());
+        }
+
+        // Construir mensaje para el usuario
+        if (count($deleted) > 0 && count($skipped) === 0) {
+            $msg = 'Eventos eliminados correctamente: ' . implode(', ', $deleted) . '.';
+            return redirect()->route('admin.events.index')->with('success', $msg);
+        }
+
+        if (count($deleted) > 0 && count($skipped) > 0) {
+            $msg = 'Se eliminaron algunos eventos: ' . implode(', ', $deleted)
+                . '. No se eliminaron (contienen respuestas o quedan hijos): ' . implode(', ', $skipped) . '.';
+            return redirect()->route('ademin.events.index')->with('warning', $msg);
+        }
+
+        // Ningún borrado
+        $msg = 'No se eliminaron eventos porque contienen respuestas.';
+        return redirect()->route('admin.events.index')->with('error', $msg);
+    }
+
+    /*
     public function destroy(Event $event)
     {
         $this->authorize('delete', $event);
@@ -239,8 +314,57 @@ class EventController extends Controller
             return redirect()->back()
                 ->with('error', __('site.Error deleting event: :message', ['message' => $e->getMessage()]));
         }
-    }
+    } */
     
+
+    /*
+    public function destroy(Event $event)
+{
+    $this->authorize('delete', $event);
+    
+    try {
+        // Verificar si el evento actual tiene respuestas
+        $currentEventHasAnswers = EventAnswer::where('event_id', $event->id)->exists();
+        
+        if ($currentEventHasAnswers) {
+            return redirect()->back()
+                ->with('error', __('No se puede eliminar el evento porque contiene respuestas.'));
+        }
+        
+        // Si es un evento recurrente
+        if ($event->recurrence_type != 'none') {
+            // Obtener todos los eventos hijos (incluyendo el padre)
+            $allEvents = Event::where('parent_id', $event->id)
+                            ->orWhere('id', $event->id)
+                            ->get();
+            
+            $eventsToDelete = [];
+            
+            // Verificar qué eventos no tienen respuestas
+            foreach ($allEvents as $e) {
+                $hasAnswers = EventAnswer::where('event_id', $e->id)->exists();
+                
+                if (!$hasAnswers) {
+                    $eventsToDelete[] = $e->id;
+                }
+            }
+            
+            // Eliminamos solo los eventos que no tienen respuestas
+            if (!empty($eventsToDelete)) {
+                Event::whereIn('id', $eventsToDelete)->delete();
+            }
+            
+        } else {
+            $event->delete();
+        }
+        
+        return redirect()->route('admin.events.index')
+            ->with('success', __('site.Event deleted successfully.'));
+    } catch (\Exception $e) {
+        return redirect()->back()
+            ->with('error', __('site.Error deleting event: :message', ['message' => $e->getMessage()]));
+    }
+} */
     public function calendar()
     {
         $this->authorize('viewAny', Event::class);

@@ -247,8 +247,12 @@
                         <div class="col-md-12">
                             <h4 id="eventTitle">{{ __('site.Title') }}</h4>
                             <div class="d-flex flex-wrap mb-2">
-                                <span class="badge bg-primary badge-event-detail" id="eventDate"><i class="fas fa-calendar me-1"></i> {{ __('site.Date') }}</span>
-                                <span class="badge bg-info badge-event-detail" id="eventTime"><i class="fas fa-clock me-1"></i> {{ __('site.Time') }}</span>
+                                <span class="badge bg-primary badge-event-detail" id="eventDate">
+                                <i class="fas fa-calendar me-1"></i> <span id="eventDateText">{{ __('site.Date') }}</span>
+                                </span>
+                                <span class="badge bg-info badge-event-detail" id="eventTime">
+                                <i class="fas fa-clock me-1"></i> <span id="eventTimeText">{{ __('site.Time') }}</span>
+                                </span>
                             </div>
                         </div>
                     </div>
@@ -391,19 +395,20 @@
                             const endDate = event.end ? new Date(event.end) : null;
                             
                             if (event.allDay) {
-                                document.getElementById('eventDate').textContent = startDate.toLocaleDateString('es-ES');
-                                document.getElementById('eventTime').textContent = '{{ __("site.All day") }}';
+                                document.getElementById('eventDateText').textContent = startDate.toLocaleDateString('es-ES');
+                                document.getElementById('eventTimeText').textContent = '{{ __("site.All day") }}';
                             } else {
-                                document.getElementById('eventDate').textContent = startDate.toLocaleDateString('es-ES');
+                                document.getElementById('eventDateText').textContent = startDate.toLocaleDateString('es-ES');
+                                
                                 
                                 // Si es el mismo día, mostrar solo la hora para el final
                                 if (startDate.toDateString() === endDate.toDateString()) {
-                                    document.getElementById('eventTime').textContent = 
+                                    document.getElementById('eventTimeText').textContent = 
                                         startDate.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' }) + 
                                         ' - ' + 
                                         endDate.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
                                 } else {
-                                    document.getElementById('eventTime').textContent = 
+                                    document.getElementById('eventTimeText').textContent = 
                                         startDate.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' }) + 
                                         ' (' + startDate.toLocaleDateString('es-ES') + ') - ' + 
                                         endDate.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' }) + 
@@ -412,12 +417,18 @@
                             }
                             
                             // Información de visibilidad como frase
-                            const startVisible = eventDetails.start_visible ? 
-                                new Date(eventDetails.start_visible).toLocaleDateString('es-ES') : '{{ __("site.Not set") }}';
-                            const endVisible = eventDetails.end_visible ? 
-                                new Date(eventDetails.end_visible).toLocaleDateString('es-ES') : '{{ __("site.Not set") }}';
-                            document.getElementById('visibilityText').textContent = 
-                                `{{ __("site.Visible from") }} ${startVisible} {{ __("site.until") }} ${endVisible}`;
+                            const visibilityRow = document.querySelector('.visibility-info').parentNode.parentNode;
+                            if (eventDetails.end_visible) {
+                                const startVisible = eventDetails.start_visible ? 
+                                    new Date(eventDetails.start_visible).toLocaleDateString('es-ES') : '{{ __("site.Not set") }}';
+                                const endVisible = new Date(eventDetails.end_visible).toLocaleDateString('es-ES');
+
+                                document.getElementById('visibilityText').textContent = 
+                                    `{{ __("site.Visible from") }} ${startVisible} {{ __("site.until") }} ${endVisible}`;
+                                visibilityRow.style.display = 'block';
+                            } else {
+                                visibilityRow.style.display = 'none';
+                            }
                             
                             // Respuestas
                             const responseSection = document.getElementById('responseSection');
@@ -454,7 +465,6 @@
                                     
                                     if (question.type === 'text') {
                                         // Campo de texto
-                                        console.log('option es t ', question.type );
                                         const textarea = document.createElement('textarea');
                                         textarea.className = 'form-control mt-2';
                                         textarea.name = `answer_${question.id}`;
@@ -465,7 +475,6 @@
                                         formGroup.appendChild(textarea);
                                     } else if (question.type === 'single') {
                                         // Opciones únicas (radio buttons)
-                                        console.log('option es u ', question.type );
                                         const optionsContainer = document.createElement('div');
                                         optionsContainer.className = 'radio-options-container mt-2';
                                         
@@ -505,7 +514,6 @@
                                         }
                                         formGroup.appendChild(optionsContainer);
                                     } else if (question.type === 'multiple') {
-                                        console.log('option es m ', question.type );
                                         // Opciones múltiples (checkboxes)
                                         const optionsContainer = document.createElement('div');
                                         optionsContainer.className = 'checkbox-options-container mt-2';
@@ -570,16 +578,16 @@
                                     </button>
                                 `;
                                 responseForm.appendChild(buttonGroup);
-                            } else {
-                                responseSection.style.display = 'none';
+                            } else if (hasQuestions) {
+                                // El evento tiene preguntas pero no está disponible para responder
                                 responseSection.style.display = 'block';
-                                responseStatus.textContent = '{{ __("site.No questions available") }}';
-                                responseStatus.className = 'badge bg-info';
-                                
-                                // Limpiar formulario anterior
+                                responseStatus.textContent = '{{ __("site.Not available right now") }}';
+                                responseStatus.className = 'badge bg-secondary';
                                 responseForm.innerHTML = '';
+                            } else {
+                                // No hay preguntas → ocultar por completo la sección
+                                responseSection.style.display = 'none';
                             }
-                            
                             // Mostrar el modal
                             eventModal.show();
                         })

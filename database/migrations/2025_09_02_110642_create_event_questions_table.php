@@ -18,9 +18,6 @@ return new class extends Migration
             $table->enum('type', ['single', 'multiple', 'text']);
             $table->json('options')->nullable();
             $table->boolean('required')->default(false);
-            // $table->boolean('is_template')->default(false);
-            // $table->string('template_name')->nullable();
-            // $table->text('template_description')->nullable();
 
             $table->timestamps();
         });

@@ -264,7 +264,7 @@ return [
     'Visibility Information' => 'Informació de Visibilitat',
     'Visible from' => 'Visible des de',
     'Visible to' => 'Visible fins a',
-    'until' => 'until', 
+    'until' => 'fins', 
     'Not set' => 'No establert',
     'Event Questions' => 'Preguntes de l\'Esdeveniment',
     'Answer Questions' => 'Respondre Preguntes',

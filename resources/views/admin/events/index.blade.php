@@ -108,12 +108,11 @@
                                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                         <div class="flex flex-col space-y-1">
                                             <div class="flex space-x-2">
-                                                {{-- <a href="{{ route('admin.events.edit', $event->id) }}" class="text-indigo-600 hover:text-indigo-900">{{ __('site.Edit') }}</a> --}}
                                                 <a href="{{ route('admin.events.edit', $event->id) }}" class="text-indigo-600 hover:text-indigo-900" title="{{ __('site.Edit') }}">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
-                                </svg>
-                            </a>
+                                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                                                    </svg>
+                                                </a>
                                                 
                                                 {{-- Enlace a preguntas del evento --}}
                                                 <a href="{{ route('admin.events.questions.index', $event->id) }}" class="text-green-600 hover:text-green-900" title="{{ __('site.Questions') }}">
@@ -121,7 +120,7 @@
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                                                     </svg>
                                                     @if($event->questions_count > 0)
-                                                    <span class="absolute -mt-3 -mr-3 bg-green-100 text-green-800 text-xs font-semibold px-1.5 py-0.5 rounded">
+                                                    <span class="absolute px-2 inline-flex text-xs leading-3 font-semibold rounded-full  bg-green-100 text-green-900}}">
                                                         {{ $event->questions_count }}
                                                     </span>
                                                     @endif
@@ -133,7 +132,7 @@
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                                                     </svg>
                                                     @if($event->answers_count > 0)
-                                                    <span class="absolute -mt-3 -mr-3 bg-purple-100 text-purple-800 text-xs font-semibold px-1.5 py-0.5 rounded">
+                                                    <span class="absolute px-2 inline-flex text-xs leading-3 font-semibold rounded-full  bg-purple-100 text-purple-900}}">
                                                         {{ $event->answers_count }}
                                                     </span>
                                                     @endif

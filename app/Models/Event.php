@@ -33,6 +33,7 @@ class Event extends Model
     {
         return $this->hasMany(EventQuestion::class);
     }
+    
 
     // Accessor para facilitar el acceso a la información de recurrencia
     public function getRecurrenceInfoAttribute()
@@ -68,7 +69,6 @@ class Event extends Model
 
     public function answers()
     {
-        // Si la columna se llama diferente a 'event_question_id', ajústala aquí
         return $this->hasManyThrough(
             EventAnswer::class,
             EventQuestion::class,
