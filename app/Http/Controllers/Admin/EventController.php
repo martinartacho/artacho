@@ -269,7 +269,7 @@ class EventController extends Controller
                     }
                 } else {
                     // Evento sin recurrencia: borrar solo si no tiene respuestas
-                    $hasAnswers = EventAnswer::where('admin.event_id', $event->id)->exists();
+                    $hasAnswers = EventAnswer::where('event_id', $event->id)->exists();
                     if (!$hasAnswers) {
                         $event->delete();
                         $deleted[] = $event->id;
@@ -301,70 +301,6 @@ class EventController extends Controller
         return redirect()->route('admin.events.index')->with('error', $msg);
     }
 
-    /*
-    public function destroy(Event $event)
-    {
-        $this->authorize('delete', $event);
-        
-        try {
-            $event->delete();
-            return redirect()->route('admin.events.index')
-                ->with('success', __('site.Event deleted successfully.'));
-        } catch (\Exception $e) {
-            return redirect()->back()
-                ->with('error', __('site.Error deleting event: :message', ['message' => $e->getMessage()]));
-        }
-    } */
-    
-
-    /*
-    public function destroy(Event $event)
-{
-    $this->authorize('delete', $event);
-    
-    try {
-        // Verificar si el evento actual tiene respuestas
-        $currentEventHasAnswers = EventAnswer::where('event_id', $event->id)->exists();
-        
-        if ($currentEventHasAnswers) {
-            return redirect()->back()
-                ->with('error', __('No se puede eliminar el evento porque contiene respuestas.'));
-        }
-        
-        // Si es un evento recurrente
-        if ($event->recurrence_type != 'none') {
-            // Obtener todos los eventos hijos (incluyendo el padre)
-            $allEvents = Event::where('parent_id', $event->id)
-                            ->orWhere('id', $event->id)
-                            ->get();
-            
-            $eventsToDelete = [];
-            
-            // Verificar qué eventos no tienen respuestas
-            foreach ($allEvents as $e) {
-                $hasAnswers = EventAnswer::where('event_id', $e->id)->exists();
-                
-                if (!$hasAnswers) {
-                    $eventsToDelete[] = $e->id;
-                }
-            }
-            
-            // Eliminamos solo los eventos que no tienen respuestas
-            if (!empty($eventsToDelete)) {
-                Event::whereIn('id', $eventsToDelete)->delete();
-            }
-            
-        } else {
-            $event->delete();
-        }
-        
-        return redirect()->route('admin.events.index')
-            ->with('success', __('site.Event deleted successfully.'));
-    } catch (\Exception $e) {
-        return redirect()->back()
-            ->with('error', __('site.Error deleting event: :message', ['message' => $e->getMessage()]));
-    }
-} */
     public function calendar()
     {
         $this->authorize('viewAny', Event::class);
