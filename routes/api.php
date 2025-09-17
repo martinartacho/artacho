@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Log;
 use App\Models\FcmToken;
 use App\Http\Controllers\Api\FeedbackController;
+use App\Http\Controllers\Api\CalendarController;
 
 use App\Models\Notification;
 use App\Services\FCMService;
@@ -46,7 +47,7 @@ Route::middleware('auth:api')->group(function () {
 
 
 // Rutas notifications Firebase
-// ✅ Notificaciones
+// Notificaciones
 Route::middleware('auth:api')->group(function () {
     Route::post('/save-fcm-token', [FcmTokenController::class, 'saveFcmToken']);
     Route::get('/unread-count', [FcmTokenController::class, 'unreadCount']);
@@ -54,3 +55,11 @@ Route::middleware('auth:api')->group(function () {
     Route::post('/{id}/mark-read-api', [FcmTokenController::class, 'markAsReadApi']);
 });
 
+// Rutas calendar events
+Route::middleware('auth:api')->group(function () {
+    Route::get('/events', [CalendarController::class, 'index']);           // Próximos 5 eventos visibles
+    Route::get('/events/{id}', [CalendarController::class, 'show']);       // Detalle de evento
+    Route::post('/events/{id}/answers', [CalendarController::class, 'storeAnswer']); // Responder preguntas
+    Route::put('/answers/{id}', [CalendarController::class, 'updateAnswer']);        // Editar respuesta
+    Route::delete('/answers/{id}', [CalendarController::class, 'destroyAnswer']);    // Eliminar respuesta
+});

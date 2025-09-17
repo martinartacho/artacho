@@ -79,4 +79,12 @@ class Event extends Model
         );
     }
     
+
+    // Scope para eventos visibles
+    public function scopeVisible($query)
+    {
+        return $query->where('visible', true)
+                     ->whereDate('start_visible', '<=', now())
+                     ->whereDate('end_visible', '>=', now());
+    }
 }
