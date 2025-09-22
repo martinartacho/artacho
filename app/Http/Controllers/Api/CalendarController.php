@@ -40,6 +40,9 @@ class CalendarController extends Controller
                     'end' => $event->end,
                     'color' => $event->color,
                     'has_questions' => $event->questions_count > 0,
+                    'visible' => $event->visible, 
+                    'start_visible' => $event->start_visible, 
+                    'end_visible' => $event->end_visible, 
                 ];
             })
         ]);
