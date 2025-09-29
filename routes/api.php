@@ -62,4 +62,6 @@ Route::middleware('auth:api')->group(function () {
     Route::post('/events/{id}/answers', [CalendarController::class, 'storeAnswer']); // Responder preguntas
     Route::put('/answers/{id}', [CalendarController::class, 'updateAnswer']);        // Editar respuesta
     Route::delete('/answers/{id}', [CalendarController::class, 'destroyAnswer']);    // Eliminar respuesta
+    Route::get('/events/{event}/user-responses', [CalendarController::class, 'getUserResponses']);  //Obtener respuestas
+
 });

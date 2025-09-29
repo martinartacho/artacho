@@ -149,4 +149,26 @@ class CalendarController extends Controller
             'message' => 'Respuesta eliminada'
         ]);
     }
+
+    /**
+     * Obtener respuestas del usuario actual para un evento
+     */
+    public function getUserResponses($eventId)
+    {
+        $user = Auth::user();
+        
+        $responses = EventAnswer::where('event_id', $eventId)
+            ->where('user_id', $user->id)
+            ->get()
+            ->mapWithKeys(function ($answer) {
+                return [$answer->question_id => $answer->answer];
+            });
+
+        return response()->json([
+            'status' => 'success',
+            'data' => [
+                'answers' => $responses
+            ]
+        ]);
+    }
 }
