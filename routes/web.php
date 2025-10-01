@@ -5,8 +5,6 @@ use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\PushLogController;
-use App\Http\Controllers\Gestor\GestorController;
-use App\Http\Controllers\Gestor\UserController as GestorUserController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\SettingsController;
@@ -113,13 +111,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::prefix('api')->group(function () {
         Route::get('/notifications/unread-count', [NotificationController::class, 'getUnreadCount'])->name('notifications.unread-count');
         Route::post('/notifications/{notification}/mark-read', [NotificationController::class, 'markAsRead'])->name('notifications.mark-read');
-    });
-
-
-    // Rutas específicas para gestores
-    Route::middleware('role:gestor')->prefix('gestor')->name('gestor.')->group(function () {
-        Route::get('/dashboard', [GestorController::class, 'dashboard'])->name('dashboard');
-        Route::resource('users', GestorUserController::class)->only(['index', 'edit', 'update']);
     });
 
     // Rutas administrativas

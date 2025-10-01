@@ -69,7 +69,7 @@ class UserController extends Controller
         // Protección para el admin (usuario ID 1)
         if ($user->id === 1) {
             // Forzamos siempre el rol admin y todos los permisos
-            if (!$user->hasRole('admin')) {
+            if (!auth()->user()->hasRole('admin')) {
                 $user->assignRole('admin');
             }
 

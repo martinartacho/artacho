@@ -5,10 +5,13 @@
 Este proyecto es una aplicación web basada en Laravel que incluye autenticación de usuarios y diferentes roles con permisos específicos. A continuación se detalla la estructura y las rutas disponibles.
 
 ### Roles y Permisos
+Arquitectura Spatie integrada de roles y permisos
 
 - **Usuarios autenticados**: Acceso básico al dashboard y gestión de perfil.
-- **Administradores (`admin`)**: Gestión completa de usuarios.
-- **Gestores (`gestor`)**: Acceso limitado a funciones específicas, incluyendo una gestión restringida de usuarios y notificaciones.
+- **Administradores (`admin` )**: Gestión completa de usuarios.
+- **Gestores (`gestor`, `editor`)**: Acceso limitado a funciones específicas. 
+- **Gestores (`user`, `invitado`)**: Acceso limitado a funciones específicas. 
+
 
 ### Rutas Disponibles
 
@@ -28,27 +31,20 @@ Este proyecto es una aplicación web basada en Laravel que incluye autenticació
 - **Administrador** (requiere rol `admin`):
   - `/admin/users`: CRUD completo de usuarios (índice, creación, almacenamiento, edición, actualización, eliminación).
 
-- **Gestor** (requiere rol `gestor`):
-  - `/gestor/dashboard`: Panel principal para gestores.
-  - `/gestor/users`: Listado de usuarios (solo lectura limitada).
-  - `/gestor/users/{user}/edit`: Edición de usuarios (acceso limitado).
-  - `/gestor/users/{user}`: Actualización de usuarios.
-  - `/gestor/notifications`: Listado y envío de notificaciones.
-
 ### Controladores
 
 - `DashboardController`: Maneja la vista principal del dashboard.
 - `ProfileController`: Gestiona las operaciones relacionadas con el perfil del usuario.
-- `Admin\UserController`: Controlador de recursos para la gestión de usuarios por parte del administrador.
-- `GestorController`: Panel de control específico para gestores.
-- `GestorUserController`: Gestión limitada de usuarios para gestores.
-- `GestorNotificationController`: Maneja las notificaciones enviadas por gestores.
+- `xxxController`: Gestiona las operaciones relacionadas xxx.
+- `Admin\xxxController`: Controlador de recursos para la gestión administrativa por parte del administrador.
+- `Api\xxxController`: Controlador de recursos para la api.
+
 
 ### Middlewares
 
 - `auth`: Asegura que el usuario esté autenticado.
 - `verified`: Verifica que el correo electrónico del usuario esté confirmado.
-- `role`: Restringe el acceso basado en roles (`admin` o `gestor`).
+- `role`: Restringe el acceso basado en roles (`admin`).
 
 
 ### Instalación y Configuración
@@ -75,7 +71,7 @@ Para más detalles, consulte la documentación de Laravel o los comentarios en e
 ### SOBRE LA API
 Esta API está desarrollada en Laravel y utiliza JWT para autenticación. Está desplegada en:
 
-🔗 https://reservas.artacho.org/api
+🔗 https://nomdominio/api
 
 ---
 
