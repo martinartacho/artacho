@@ -3,7 +3,7 @@
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Schedule;
-// use App\Console\Commands\ChangeDefaultPasswords;
+
 
 Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
@@ -13,10 +13,6 @@ Artisan::command('inspire', function () {
 
 Schedule::command('notifications:send-pending-push')->everyMinute();
 Schedule::command('logs:clean-push')->dailyAt('02:00');
+Schedule::command('events:generate --days=30')->dailyAt('00:10');
 
 
-/*Artisan::starting(function ($artisan) {
-    $artisan->resolveCommands([
-        ChangeDefaultPasswords::class,
-    ]);
-});*/
